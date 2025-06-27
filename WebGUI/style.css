@@ -1,53 +1,83 @@
+html, body {
+    height: 100%;
+    min-height: 100vh;
+    background: #131313;
+}
+
 body {
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     font-family: 'Segoe UI', Arial, sans-serif;
     margin: 0;
     padding-top: 0;
     padding-bottom: 25px;
-    min-height: 100vh;
+    color: #e0e0e0;
 }
 
 h1 {
     text-align: center;
-    color: #2d3a4b;
+    color: #fafafa;
     margin-top: 40px;
     margin-bottom: 30px;
     letter-spacing: 1px;
+    font-size: 2.2rem;
+    font-weight: 700;
+    text-shadow: 0 2px 8px #000a;
 }
 
 h2 {
     padding: 0;
-    margin: 0 auto;
+    margin: 0 0 18px 0;
+    color: #5b9bd5;
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-left: 4px solid #5b9bd5;
+    padding-left: 12px;
 }
 
 form {
-    background: #fff;
-    max-width: 400px;
+    background: #232323e6;
+    max-width: 440px;
     margin: 0 auto;
-    padding: 32px 28px 24px 28px;
-    border-radius: 16px;
-    box-shadow: 0 6px 32px rgba(44, 62, 80, 0.15);
+    padding: 36px 32px 28px 32px;
+    border-radius: 18px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.65);
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 28px;
+}
+
+.settings-section {
+    background: #181a1f;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px #0004;
+    padding: 18px 18px 10px 18px;
+    margin-bottom: 10px;
+    border: 1px solid #232a34;
 }
 
 label {
     font-weight: 500;
-    color: #34495e;
-    margin-bottom: 0;
+    color: #b0b0b0;
+    margin-bottom: 4px;
+    display: block;
+    font-size: 1rem;
+    letter-spacing: 0.2px;
 }
 
 input[type="text"],
 input[type="password"],
 input[type="number"] {
+    width: 100%;
     padding: 10px 12px;
-    border: 1px solid #bfc9d1;
+    border: 1px solid #444;
     border-radius: 6px;
     font-size: 1rem;
-    background: #f8fafc;
-    transition: border 0.2s;
-    margin-bottom: 0;
+    background: #181818;
+    color: #fafafa;
+    transition: border 0.2s, background 0.2s;
+    margin-bottom: 14px;
+    margin-top: 2px;
+    box-sizing: border-box;
 }
 
 input[type="text"]:focus,
@@ -55,33 +85,116 @@ input[type="password"]:focus,
 input[type="number"]:focus {
     border-color: #5b9bd5;
     outline: none;
-    background: #eef6fb;
+    background: #232a34;
+}
+
+input[type="checkbox"] {
+    accent-color: #5b9bd5;
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    vertical-align: middle;
 }
 
 input[type="submit"] {
     background: linear-gradient(90deg, #5b9bd5 0%, #4a69bb 100%);
     color: #fff;
     border: none;
-    border-radius: 6px;
-    padding: 12px 0;
-    font-size: 1.1rem;
+    border-radius: 8px;
+    padding: 14px 0;
+    font-size: 1.15rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-    margin-top: 10px;
+    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+    margin-top: 18px;
+    box-shadow: 0 2px 8px #0006;
+    letter-spacing: 0.5px;
 }
 
 input[type="submit"]:hover {
     background: linear-gradient(90deg, #4a69bb 0%, #5b9bd5 100%);
     transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 4px 16px #0008;
 }
 
-@media (max-width: 500px) {
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.tab-btn {
+    background: #181a1f;
+    color: #5b9bd5;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 8px 8px 0 0;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    outline: none;
+    border-bottom: 2px solid transparent;
+}
+
+.tab-btn.active,
+.tab-btn:hover {
+    background: #232323;
+    color: #fafafa;
+    border-bottom: 2px solid #5b9bd5;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@media (max-width: 600px) {
     form {
-        max-width: 95vw;
-        padding: 18px 8vw 16px 8vw;
+        max-width: 98vw;
+        padding: 16px 2vw 12px 2vw;
     }
     h1 {
         font-size: 1.3rem;
     }
+    .settings-section {
+        padding: 10px 6px 6px 10px;
+    }
+}
+
+/* Add to style.css */
+.subtabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+    justify-content: center;
+}
+.subtab-btn {
+    background: #181a1f;
+    color: #5b9bd5;
+    border: none;
+    padding: 8px 22px;
+    border-radius: 8px 8px 0 0;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    outline: none;
+    border-bottom: 2px solid transparent;
+}
+.subtab-btn.active,
+.subtab-btn:hover {
+    background: #232323;
+    color: #fafafa;
+    border-bottom: 2px solid #5b9bd5;
+}
+.subtab-content {
+    display: none;
+}
+.subtab-content.active {
+    display: block;
 }

@@ -9,18 +9,53 @@
 
 <body>
     <h1>Contrib Cal v2 GUI</h1>
-    <form action="/submit" method="post">
-        <h2>General Settings</h2>
-        <label for="github_username">GitHub Username:</label>
-        <input type="text" id="github_username" name="GITHUB_USERNAME" required><br><br>
-
-        <label for="github_token">GitHub Token:</label>
-        <input type="password" id="github_token" name="GITHUB_TOKEN" required><br><br>
-
-        <label for="startup_animation">Startup Animation:</label>
-        <input type="number" id="startup_animation" name="STARTUP_ANIMATION" min="0" required><br><br>
-
-        <input type="submit" value="Save">
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="general">General</button>
+        <button class="tab-btn" data-tab="addons">Add-ons</button>
+    </div>
+    <form id="settingsForm" action="/submit" method="post">
+        <!-- General Tab -->
+        <section class="settings-section tab-content active" id="tab-general">
+            <h2>General Settings</h2>
+            <label for="github_username">GitHub Username:</label>
+            <input type="text" id="github_username" name="GITHUB_USERNAME" ><br><br>
+            <label for="github_token">GitHub Token:</label>
+            <input type="password" id="github_token" name="GITHUB_TOKEN" ><br><br>
+            <label for="startup_animation">Startup Animation:</label>
+            <input type="number" id="startup_animation" name="STARTUP_ANIMATION" min="0" ><br><br>
+        </section>
+        <!-- Add-ons Tab -->
+        <section class="settings-section tab-content" id="tab-addons">
+            <div class="subtabs">
+                <button type="button" class="subtab-btn active" data-subtab="tailscale">Tailscale</button>
+                <button type="button" class="subtab-btn" data-subtab="pihole">Pi-hole</button>
+                <button type="button" class="subtab-btn" data-subtab="gitea">Gitea</button>
+            </div>
+            <div class="subtab-content active" id="subtab-tailscale">
+                <h2>Tailscale Node Setup</h2>
+                <label for="tailscale_enable">Enable Tailscale:</label>
+                <input type="checkbox" id="tailscale_enable" name="TAILSCALE_ENABLE"><br><br>
+                <label for="tailscale_authkey">Tailscale Auth Key:</label>
+                <input type="text" id="tailscale_authkey" name="TAILSCALE_AUTHKEY"><br><br>
+            </div>
+            <div class="subtab-content" id="subtab-pihole">
+                <h2>Pi-hole Setup</h2>
+                <label for="pihole_enable">Install Pi-hole:</label>
+                <input type="checkbox" id="pihole_enable" name="PIHOLE_ENABLE"><br><br>
+                <label for="pihole_webpassword">Web Admin Password:</label>
+                <input type="password" id="pihole_webpassword" name="PIHOLE_WEBPASSWORD"><br><br>
+            </div>
+            <div class="subtab-content" id="subtab-gitea">
+                <h2>Gitea Setup</h2>
+                <label for="gitea_enable">Install Gitea:</label>
+                <input type="checkbox" id="gitea_enable" name="GITEA_ENABLE"><br><br>
+                <label for="gitea_admin_user">Admin Username:</label>
+                <input type="text" id="gitea_admin_user" name="GITEA_ADMIN_USER"><br><br>
+                <label for="gitea_admin_pass">Admin Password:</label>
+                <input type="password" id="gitea_admin_pass" name="GITEA_ADMIN_PASS"><br><br>
+            </div>
+        </section>
+        <input type="submit" value="Save All Settings">
     </form>
     <script src="main.js"></script>
 </body>
