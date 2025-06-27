@@ -1,6 +1,7 @@
 #!/bin/bash
 
-CONFIG_FILE="$(dirname "$0")/config.json"
+CONFIG_FILE="/home/ccaluser/CCal_V2/config.json"
+echo "Starting setup_addons.sh script..."
 
 # Parse config values using jq (install jq if not present)
 if ! command -v jq >/dev/null 2>&1; then
@@ -8,50 +9,35 @@ if ! command -v jq >/dev/null 2>&1; then
     exit 1
 fi
 
+# Ensure script is run as root
+if [ "$EUID" -ne 0 ]; then
+    echo "Please run as root (use: sudo $0)"
+    exit 1
+fi
+
 TAILSCALE_ENABLE=$(jq -r '.TAILSCALE_ENABLE' "$CONFIG_FILE")
-TAILSCALE_AUTHKEY=$(jq -r '.TAILSCALE_AUTHKEY' "$CONFIG_FILE")
 PIHOLE_ENABLE=$(jq -r '.PIHOLE_ENABLE' "$CONFIG_FILE")
-PIHOLE_WEBPASSWORD=$(jq -r '.PIHOLE_WEBPASSWORD' "$CONFIG_FILE")
-GITEA_ENABLE=$(jq -r '.GITEA_ENABLE' "$CONFIG_FILE")
-GITEA_ADMIN_USER=$(jq -r '.GITEA_ADMIN_USER' "$CONFIG_FILE")
-GITEA_ADMIN_PASS=$(jq -r '.GITEA_ADMIN_PASS' "$CONFIG_FILE")
 
-# Tailscale setup
+# Tailscale service management
 if [ "$TAILSCALE_ENABLE" = "true" ]; then
-    echo "Setting up Tailscale..."
-    if ! command -v tailscale >/dev/null 2>&1; then
-        curl -fsSL https://tailscale.com/install.sh | sh
-    fi
-    sudo tailscale up --authkey "$TAILSCALE_AUTHKEY"
+    echo "Enabling and starting tailscaled.service..."
+    systemctl enable --now tailscaled.service
 else
-    echo "Tailscale not enabled."
+    echo "Disabling and stopping tailscaled.service..."
+    systemctl disable --now tailscaled.service
 fi
 
-# Pi-hole setup
+# Pi-hole FTL service management
 if [ "$PIHOLE_ENABLE" = "true" ]; then
-    echo "Setting up Pi-hole..."
-    if ! command -v pihole >/dev/null 2>&1; then
-        curl -sSL https://install.pi-hole.net | bash /dev/stdin --unattended
-    fi
-    if [ -n "$PIHOLE_WEBPASSWORD" ]; then
-        sudo pihole -a -p "$PIHOLE_WEBPASSWORD" "$PIHOLE_WEBPASSWORD"
-    fi
+    echo "Enabling and starting pihole-FTL.service..."
+    systemctl enable --now pihole-FTL.service
 else
-    echo "Pi-hole not enabled."
+    echo "Disabling and stopping pihole-FTL.service..."
+    systemctl disable --now pihole-FTL.service
 fi
 
-# Gitea setup
-if [ "$GITEA_ENABLE" = "true" ]; then
-    echo "Setting up Gitea..."
-    if ! id -u git >/dev/null 2>&1; then
-        sudo adduser --system --group --disabled-password --home /home/git git
-    fi
-    if [ ! -f /usr/local/bin/gitea ]; then
-        wget -O /usr/local/bin/gitea https://dl.gitea.io/gitea/1.21.11/gitea-1.21.11-linux-arm-6
-        chmod +x /usr/local/bin/gitea
-    fi
-    # Add more setup here, such as creating a service or initial admin user
-    echo "Gitea binary installed. Please complete setup via web interface."
-else
-    echo "Gitea not enabled."
-fi
+# Syncthing service management (example: always enable for ccaluser)
+echo "Ensuring syncthing@ccaluser.service is enabled and started..."
+systemctl enable --now syncthing@ccaluser.service
+
+echo "Service management complete."

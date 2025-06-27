@@ -29,7 +29,6 @@
             <div class="subtabs">
                 <button type="button" class="subtab-btn active" data-subtab="tailscale">Tailscale</button>
                 <button type="button" class="subtab-btn" data-subtab="pihole">Pi-hole</button>
-                <button type="button" class="subtab-btn" data-subtab="gitea">Gitea</button>
             </div>
             <div class="subtab-content active" id="subtab-tailscale">
                 <h2>Tailscale Node Setup</h2>
@@ -42,17 +41,6 @@
                 <h2>Pi-hole Setup</h2>
                 <label for="pihole_enable">Install Pi-hole:</label>
                 <input type="checkbox" id="pihole_enable" name="PIHOLE_ENABLE"><br><br>
-                <label for="pihole_webpassword">Web Admin Password:</label>
-                <input type="password" id="pihole_webpassword" name="PIHOLE_WEBPASSWORD"><br><br>
-            </div>
-            <div class="subtab-content" id="subtab-gitea">
-                <h2>Gitea Setup</h2>
-                <label for="gitea_enable">Install Gitea:</label>
-                <input type="checkbox" id="gitea_enable" name="GITEA_ENABLE"><br><br>
-                <label for="gitea_admin_user">Admin Username:</label>
-                <input type="text" id="gitea_admin_user" name="GITEA_ADMIN_USER"><br><br>
-                <label for="gitea_admin_pass">Admin Password:</label>
-                <input type="password" id="gitea_admin_pass" name="GITEA_ADMIN_PASS"><br><br>
             </div>
         </section>
         <input type="submit" value="Save All Settings">

@@ -51,6 +51,43 @@ document.addEventListener('DOMContentLoaded', function () {
             body: data,
         });
         const text = await response.text();
-        document.body.innerHTML = text;
+
+        // Show response in a popup/modal
+        showPopup(text);
     });
+
+    // Simple popup/modal implementation
+    function showPopup(message) {
+        // Remove existing popup if present
+        const existing = document.getElementById('popup-modal');
+        if (existing) existing.remove();
+
+        const modal = document.createElement('div');
+        modal.id = 'popup-modal';
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100vw';
+        modal.style.height = '100vh';
+        modal.style.background = 'rgba(0,0,0,0.6)';
+        modal.style.display = 'flex';
+        modal.style.alignItems = 'center';
+        modal.style.justifyContent = 'center';
+        modal.style.zIndex = '9999';
+
+        const box = document.createElement('div');
+        box.style.background = '#232323';
+        box.style.color = '#fafafa';
+        box.style.padding = '32px 28px';
+        box.style.borderRadius = '12px';
+        box.style.boxShadow = '0 4px 32px #000a';
+        box.style.maxWidth = '90vw';
+        box.style.maxHeight = '80vh';
+        box.style.overflowY = 'auto';
+        box.innerHTML = message;
+
+        box.appendChild(closeBtn);
+        modal.appendChild(box);
+        document.body.appendChild(modal);
+    }
 });
