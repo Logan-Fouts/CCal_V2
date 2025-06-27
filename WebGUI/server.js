@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
+const { exec } = require('child_process');
 
 const app = express();
 const PORT = 3000;
@@ -28,7 +29,18 @@ app.post('/submit', (req, res) => {
             console.error(err);
             return res.status(500).send('Error saving config.');
         }
-        res.send('<h2>Config saved!</h2><a href="/">Back</a>');
+        // Call the shell script to setup addons
+        exec('bash ../setup_addons.sh', (error, stdout, stderr) => {
+            if (error) {
+                console.error(`Setup error: ${error.message}`);
+                return res.status(500).send('Config saved, but error running setup script.');
+            }
+            if (stderr) {
+                console.error(`Setup stderr: ${stderr}`);
+            }
+            console.log(`Setup stdout: ${stdout}`);
+            res.send('<h2>Config saved and add-ons setup!</h2><a href="/">Back</a>');
+        });
     });
 });
 
