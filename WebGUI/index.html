@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="style.css">
+    <title>CCAL v2 GUI</title>
+</head>
+
+<body>
+    <h1>Contrib Cal v2 GUI</h1>
+    <form action="/submit" method="post">
+        <h2>General Settings</h2>
+        <label for="github_username">GitHub Username:</label>
+        <input type="text" id="github_username" name="GITHUB_USERNAME" required><br><br>
+
+        <label for="github_token">GitHub Token:</label>
+        <input type="password" id="github_token" name="GITHUB_TOKEN" required><br><br>
+
+        <label for="startup_animation">Startup Animation:</label>
+        <input type="number" id="startup_animation" name="STARTUP_ANIMATION" min="0" required><br><br>
+
+        <input type="submit" value="Save">
+    </form>
+    <script src="main.js"></script>
+</body>
+
+</html>

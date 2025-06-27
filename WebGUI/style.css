@@ -1,0 +1,87 @@
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding-top: 0;
+    padding-bottom: 25px;
+    min-height: 100vh;
+}
+
+h1 {
+    text-align: center;
+    color: #2d3a4b;
+    margin-top: 40px;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+}
+
+h2 {
+    padding: 0;
+    margin: 0 auto;
+}
+
+form {
+    background: #fff;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 32px 28px 24px 28px;
+    border-radius: 16px;
+    box-shadow: 0 6px 32px rgba(44, 62, 80, 0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+label {
+    font-weight: 500;
+    color: #34495e;
+    margin-bottom: 0;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="number"] {
+    padding: 10px 12px;
+    border: 1px solid #bfc9d1;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: #f8fafc;
+    transition: border 0.2s;
+    margin-bottom: 0;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus {
+    border-color: #5b9bd5;
+    outline: none;
+    background: #eef6fb;
+}
+
+input[type="submit"] {
+    background: linear-gradient(90deg, #5b9bd5 0%, #4a69bb 100%);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 10px;
+}
+
+input[type="submit"]:hover {
+    background: linear-gradient(90deg, #4a69bb 0%, #5b9bd5 100%);
+    transform: translateY(-2px) scale(1.02);
+}
+
+@media (max-width: 500px) {
+    form {
+        max-width: 95vw;
+        padding: 18px 8vw 16px 8vw;
+    }
+    h1 {
+        font-size: 1.3rem;
+    }
+}
