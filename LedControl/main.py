@@ -4,10 +4,10 @@ from github_tracker import GITHUB_TRACKER
 from config_manager import CONFIG_MANAGER
 
 def main():
-    pin_num = 18  # GPIO18 is default for rpi_ws281x
-    num_days = 21
+    pin_num = 18 
+    num_days = 28
     none_color = (255, 255, 255)
-    event_color = (0, 255, 0)
+    event_color = (255, 0, 0)
     
     config_manager = CONFIG_MANAGER()
     config = config_manager.load_config()
