@@ -1,0 +1,11 @@
+[Unit]
+Description=CCal Gui
+
+[Service]
+ExecStart=node /home/ccaluser/CCal_V2/WebGUI/server.js
+User=root
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
