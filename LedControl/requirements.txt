@@ -1,0 +1,4 @@
+requests
+adafruit-blinka
+rpi_ws281x
+neopixel
