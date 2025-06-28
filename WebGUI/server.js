@@ -7,8 +7,22 @@ const { exec } = require('child_process');
 const app = express();
 const PORT = 3000;
 
+app.set('view engine', 'ejs');
+app.set('views', __dirname);
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
+
+app.get('/', (req, res) => {
+    const configPath = path.join(__dirname, '../config.json');
+    let config = {};
+    try {
+        config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    } catch (e) {
+        config = {};
+    }
+    res.render('index', { config });
+});
 
 app.post('/submit', (req, res) => {
     const configPath = path.join(__dirname, '../config.json');

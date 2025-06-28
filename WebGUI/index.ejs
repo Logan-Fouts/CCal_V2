@@ -18,11 +18,11 @@
         <section class="settings-section tab-content active" id="tab-general">
             <h2>General Settings</h2>
             <label for="github_username">GitHub Username:</label>
-            <input type="text" id="github_username" name="GITHUB_USERNAME" ><br><br>
+            <input type="text" id="github_username" name="GITHUB_USERNAME" value="<%= config.GITHUB_USERNAME || '' %>"><br><br>
             <label for="github_token">GitHub Token:</label>
-            <input type="password" id="github_token" name="GITHUB_TOKEN" ><br><br>
+            <input type="password" id="github_token" name="GITHUB_TOKEN" value="<%= config.GITHUB_TOKEN || '' %>"><br><br>
             <label for="startup_animation">Startup Animation:</label>
-            <input type="number" id="startup_animation" name="STARTUP_ANIMATION" min="0" ><br><br>
+            <input type="number" id="startup_animation" name="STARTUP_ANIMATION" min="0" value="<%= config.STARTUP_ANIMATION != null ? config.STARTUP_ANIMATION : '' %>"><br><br>
         </section>
         <!-- Add-ons Tab -->
         <section class="settings-section tab-content" id="tab-addons">
@@ -33,14 +33,14 @@
             <div class="subtab-content active" id="subtab-tailscale">
                 <h2>Tailscale Node Setup</h2>
                 <label for="tailscale_enable">Enable Tailscale:</label>
-                <input type="checkbox" id="tailscale_enable" name="TAILSCALE_ENABLE"><br><br>
+                <input type="checkbox" id="tailscale_enable" name="TAILSCALE_ENABLE" <%= config.TAILSCALE_ENABLE ? 'checked' : '' %>><br><br>
                 <label for="tailscale_authkey">Tailscale Auth Key:</label>
-                <input type="text" id="tailscale_authkey" name="TAILSCALE_AUTHKEY"><br><br>
+                <input type="text" id="tailscale_authkey" name="TAILSCALE_AUTHKEY" value="<%= config.TAILSCALE_AUTHKEY || '' %>"><br><br>
             </div>
             <div class="subtab-content" id="subtab-pihole">
                 <h2>Pi-hole Setup</h2>
                 <label for="pihole_enable">Install Pi-hole:</label>
-                <input type="checkbox" id="pihole_enable" name="PIHOLE_ENABLE"><br><br>
+                <input type="checkbox" id="pihole_enable" name="PIHOLE_ENABLE" <%= config.PIHOLE_ENABLE ? 'checked' : '' %>><br><br>
             </div>
         </section>
         <input type="submit" value="Save All Settings">

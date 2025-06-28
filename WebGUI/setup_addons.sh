@@ -40,4 +40,7 @@ fi
 echo "Ensuring syncthing@ccaluser.service is enabled and started..."
 systemctl enable --now syncthing@ccaluser.service
 
+echo "Restarting ccalpy.service to apply changes..."
+sudo systemctl restart ccalpy.service
+
 echo "Service management complete."
