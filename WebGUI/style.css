@@ -157,19 +157,60 @@ input[type="submit"]:hover {
 }
 
 @media (max-width: 600px) {
+    html, body {
+        min-width: 100vw;
+        width: 100vw;
+        overflow-x: hidden;
+    }
     form {
-        max-width: 98vw;
-        padding: 16px 2vw 12px 2vw;
+        max-width: 100vw;
+        width: 98vw;
+        padding: 10vw 2vw 8vw 2vw;
+        border-radius: 0;
+        box-shadow: none;
+        gap: 18px;
     }
     h1 {
-        font-size: 1.3rem;
+        font-size: 1.1rem;
+        margin-top: 18px;
+        margin-bottom: 18px;
+    }
+    h2 {
+        font-size: 1.05rem;
+        padding-left: 8px;
+        border-left-width: 3px;
     }
     .settings-section {
-        padding: 10px 6px 6px 10px;
+        padding: 8px 2px 4px 4px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+    }
+    label {
+        font-size: 0.98rem;
+        margin-bottom: 2px;
+    }
+    input[type="text"],
+    input[type="password"],
+    input[type="number"] {
+        font-size: 1rem;
+        padding: 10px 8px;
+        margin-bottom: 10px;
+    }
+    input[type="submit"] {
+        font-size: 1rem;
+        padding: 12px 0;
+        margin-top: 12px;
+    }
+    .tabs, .subtabs {
+        flex-direction: column;
+        gap: 4px;
+        margin-bottom: 10px;
     }
     .tab-btn, .subtab-btn {
-        padding: 8px 10px;
-        font-size: 0.98rem;
+        padding: 10px 0;
+        font-size: 1rem;
+        width: 100%;
+        border-radius: 8px 8px 0 0;
     }
 }
 

@@ -31,14 +31,15 @@ fi
 if [ "$PIHOLE_ENABLE" = "true" ]; then
     echo "Enabling and starting pihole-FTL.service..."
     systemctl enable --now pihole-FTL.service
+    systemctl disable --now dnsmasq
 else
     echo "Disabling and stopping pihole-FTL.service..."
     systemctl disable --now pihole-FTL.service
 fi
 
 # Syncthing service management (example: always enable for ccaluser)
-echo "Ensuring syncthing@ccaluser.service is enabled and started..."
-systemctl enable --now syncthing@ccaluser.service
+# echo "Ensuring syncthing@ccaluser.service is enabled and started..."
+# systemctl enable --now syncthing@ccaluser.service
 
 echo "Restarting ccalpy.service to apply changes..."
 sudo systemctl stop ccalpy.service

@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>CCAL v2 GUI</title>
 </head>
@@ -35,7 +36,7 @@
                 <label for="tailscale_enable">Enable Tailscale:</label>
                 <input type="checkbox" id="tailscale_enable" name="TAILSCALE_ENABLE" <%= config.TAILSCALE_ENABLE ? 'checked' : '' %>><br><br>
                 <label for="tailscale_authkey">Tailscale Auth Key:</label>
-                <input type="text" id="tailscale_authkey" name="TAILSCALE_AUTHKEY" value="<%= config.TAILSCALE_AUTHKEY || '' %>"><br><br>
+                <input type="password" id="tailscale_authkey" name="TAILSCALE_AUTHKEY" value="<%= config.TAILSCALE_AUTHKEY || '' %>"><br><br>
             </div>
             <div class="subtab-content" id="subtab-pihole">
                 <h2>Pi-hole Setup</h2>

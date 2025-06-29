@@ -63,7 +63,7 @@ app.post('/submit', (req, res) => {
             return res.status(500).send('Error saving config.');
         }
         // Call the shell script to setup addons
-        exec('sudo bash setup_addons.sh', (error, stdout, stderr) => {
+        exec('sudo bash /home/ccaluser/CCal_V2/WebGUI/setup_addons.sh', (error, stdout, stderr) => {
             if (error) {
                 console.error(`Setup error: ${error.message}`);
                 return res.status(500).send('Config saved, but error running setup script.');
