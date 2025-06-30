@@ -22,9 +22,11 @@ PIHOLE_ENABLE=$(jq -r '.PIHOLE_ENABLE' "$CONFIG_FILE")
 if [ "$TAILSCALE_ENABLE" = "true" ]; then
     echo "Enabling and starting tailscaled.service..."
     systemctl enable --now tailscaled.service
+    sudo tailscale up
 else
     echo "Disabling and stopping tailscaled.service..."
     systemctl disable --now tailscaled.service
+    sudo tailscale down
 fi
 
 # Pi-hole FTL service management
