@@ -1,9 +1,10 @@
 #!/bin/bash
 
 echo "Setting up CCal_V2..."
+sudo apt install git
 
 # Clone the repository
-clone https://github.com/Logan-Fouts/CCal_V2.git
+git clone https://github.com/Logan-Fouts/CCal_V2.git
 
 # Install npm dependencies
 cd CCal_V2/WebGUI
