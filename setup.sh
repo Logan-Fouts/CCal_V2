@@ -12,7 +12,8 @@ npm install
 
 # Install Python dependencies
 cd ../LedControl
-pip install --break-system-packages -r requirements.txt
+sudo apt install python3-pip
+pip install -r requirements.txt
 
 # Copy systemd service files
 sudo cp ../SystemdServices/ccalpy.service /etc/systemd/system/ccalpy.service
