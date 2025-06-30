@@ -9,6 +9,9 @@ sudo apt update
 sudo apt upgrade -y
 sudo apt install -y git nodejs npm portaudio19-dev python3-pip jq
 
+curl -fsSL https://tailscale.com/install.sh | sh
+curl -sSL https://install.pi-hole.net | bash
+
 # Verify Node.js installation (node package might be nodejs-legacy on some systems)
 if ! command -v node &> /dev/null; then
     sudo apt install -y nodejs-legacy
