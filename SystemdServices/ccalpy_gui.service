@@ -2,7 +2,7 @@
 Description=CCal Gui
 
 [Service]
-ExecStart=node /home/ccaluser/CCal_V2/WebGUI/server.js
+ExecStart=node /home/ccalv2/CCal_V2/WebGUI/server.js
 User=root
 Restart=on-failure
 
