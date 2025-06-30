@@ -2,7 +2,7 @@ import json
 
 class CONFIG_MANAGER:
     def __init__(self):
-        self.CONFIG_FILE = "/home/ccaluser/CCal_V2/config.json"
+        self.CONFIG_FILE = "/home/ccalv2/CCal_V2/config.json"
 
     def load_config(self):
         try:
