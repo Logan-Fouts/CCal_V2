@@ -2,7 +2,7 @@
 Description=CCal Python Script
 
 [Service]
-ExecStart=/usr/bin/python3 /home/ccaluser/CCal_V2/LedControl/main.py
+ExecStart=/usr/bin/python3 /home/ccalv2/CCal_V2/LedControl/main.py
 User=root
 Restart=on-failure
 
