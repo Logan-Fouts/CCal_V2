@@ -1,7 +1,10 @@
 #!/bin/bash
 
 echo "Setting up CCal_V2..."
+sudo apt update
+sudo apt upgrade -y
 sudo apt install git
+sudo apt-get install portaudio19-dev
 
 # Clone the repository
 git clone https://github.com/Logan-Fouts/CCal_V2.git
