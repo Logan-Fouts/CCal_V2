@@ -7,7 +7,7 @@ echo "=== Setting up CCal_V2 ==="
 echo "Updating system and installing dependencies..."
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y git nodejs npm portaudio19-dev python3-pip
+sudo apt install -y git nodejs npm portaudio19-dev python3-pip jq
 
 # Verify Node.js installation (node package might be nodejs-legacy on some systems)
 if ! command -v node &> /dev/null; then
@@ -24,7 +24,7 @@ fi
 
 # Install WebGUI dependencies
 echo "Installing WebGUI dependencies..."
-cd CCal_V2/WebGUI && npm install && cd -
+cd CCal_V2/WebGUI && npm install express@4.17.1 body-parser@1.19.0 ejs@3.1.6 && cd -
 
 # Install Python dependencies
 echo "Installing Python dependencies..."
