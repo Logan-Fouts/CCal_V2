@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CONFIG_FILE="/home/ccaluser/CCal_V2/config.json"
+CONFIG_FILE="/home/ccalv2/CCal_V2/config.json"
 echo "Starting setup_addons.sh script..."
 
 # Parse config values using jq (install jq if not present)
