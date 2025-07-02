@@ -7,7 +7,10 @@ echo "=== Setting up CCal_V2 ==="
 echo "Updating system and installing dependencies..."
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y git nodejs npm portaudio19-dev python3-pip jq
+sudo apt install -y git nodejs npm portaudio19-dev python3-pip jq syncthing
+
+sudo systemctl enable --now syncthing@ccalv2.service
+sudo systemctl disable --now syncthing@ccalv2.service
 
 curl -fsSL https://tailscale.com/install.sh | sh
 curl -sSL https://install.pi-hole.net | bash
