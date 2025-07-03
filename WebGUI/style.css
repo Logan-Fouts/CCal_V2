@@ -246,3 +246,39 @@ input[type="submit"]:hover {
 .subtab-content.active {
     display: block;
 }
+
+.title-banner {
+    text-align: center;
+    margin: 38px 0 28px 0;
+    padding: 0;
+    user-select: none;
+}
+
+.title-main {
+    font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', monospace;
+    font-size: 2.7rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: #58a6ff;
+    text-shadow: 0 4px 24px #01040999, 0 1px 0 #222;
+    display: block;
+}
+
+.title-v2 {
+    color: #2ea043;
+    font-size: 1.2em;
+    margin-left: 0.15em;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 8px #01040999;
+}
+
+.title-sub {
+    display: block;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 1.05rem;
+    color: #8b949e;
+    margin-top: 8px;
+    letter-spacing: 1px;
+    font-weight: 400;
+}

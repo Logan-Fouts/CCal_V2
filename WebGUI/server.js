@@ -66,6 +66,7 @@ app.post('/submit', (req, res, next) => {
     newConfig.TAILSCALE_ENABLE = req.body.TAILSCALE_ENABLE === 'on';
     newConfig.TAILSCALE_AUTHKEY = req.body.TAILSCALE_AUTHKEY || '';
     newConfig.PIHOLE_ENABLE = req.body.PIHOLE_ENABLE === 'on';
+    newConfig.SYNCTHING_ENABLE = req.body.SYNCTHING_ENABLE === 'on';
 
     // Write the config file
     fs.writeFile(configPath, JSON.stringify(newConfig, null, 2), (err) => {

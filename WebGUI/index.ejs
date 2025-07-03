@@ -9,7 +9,10 @@
 </head>
 
 <body>
-    <h1>Contrib Cal v2 GUI</h1>
+    <div class="title-banner">
+        <span class="title-main">CCal<span class="title-v2">v2</span></span>
+        <span class="title-sub">Contribution Calendar Control Panel</span>
+    </div>
     <div class="tabs">
         <button class="tab-btn active" data-tab="general">General</button>
         <button class="tab-btn" data-tab="addons">Add-ons</button>
@@ -30,6 +33,7 @@
             <div class="subtabs">
                 <button type="button" class="subtab-btn active" data-subtab="tailscale">Tailscale</button>
                 <button type="button" class="subtab-btn" data-subtab="pihole">Pi-hole</button>
+                <button type="button" class="subtab-btn" data-subtab="syncthing">Syncthing</button>
             </div>
             <div class="subtab-content active" id="subtab-tailscale">
                 <h2>Tailscale Node Setup</h2>
@@ -42,6 +46,11 @@
                 <h2>Pi-hole Setup</h2>
                 <label for="pihole_enable">Install Pi-hole:</label>
                 <input type="checkbox" id="pihole_enable" name="PIHOLE_ENABLE" <%= config.PIHOLE_ENABLE ? 'checked' : '' %>><br><br>
+            </div>
+            <div class="subtab-content" id="subtab-syncthing">
+                <h2>Syncthing Setup</h2>
+                <label for="syncthing_enable">Enable Syncthing:</label>
+                <input type="checkbox" id="syncthing_enable" name="SYNCTHING_ENABLE" <%= config.SYNCTHING_ENABLE ? 'checked' : '' %>><br><br>
             </div>
         </section>
         <input type="submit" value="Save All Settings">
