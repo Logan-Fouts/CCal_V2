@@ -22,7 +22,8 @@ PIHOLE_ENABLE=$(jq -r '.PIHOLE_ENABLE' "$CONFIG_FILE")
 if [ "$TAILSCALE_ENABLE" = "true" ]; then
     echo "Enabling and starting tailscaled.service..."
     systemctl enable --now tailscaled.service
-    TAILSCALE_UP_OUTPUT=$(sudo tailscale up 2>&1)
+    TAILSCALE_UP_OUTPUT=$(sudo tailscale login 2>&1)
+    sudo tailscale up
 else
     echo "Disabling and stopping tailscaled.service..."
     systemctl disable --now tailscaled.service
@@ -54,8 +55,6 @@ echo "Restarting ccalpy.service to apply changes..."
 sudo systemctl stop ccalpy.service
 sudo systemctl start ccalpy.service
 
-
-# ...existing code...
 
 BASHRC="/home/ccalv2/.bashrc"
 
