@@ -22,7 +22,7 @@ PIHOLE_ENABLE=$(jq -r '.PIHOLE_ENABLE' "$CONFIG_FILE")
 if [ "$TAILSCALE_ENABLE" = "true" ]; then
     echo "Enabling and starting tailscaled.service..."
     systemctl enable --now tailscaled.service
-    sudo tailscale up
+    TAILSCALE_UP_OUTPUT=$(sudo tailscale up 2>&1)
 else
     echo "Disabling and stopping tailscaled.service..."
     systemctl disable --now tailscaled.service
@@ -68,8 +68,8 @@ INFO_BLOCK="# === CCal_V2 Service Info ===\n"
 ANY_ENABLED=false
 
 if [ "$TAILSCALE_ENABLE" = "true" ]; then
-    TAILSCALE_IP=$(hostname -I | awk '{print $1}')
-    INFO_BLOCK+="echo -e \"\033[1;36mTailscale is ENABLED. Access this device via Tailscale IP: \033[1;33m\$TAILSCALE_IP\033[0m\"\n"
+    INFO_BLOCK+="echo -e \"\033[1;36mTailscale is ENABLED. Output from 'tailscale up':\033[0m\"\n"
+    INFO_BLOCK+="echo -e \"\033[1;33m$(echo "$TAILSCALE_UP_OUTPUT" | sed 's/"/\\"/g')\033[0m\"\n"
     ANY_ENABLED=true
 fi
 

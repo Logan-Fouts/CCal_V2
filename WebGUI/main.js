@@ -45,6 +45,9 @@ document.addEventListener('DOMContentLoaded', function () {
             generalFields.forEach(field => formData.delete(field));
         }
 
+        // Show "Updating..." popup
+        showPopup("Updating CCal settings...");
+
         const data = new URLSearchParams(formData);
         const response = await fetch('/submit', {
             method: 'POST',
@@ -85,6 +88,17 @@ document.addEventListener('DOMContentLoaded', function () {
         box.style.maxHeight = '80vh';
         box.style.overflowY = 'auto';
         box.innerHTML = message;
+
+        const closeBtn = document.createElement('button');
+        closeBtn.innerText = 'Close';
+        closeBtn.style.marginTop = '16px';
+        closeBtn.style.padding = '10px 20px';
+        closeBtn.style.background = '#fa5252';
+        closeBtn.style.color = '#fff';
+        closeBtn.style.border = 'none';
+        closeBtn.style.borderRadius = '8px';
+        closeBtn.style.cursor = 'pointer';
+        closeBtn.addEventListener('click', () => modal.remove());
 
         box.appendChild(closeBtn);
         modal.appendChild(box);
