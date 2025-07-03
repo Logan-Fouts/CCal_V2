@@ -22,8 +22,12 @@ PIHOLE_ENABLE=$(jq -r '.PIHOLE_ENABLE' "$CONFIG_FILE")
 if [ "$TAILSCALE_ENABLE" = "true" ]; then
     echo "Enabling and starting tailscaled.service..."
     systemctl enable --now tailscaled.service
-    TAILSCALE_UP_OUTPUT=$(sudo tailscale login 2>&1)
-    sudo tailscale up
+    # Try to bring up tailscale non-interactively, but do not block if not logged in
+    if sudo tailscale status &>/dev/null; then
+        sudo tailscale up
+    else
+        TAILSCALE_UP_OUTPUT="Tailscale is not logged in. Please run 'sudo tailscale up' manually to authenticate."
+    fi
 else
     echo "Disabling and stopping tailscaled.service..."
     systemctl disable --now tailscaled.service
@@ -66,7 +70,7 @@ INFO_BLOCK="# === CCal_V2 Service Info ===\n"
 ANY_ENABLED=false
 
 if [ "$TAILSCALE_ENABLE" = "true" ]; then
-    INFO_BLOCK+="echo -e \"\033[1;36mTailscale is ENABLED. Output from 'tailscale up':\033[0m\"\n"
+    INFO_BLOCK+="echo -e \"\033[1;36mTailscale is ENABLED.'tailscale up':\033[0m\"\n"
     INFO_BLOCK+="echo -e \"\033[1;33m$(echo "$TAILSCALE_UP_OUTPUT" | sed 's/"/\\"/g')\033[0m\"\n"
     ANY_ENABLED=true
 fi
