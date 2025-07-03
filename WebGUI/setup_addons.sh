@@ -77,7 +77,7 @@ fi
 
 if [ "$PIHOLE_ENABLE" = "true" ]; then
     INFO_BLOCK+="\necho -e \"  \033[1;36mPi-hole:\033[0m   \033[1;32mENABLED\033[0m\""
-    INFO_BLOCK+="\necho -e \"    \033[1;33mWeb UI: http://localhost/admin\033[0m\""
+    INFO_BLOCK+="\necho -e \"    \033[1;33mWeb UI: http://<ip>/admin\033[0m\""
     ANY_ENABLED=true
 fi
 
