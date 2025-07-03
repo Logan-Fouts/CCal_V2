@@ -39,13 +39,12 @@ else
     systemctl disable --now pihole-FTL.service
 fi
 
-# Syncthing service management (example: always enable for ccaluser)
-
-
 # Syncthing service management
 if [ "$SYNCTHING_ENABLE" = "true" ]; then
     echo "Enabling and starting syncthingservice..."
     systemctl enable --now syncthing@ccalv2.service
+    CONFIG_PATH="/home/ccalv2/.config/syncthing/config.xml"
+    sed -i 's|<address>127.0.0.1:8384</address>|<address>0.0.0.0:8384</address>|' "$CONFIG_PATH"
 else
     echo "Disabling and stopping syncthing service..."
     systemctl disable --now syncthing@ccalv2.service
