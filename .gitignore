@@ -1,4 +1,5 @@
 .stfolder
+.stignore
 .stversions
 node_modules
 package-lock.json
