@@ -68,3 +68,37 @@ class GITHUB_TRACKER:
         print("Event counts:", event_counts)
         return event_counts
 
+    def print_new_events(self):
+        config = self.config_manager.load_config()
+        last_event_id = config.get("LAST_EVENT_ID")
+        url = f"https://api.github.com/users/{config['GITHUB_USERNAME']}/events?per_page=10"
+        headers = {
+            "Authorization": f"Bearer {config['GITHUB_TOKEN']}",
+            "User-Agent": "PiZero"
+        }
+        try:
+            response = requests.get(url, headers=headers)
+            if response.status_code != 200:
+                print(f"API Error {response.status_code}: {response.text[:200]}")
+                return False
+            events = response.json()
+            new_events = []
+            for event in events:
+                if event["id"] == last_event_id:
+                    break
+                new_events.append(event)
+            if new_events:
+                print(f"New GitHub events ({len(new_events)}):")
+                for event in reversed(new_events):
+                    print(f"- [{event['type']}] {event.get('repo', {}).get('name', '')} at {event['created_at']}")
+                # Update last seen event ID
+                config["LAST_EVENT_ID"] = events[0]["id"]
+                self.config_manager.save_config(config)
+                return True
+            else:
+                print("No new GitHub events.")
+                return False
+        except Exception as e:
+            print(f"Failed to fetch events: {e}")
+            return False
+

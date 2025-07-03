@@ -47,6 +47,7 @@ fi
 if [ "$SYNCTHING_ENABLE" = "true" ]; then
     echo "Enabling and starting syncthingservice..."
     systemctl enable --now syncthing@ccalv2.service
+    systemctl start syncthing@ccalv2.service
 else
     echo "Disabling and stopping syncthing service..."
     systemctl disable --now syncthing@ccalv2.service
@@ -68,10 +69,13 @@ INFO_BLOCK+="\necho -e \"  \033[1;36m🚦 CCal_V2 Service Status:\033[0m\""
 INFO_BLOCK+="\necho -e \"\033[1;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\""
 
 ANY_ENABLED=false
-
 if [ "$TAILSCALE_ENABLE" = "true" ]; then
     INFO_BLOCK+="\necho -e \"  \033[1;36mTailscale:\033[0m \033[1;32mENABLED\033[0m\""
-    INFO_BLOCK+="\necho -e \"    \033[1;33m$(echo "$TAILSCALE_UP_OUTPUT" | sed 's/"/\\"/g')\033[0m\""
+    if [ -n "$TAILSCALE_UP_OUTPUT" ]; then
+        INFO_BLOCK+="\necho -e \"    \033[1;33m$(echo "$TAILSCALE_UP_OUTPUT" | sed 's/"/\\"/g')\033[0m\""
+    else
+        INFO_BLOCK+="\necho -e \"    \033[1;33mManage Tailscale: sudo tailscale web\033[0m\""
+    fi
     ANY_ENABLED=true
 fi
 

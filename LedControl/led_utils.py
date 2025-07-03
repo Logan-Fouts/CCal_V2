@@ -120,3 +120,45 @@ class LED_UTILS:
             self.strip.show()
             time.sleep(wait)
         self.turn_all_off()
+    def flash(self):
+            """Cooler, dimmer flash animation: soft pulse, then a pastel color wave with fading tail."""
+            # Soft white pulse
+            for _ in range(2):
+                self.fill((180, 180, 180), 8)
+                time.sleep(0.10)
+                self.turn_all_off()
+                time.sleep(0.07)
+            # Pastel color wave with fading tail, row by row, zigzag order
+            pastel_colors = [
+                (120, 180, 255), (180, 255, 200), (255, 180, 220),
+                (200, 120, 255), (255, 240, 180), (180, 255, 255)
+            ]
+            num_rows = 4
+            num_cols = 7
+            fade_steps = 4
+            for color in pastel_colors:
+                for row in range(num_rows):
+                    # Zigzag wiring
+                    if row % 2 == 0:
+                        indices = list(range(num_cols * row, num_cols * (row + 1)))
+                    else:
+                        indices = list(range(num_cols * (row + 1) - 1, num_cols * row - 1, -1))
+                    # Wave with fading tail
+                    for idx, i in enumerate(indices):
+                        if i < self.num_leds:
+                            # Fade tail: previous LEDs get dimmer
+                            for tail in range(fade_steps):
+                                tail_idx = idx - tail
+                                if tail_idx >= 0:
+                                    led = indices[tail_idx]
+                                    fade = max(0.15, 0.5 - 0.1 * tail)
+                                    faded_color = tuple(int(c * fade) for c in color)
+                                    self.strip[led] = faded_color
+                            self.strip.show()
+                            time.sleep(0.03)
+                    # Clear row after wave
+                    for i in indices:
+                        if i < self.num_leds:
+                            self.strip[i] = (0, 0, 0)
+                    self.strip.show()
+            self.turn_all_off()
