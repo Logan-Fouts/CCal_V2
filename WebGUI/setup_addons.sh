@@ -22,7 +22,6 @@ PIHOLE_ENABLE=$(jq -r '.PIHOLE_ENABLE' "$CONFIG_FILE")
 if [ "$TAILSCALE_ENABLE" = "true" ]; then
     echo "Enabling and starting tailscaled.service..."
     systemctl enable --now tailscaled.service
-    # Try to bring up tailscale non-interactively, but do not block if not logged in
     if sudo tailscale status &>/dev/null; then
         sudo tailscale up
     else
@@ -48,8 +47,6 @@ fi
 if [ "$SYNCTHING_ENABLE" = "true" ]; then
     echo "Enabling and starting syncthingservice..."
     systemctl enable --now syncthing@ccalv2.service
-    CONFIG_PATH="/home/ccalv2/.config/syncthing/config.xml"
-    sed -i 's|<address>127.0.0.1:8384</address>|<address>0.0.0.0:8384</address>|' "$CONFIG_PATH"
 else
     echo "Disabling and stopping syncthing service..."
     systemctl disable --now syncthing@ccalv2.service
@@ -88,6 +85,7 @@ SYNCTHING_ENABLE=$(jq -r '.SYNCTHING_ENABLE' "$CONFIG_FILE")
 if [ "$SYNCTHING_ENABLE" = "true" ]; then
     INFO_BLOCK+="\necho -e \"  \033[1;36mSyncthing:\033[0m \033[1;32mENABLED\033[0m\""
     INFO_BLOCK+="\necho -e \"    \033[1;33mWeb UI: http://localhost:8384\033[0m\""
+    INFO_BLOCK+="\necho -e \"    \033[1;33mRemote: ssh -L 8385:localhost:8384 ccalv2@<ip> (then visit http://localhost:8385)\033[0m\""
     ANY_ENABLED=true
 fi
 
