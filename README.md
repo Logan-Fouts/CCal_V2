@@ -1,83 +1,91 @@
 # Contrib Cal v2
 
-Contrib Cal v2 is a customizable, hackable contribution tracking device powered by a Raspberry Pi Zero W. It visualizes your GitHub activity with real-time LED feedback and integrates with various services for enhanced functionality.
+**Contrib Cal v2** is a customizable, hackable contribution tracker powered by a Raspberry Pi Zero W. Visualize your GitHub activity in real time with vibrant LEDs, and unlock a suite of features for makers, coders, and tinkerers.
 
 ---
 
-## Why PCBWay?
+## ✨ Why PCBWay?
 
 🤝 **Sponsored by PCBWay**
 
 - **Quality:** Crystal-clear silkscreen and precise tolerances for perfect fits.
-- **Fast:** Quick turnaround from design to doorstep.
-- **Affordable:** Great for makers and small-batch projects.
+- **Fast:** Rapid turnaround from design to doorstep.
+- **Affordable:** Ideal for makers and small-batch projects.
 - **Global Shipping:** Reliable delivery worldwide.
 
 Professional PCB manufacturing makes all the difference for clean builds.
 
 Want your own PCBs made? PCBWay offers high-quality PCB fabrication and 3D printing so you can build your own from scratch!  
-Get started: [Go to PCBWay.com](https://pcbway.com) and upload your Gerber files.
+[Get started at PCBWay.com](https://pcbway.com) — just upload your Gerber files.
 
 ---
 
-## Features
+## 🚀 Features
 
-- **Real GitHub Sync:** Visualize your GitHub activity with real-time LED feedback via the GitHub API.
-- **Guilt Mode:** LEDs glow red when you miss commits.
-- **Tailscale Integration:** Operate as a Tailscale node for secure remote access.
-- **Git Webhooks:** LEDs blink on commit, push, or other repository events.
+- **Real GitHub Sync:** Instantly visualize your GitHub activity with LED feedback via the GitHub API.
+- **Event Alerts:** LEDs flash when new GitHub events are detected.
+- **Tailscale Integration:** Secure remote access as a Tailscale node.
+- **Syncthing Server:** Host a Syncthing node for seamless file sync.
 - **Pi-hole Support:** Optionally run Pi-hole for network-wide ad blocking.
 - **100% Hackable:** Customize animations and logic in Python.
-- **Beginner-Friendly:** Program with Thonny IDE (no toolchains needed).
-- **DIY Build:** 3D-printable case & hand-solderable LED matrix.
+- **DIY Build:** 3D-printable case & solder-free LED matrix, or use the custom PCB.
+- **Guilt Mode:** LEDs glow red when you miss commits.
+- **Web Interface:** Manage settings and addons from your browser.
 
 ---
 
-## Web Interface
+## 🖥️ Web Interface
 
-- **LED and Addons Control:** Manage LED settings and enable addons through a web interface built with plain HTML, CSS, and JavaScript, served by an Apache web server.
+- **LED & Addon Control:** Easily manage CCal v2 settings and enable/disable features through a simple web UI.
 
 ---
 
-## Quick Start
+## ⚡ Quick Start
 
-1. **Install Thonny** (Python IDE for beginners)
-2. **Connect your Raspberry Pi Zero W** via USB or network
-3. **Clone the repo** and open `/src/main.py` in Thonny
-4. **Run and configure:**  
-	- Save `main.py` and `config.json` to your device
-	- Edit `config.json` with your WiFi and GitHub credentials
+Want to build your own?  
+1. Flash a Pi Zero W with Raspbian.
+2. Download the `setup.sh` script.
+3. Make it executable:  
+   `sudo chmod +x setup.sh`
+4. Run the script:  
+   `sudo ./setup.sh`
 
+**Example `config.json`:**
 ```json
 {
-  "WIFI_SSID": "*",
-  "WIFI_PASSWORD": "*",
   "GITHUB_USERNAME": "*",
   "GITHUB_TOKEN": "*",
-  "STARTUP_ANIMATION": 3
+  "STARTUP_ANIMATION": 3,
+  "TAILSCALE_ENABLE": false,
+  "TAILSCALE_AUTHKEY": "*",
+  "PIHOLE_ENABLE": false,
+  "SYNCTHING_ENABLE": false,
+  "LAST_EVENT_ID": "*"
 }
 ```
 
 ---
 
-## Build Guide
+## 🛠️ Build Guide
 
-**You'll Need:**
+**You’ll Need:**
 - Raspberry Pi Zero W
-- WS2812B NeoPixels (28+)
+- WS2812B NeoPixels (28+ recommended)
+- Optional: Custom PCB for easy assembly
 - 3D-printed case
 - Micro-USB cable
 - Soldering tools
 
 ---
 
-## Tech Stack
+## 🧑‍💻 Tech Stack
 
 - Python
-- HTML
-- CSS
-- JavaScript
+- HTML / CSS / JavaScript
 
 ---
 
-Contrib Cal v2 makes your coding contributions visible and interactive. Contributions welcome!
+Contrib Cal v2 makes your coding contributions visible and interactive.  
+**Pull requests and contributions are always welcome!**
+
+---
