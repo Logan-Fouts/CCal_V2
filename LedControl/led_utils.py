@@ -6,8 +6,6 @@ import math
 import random
 from collections import deque
 
-
-
 class LED_UTILS:
     def __init__(self, num_days=7, animation=3, none_color=(255, 0, 0), event_color=(0, 255, 0), pin_num=18):
         self.num_leds = num_days
@@ -15,7 +13,6 @@ class LED_UTILS:
         self.none_color = none_color
         self.event_color = event_color
 
-        # Map pin_num to board pin
         if pin_num == 18:
             gpio_pin = board.D18
         else:
@@ -29,7 +26,7 @@ class LED_UTILS:
             pixel_order=neopixel.GRB
         )
         self.turn_all_off()
-        # self.startup_animation()
+        self.startup_animation()
         self.turn_all_off()
 
     def set_led(self, led_index, color, brightness=50):
@@ -49,19 +46,35 @@ class LED_UTILS:
         self.strip.show()
 
     def update_leds(self, event_counts):
-        max_count = max(event_counts) if event_counts else 1
-        current_time = time.localtime()
+        """Update LEDs based on event counts with optimized performance."""
+        if not event_counts:
+            return
+        
+        max_count = max(event_counts)
+        if max_count == 0:
+            for day in range(min(self.num_leds, len(event_counts))):
+                self.set_led(day, self.none_color, 5)
+            self.strip.show()
+            return
+        
+        current_hour = time.localtime().tm_hour
+        is_night = current_hour >= 22 or current_hour <= 8
+        max_brightness = 10 if is_night else 80
+        
+        updates = []
         for day in range(min(self.num_leds, len(event_counts))):
             count = event_counts[day]
             if count > 0:
-                if current_time.tm_hour >= 22 or current_time.tm_hour <= 8:
-                    brightness = 1 + int(10 * (count / max_count))
-                else:
-                    brightness = 1 + int(80 * (count / max_count))
-                self.set_led(day, self.event_color, brightness)
+                brightness = 1 + int(max_brightness * (count / max_count))
+                updates.append((day, self.event_color, brightness))
             else:
-                self.set_led(day, self.none_color, 5)
-            time.sleep(0.05)
+                updates.append((day, self.none_color, 5))
+        
+        # Apply all updates at once
+        for day, color, brightness in updates:
+            self.set_led(day, color, brightness)
+        
+        self.strip.show()
 
     def _dim(self, color, factor=0.2):
         """Return a color tuple dimmed by the given factor (0.0 - 1.0)."""
@@ -79,7 +92,6 @@ class LED_UTILS:
         elif self.animation == 3:
             self.rainbow_cycle(0.01, brightness=0.2)
         else:
-            # Default: simple cycle
             for color in [(255,0,0), (0,255,0), (0,0,255)]:
                 self.fill(dim(color), 30)
                 time.sleep(0.5)
@@ -207,9 +219,9 @@ class LED_UTILS:
     def sun_animation_loop(self, end_time, base_brightness=100):
         """Continuous sun animation until end_time with brightness scaling"""
         colors = [
-            (255, 255, 0),   # Bright yellow
-            (255, 255, 50),  # Warm yellow
-            (255, 255, 20)   # Golden yellow
+            (255, 255, 0),
+            (255, 255, 50),
+            (255, 255, 20)
         ]
         ray_pattern = [0, 1, 2] * ((self.num_leds // 3) + 1)
         
@@ -217,12 +229,10 @@ class LED_UTILS:
         
         while time.time() < end_time:
             cycle_time = time.time()
-            cycle_progress = (cycle_time % 2) / 2  # 2-second cycle
+            cycle_progress = (cycle_time % 2) / 2
             
-            # Pulsing core brightness (scaled by brightness_scale)
             core_brightness = int((30 + int(70 * (0.5 + 0.5 * math.sin(cycle_progress * math.pi)))) * brightness_scale)
             
-            # Radiating effect
             wave_pos = int(cycle_progress * 3) % 3
             for i in range(self.num_leds):
                 dist_from_center = abs(i - self.num_leds//2)
@@ -237,9 +247,9 @@ class LED_UTILS:
     def cloud_animation_loop(self, end_time, base_brightness=100):
         """Continuous cloud animation until end_time with brightness scaling"""
         cloud_colors = [
-            (180, 180, 200),  # Light gray-blue
-            (150, 150, 180),  # Medium gray-blue
-            (120, 120, 150)   # Dark gray-blue
+            (180, 180, 200),
+            (150, 150, 180),
+            (120, 120, 150)
         ]
         
         brightness_scale = base_brightness / 100.0
@@ -262,9 +272,9 @@ class LED_UTILS:
     def rain_animation_loop(self, end_time, speed=1.0, drop_chance=0.4, base_brightness=100):
         """Continuous rain animation until end_time with brightness scaling"""
         rain_colors = [
-            (100, 0, 50),    # Light blue
-            (150, 0, 80),    # Medium blue
-            (200, 0, 120)    # Deep blue
+            (100, 0, 50),
+            (150, 0, 80),
+            (200, 0, 120)
         ]
         brightness_scale = base_brightness / 100.0
         rows = 4
@@ -301,9 +311,9 @@ class LED_UTILS:
     def snow_animation_loop(self, end_time, speed=0.5, drop_chance=0.3, base_brightness=100):
         """Continuous snow animation until end_time with brightness scaling"""
         snow_colors = [
-            (180, 50, 150),   # Soft icy blue
-            (220, 80, 200),   # Frosty medium blue
-            (255, 120, 230)   # Glacial deep blue
+            (180, 50, 150),
+            (220, 80, 200),
+            (255, 120, 230)
         ]
         brightness_scale = base_brightness / 100.0
         rows = 4

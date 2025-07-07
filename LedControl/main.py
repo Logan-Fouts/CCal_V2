@@ -26,9 +26,9 @@ def main():
     
         end_time = time.time() + poll_time
         while time.time() < end_time:
-            leds.update_leds(event_counts)
             time.sleep(55)
             leds.show_weather(weather_tracker.get_weather(), duration_sec=5, base_brightness=30)
+            leds.update_leds(event_counts)
 
 if __name__ == "__main__":
     main()
