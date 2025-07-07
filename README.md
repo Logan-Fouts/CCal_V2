@@ -89,3 +89,8 @@ Contrib Cal v2 makes your coding contributions visible and interactive.
 **Pull requests and contributions are always welcome!**
 
 ---
+
+
+## Feature to come
+- Ambient Weather Mode
+- API
