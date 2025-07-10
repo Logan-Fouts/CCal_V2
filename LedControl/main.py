@@ -15,19 +15,20 @@ def main():
     leds = LED_UTILS(num_days, config.get('STARTUP_ANIMATION', 0), none_color, event_color, pin_num)
     gh_tracker = GITHUB_TRACKER(num_days)
 
-    weather_tracker = WEATHER_TRACKER(config.get('OPENWEATHERMAP_API_KEY'), config.get('WEATHER_LAT', 40.71), config.get('WEATHER_LON', -74.01))
+    weather_tracker = WEATHER_TRACKER(config.get('OPENWEATHERMAP_API_KEY'), config.get('WEATHER_LAT', 40.71), config.get('WEATHER_LON', -74.01)) # TODO: Remove magic numbers
 
 
     while True:
         event_counts = gh_tracker.fetch_github_events()
         leds.update_leds(event_counts)
-        if gh_tracker.print_new_events():
-            leds.flash()
+        weather_status = weather_tracker.get_weather()
+        # if gh_tracker.print_new_events():
+        #     leds.flash()
     
         end_time = time.time() + poll_time
         while time.time() < end_time:
             time.sleep(55)
-            leds.show_weather(weather_tracker.get_weather(), duration_sec=5, base_brightness=30)
+            leds.show_weather(weather_status, duration_sec=5, base_brightness=30)
             leds.update_leds(event_counts)
 
 if __name__ == "__main__":

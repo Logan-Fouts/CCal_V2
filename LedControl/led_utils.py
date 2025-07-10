@@ -44,6 +44,33 @@ class LED_UTILS:
     def turn_all_off(self):
         self.strip.fill((0, 0, 0))
         self.strip.show()
+        
+    def display_number(self, number, color=(255, 255, 255), brightness=20):
+        digit_patterns = {
+            0: [4, 5, 6, 11, 13, 18, 20, 25, 26, 27],
+            1: [6, 5, 12, 19, 26, 27, 25],
+            2: [4, 5, 6, 11, 19, 25, 26, 27],
+            3: [4, 5, 6, 12, 18, 24, 26, 27],
+            4: [6, 4, 11, 13, 18, 25, 12],
+            5: [6, 13, 5, 4, 18, 25, 26, 27],
+            6: [6, 13, 20, 27, 12, 26, 11, 18, 25],
+            7: [6, 5, 4, 11, 19, 27],
+            8: [4, 5, 6, 11, 13, 18, 20, 25, 26, 27, 19],
+            9: [6, 5, 4, 11, 18, 25, 19, 20, 13]
+        }
+
+        str_num = str(number).zfill(2)[-2:]  # Ensure two digits
+
+        first_digit = int(str_num[0])
+        for idx in digit_patterns.get(first_digit, []):
+            if 0 <= idx < self.num_leds:
+                self.set_led(idx, color, brightness)
+
+        second_digit = int(str_num[1])
+        for idx in digit_patterns.get(second_digit, []):
+            idx2 = idx - 4
+            if 0 <= idx2 < self.num_leds:
+                self.set_led(idx2, color, brightness)
 
     def update_leds(self, event_counts):
         """Update LEDs based on event counts with optimized performance."""
@@ -175,46 +202,56 @@ class LED_UTILS:
                     self.strip.show()
             self.turn_all_off()
         
-    def show_weather(self, weather_status):
-        """Display weather data with animated effects."""
-        if not weather_status:
-            return
-        
-        print(f"Showing weather animation for: {weather_status}")
-
     def show_weather(self, weather_status, duration_sec=10, base_brightness=50):
         """Display weather animation for specified duration with adjustable brightness.
         
         Args:
-            weather_status (str): Weather condition to display
+            weather_status (dict): Dict with 'condition' and 'temperature'
             duration_sec (float): How long to run animation (default: 10 seconds)
             base_brightness (int): Overall brightness scaling (0-100, default: 100)
         """
-        if not weather_status:
+        if not weather_status or not isinstance(weather_status, dict):
             return
-        
-        weather_status = weather_status.lower()
+
+        condition = weather_status.get('condition', '').lower()
+        temperature = weather_status.get('temperature', None)
         end_time = time.time() + duration_sec
-        
+
         while time.time() < end_time:
-            if weather_status == 'clear':
+            if condition == 'clear':
                 self.sun_animation_loop(end_time, base_brightness)
-            elif weather_status == 'clouds':
+            elif condition == 'clouds':
                 self.cloud_animation_loop(end_time, base_brightness)
-            elif weather_status == 'rain':
+            elif condition == 'rain':
                 self.rain_animation_loop(end_time, speed=1.0, drop_chance=0.9, base_brightness=base_brightness)
-            elif weather_status == 'drizzle':
+            elif condition == 'drizzle':
                 self.rain_animation_loop(end_time, speed=0.5, drop_chance=0.3, base_brightness=base_brightness)
-            elif weather_status == 'snow':
+            elif condition == 'snow':
                 self.snow_animation_loop(end_time, base_brightness=base_brightness)
-            elif weather_status == 'thunderstorm':
+            elif condition == 'thunderstorm':
                 self.thunderstorm_animation_loop(end_time, base_brightness)
-            elif weather_status in ('mist', 'fog'):
+            elif condition in ('mist', 'fog'):
                 self.fog_animation_loop(end_time, base_brightness)
             else:
                 self.default_animation_loop(end_time, base_brightness)
 
         self.turn_all_off()
+
+        # Display temperature as a number on the LEDs if available
+        if temperature is not None:
+            try:
+                temp_int = int(round(temperature))
+                if temp_int < 0:
+                    color = (0, 0, 80)
+                elif temp_int < 16:
+                    color = (255, 255, 255)
+                else:
+                    color = (255, 0, 0)
+                self.display_number(temp_int, color=color, brightness=40)
+                time.sleep(5)
+                self.turn_all_off()
+            except Exception as e:
+                print(f"Error displaying temperature: {e}")
 
     def sun_animation_loop(self, end_time, base_brightness=100):
         """Continuous sun animation until end_time with brightness scaling"""
@@ -425,4 +462,3 @@ class LED_UTILS:
             self.fill(colors[color_index], int(50 * brightness_scale))
             self.strip.show()
             time.sleep(0.05)
-
