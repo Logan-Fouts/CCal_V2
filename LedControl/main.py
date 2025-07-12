@@ -5,31 +5,40 @@ from config_manager import CONFIG_MANAGER
 from weather_tracker import WEATHER_TRACKER
 
 def main():
-    poll_time, pin_num, num_days, none_color, event_color = 90, 18, 28, (255, 255, 255), (255, 0, 0)
-
-    # config_file = "/home/logan/Code/CCal_V2/config.json" 
-    config_file = "/home/ccalv2/CCal_V2/config.json" 
+    # Load configuration
+    config_file = "/home/ccalv2/CCal_V2/config.json"
     config_manager = CONFIG_MANAGER(config_file)
     config = config_manager.load_config()
-    
-    leds = LED_UTILS(num_days, config.get('STARTUP_ANIMATION', 0), none_color, event_color, pin_num)
+
+    # Extract configuration values with defaults
+    poll_time = config.get('POLL_TIME', 90)
+    pin_num = config.get('PIN_NUM', 18)
+    num_days = config.get('NUM_DAYS', 28)
+    none_color = tuple(config.get('NONE_COLOR', [255, 255, 255]))
+    event_color = tuple(config.get('EVENT_COLOR', [255, 0, 0]))
+    brightness = config.get('BRIGHTNESS', 100)
+
+    # Initialize components
+    leds = LED_UTILS(num_days, config.get('STARTUP_ANIMATION', True), none_color, event_color, pin_num, brightness)
     gh_tracker = GITHUB_TRACKER(num_days)
-
-    weather_tracker = WEATHER_TRACKER(config.get('OPENWEATHERMAP_API_KEY'), config.get('WEATHER_LAT', 40.71), config.get('WEATHER_LON', -74.01)) # TODO: Remove magic numbers
-
+    weather_tracker = WEATHER_TRACKER(
+        config.get('OPENWEATHERMAP_API_KEY'),
+        config.get('WEATHER_LAT'),
+        config.get('WEATHER_LON')
+    )
 
     while True:
+        start_time = time.time()
         event_counts = gh_tracker.fetch_github_events()
         leds.update_leds(event_counts)
         weather_status = weather_tracker.get_weather()
-        # if gh_tracker.print_new_events():
-        #     leds.flash()
-    
-        end_time = time.time() + poll_time
-        while time.time() < end_time:
-            time.sleep(55)
-            leds.show_weather(weather_status, duration_sec=5, base_brightness=30)
+
+        elapsed = 0
+        while elapsed < poll_time:
+            time.sleep(60)
+            leds.show_weather(weather_status, brightness, duration_sec=5)
             leds.update_leds(event_counts)
+            elapsed = time.time() - start_time
 
 if __name__ == "__main__":
     main()
