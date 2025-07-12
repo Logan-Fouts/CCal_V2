@@ -134,12 +134,12 @@ class LED_UTILS:
                 time.sleep(0.5)
         self.turn_all_off()
 
-    def show_weather(self, weather_status, duration_sec=10, brightness=None):
+    def show_weather(self, weather_status, brightness=None, duration_sec=5):
         """Display weather animation for specified duration with adjustable brightness.
         
         Args:
             weather_status (dict): Dict with 'condition' and 'temperature'
-            duration_sec (float): How long to run animation (default: 10 seconds)
+            duration_sec (float): How long to run animation (default: 5 seconds)
             brightness (int): Overall brightness scaling (0-100, defaults to instance brightness)
         """
         if brightness is None:
@@ -177,7 +177,7 @@ class LED_UTILS:
                 temp_int = int(round(temperature))
                 if temp_int < 0:
                     color = (0, 200, 255)
-                elif temp_int < 16:
+                elif temp_int < 18:
                     color = (255, 255, 255) 
                 else:
                     color = (0, 255, 0)
