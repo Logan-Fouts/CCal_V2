@@ -23,6 +23,7 @@ Want your own PCBs made? PCBWay offers high-quality PCB fabrication and 3D print
 ## 🚀 Features
 
 - **Real GitHub Sync:** Instantly visualize your GitHub activity with LED feedback via the GitHub API.
+- **Weather Animations:** LEDs display animated weather effects (sun, rain, clouds, etc.) and show the current temperature in Celsius.
 - **Event Alerts:** LEDs flash when new GitHub events are detected.
 - **Tailscale Integration:** Secure remote access as a Tailscale node.
 - **Syncthing Server:** Host a Syncthing node for seamless file sync.
@@ -53,14 +54,18 @@ Want to build your own?
 **Example `config.json`:**
 ```json
 {
-  "GITHUB_USERNAME": "*",
-  "GITHUB_TOKEN": "*",
-  "STARTUP_ANIMATION": 3,
-  "TAILSCALE_ENABLE": false,
-  "TAILSCALE_AUTHKEY": "*",
-  "PIHOLE_ENABLE": false,
-  "SYNCTHING_ENABLE": false,
-  "LAST_EVENT_ID": "*"
+   "GITHUB_USERNAME": "Logan-Fouts",
+   "GITHUB_TOKEN": "*",
+   "STARTUP_ANIMATION": 3,
+   "TAILSCALE_ENABLE": true,
+   "TAILSCALE_AUTHKEY": "*",
+   "PIHOLE_ENABLE": true,
+   "SYNCTHING_ENABLE": true,
+   "LAST_EVENT_ID": "*",
+   "OPENWEATHERMAP_API_KEY": "*",
+   "WEATHER_LAT": 0.000,
+   "WEATHER_LON": 0.000,
+   "BRIGHTNESS": 80
 }
 ```
 

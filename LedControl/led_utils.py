@@ -180,7 +180,7 @@ class LED_UTILS:
                 elif temp_int < 16:
                     color = (255, 255, 255) 
                 else:
-                    color = (255, 0, 0)
+                    color = (0, 255, 0)
                 self.display_number(temp_int, color=color, brightness=brightness)
                 time.sleep(5)
                 self.turn_all_off()
