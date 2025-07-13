@@ -96,6 +96,7 @@ class LED_UTILS:
             return
         
         # Adjust brightness based on time of day
+        # TODO: Maybe use a light sensor instead of time?
         current_hour = time.localtime().tm_hour
         is_night = current_hour >= 22 or current_hour <= 8
         max_brightness = int(self.brightness * (0.1 if is_night else 1.0))
@@ -160,7 +161,7 @@ class LED_UTILS:
         elif condition == 'rain':
             self.anim.rain_animation_loop(end_time, speed=1.0, drop_chance=0.9, brightness=brightness)
         elif condition == 'drizzle':
-            self.anim.rain_animation_loop(end_time, speed=0.5, drop_chance=0.3, brightness=brightness)
+            self.anim.rain_animation_loop(end_time, speed=0.5, drop_chance=0.2, brightness=brightness)
         elif condition == 'snow':
             self.anim.snow_animation_loop(end_time, brightness=brightness)
         elif condition == 'thunderstorm':
