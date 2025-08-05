@@ -69,6 +69,12 @@ Want to build your own?
 }
 ```
 
+### Default Usernames and passwords
+username: ccalv2
+password: raspberry
+
+**This needs to be changed when actually being used**
+
 ---
 
 ## 🛠️ Build Guide

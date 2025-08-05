@@ -122,3 +122,30 @@ print_section "Setup Completed Successfully"
 echo -e "${GREEN}All done!${NC}"
 echo "Services status:"
 run_cmd "sudo systemctl status ccalpy.service ccalpy_gui.service --no-pager"
+
+CCAL_V2_BLOCK='
+# === CCal_V2 Service Info ===
+echo -e "
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo -e "  🚦 CCal_V2 Service Status:"
+echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo -e "  Tailscale: ENABLED"
+echo -e "    Manage Tailscale: sudo tailscale web"
+echo -e "  Pi-hole:   ENABLED"
+echo -e "    Web UI: http://<ip>/admin"
+echo -e "  Syncthing: ENABLED"
+echo -e "    Web UI: http://localhost:8384"
+echo -e "    Remote: ssh -L 8385:localhost:8384 ccalv2@<ip> (then visit http://localhost:8385)"
+echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo -e "  To remove these messages, delete the CCal_V2 Service Info block from your .bashrc"
+echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"
+'
+
+# Check if the block already exists in ~/.bashrc
+if grep -q "# === CCal_V2 Service Info ===" ~/.bashrc; then
+    echo "⚠️ CCal_V2 block already exists in ~/.bashrc (skipping)"
+else
+   echo "$CCAL_V2_BLOCK" >> ~/.bashrc
+    echo "✅ Successfully added CCal_V2 Service Info to ~/.bashrc"
+fi

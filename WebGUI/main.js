@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Main tab switching
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', function () {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -9,7 +8,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Subtab switching (only when Add-ons tab is active)
     document.querySelectorAll('.subtab-btn').forEach(btn => {
         btn.addEventListener('click', function () {
             document.querySelectorAll('.subtab-btn').forEach(b => b.classList.remove('active'));
@@ -19,20 +17,17 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Enhanced AJAX form submit to handle unchecked checkboxes and skip empty general settings
     document.querySelector('form').addEventListener('submit', async function (e) {
         e.preventDefault();
         const form = e.target;
         const formData = new FormData(form);
 
-        // Ensure unchecked checkboxes are sent as 'off'
         form.querySelectorAll('input[type="checkbox"]').forEach(cb => {
             if (!formData.has(cb.name)) {
                 formData.append(cb.name, 'off');
             }
         });
 
-        // Remove general settings if all are empty
         const generalFields = ['GITHUB_USERNAME', 'GITHUB_TOKEN', 'STARTUP_ANIMATION'];
         let generalHasValue = false;
         for (const field of generalFields) {
@@ -45,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function () {
             generalFields.forEach(field => formData.delete(field));
         }
 
-        // Show "Updating..." popup
         showPopup("Updating CCal settings...");
 
         const data = new URLSearchParams(formData);
@@ -55,13 +49,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         const text = await response.text();
 
-        // Show response in a popup/modal
         showPopup(text);
     });
 
-    // Simple popup/modal implementation
     function showPopup(message) {
-        // Remove existing popup if present
         const existing = document.getElementById('popup-modal');
         if (existing) existing.remove();
 
