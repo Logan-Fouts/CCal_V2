@@ -1,64 +1,112 @@
 #!/bin/bash
 
+# Exit on error and undefined variables
+set -eu
+
 CONFIG_FILE="/home/ccalv2/CCal_V2/config.json"
+BASHRC="/home/ccalv2/.bashrc"
+
 echo "Starting setup_addons.sh script..."
 
-# Parse config values using jq (install jq if not present)
-if ! command -v jq >/dev/null 2>&1; then
-    echo "jq is required. Please install jq."
-    exit 1
+# --- Mode selection: prod (default), dev, debug ---
+MODE="${MODE:-prod}"
+if [[ $# -gt 0 && ( "$1" == "dev" || "$1" == "debug" ) ]]; then
+    MODE="$1"
 fi
+echo "Running in MODE: $MODE"
 
-# Ensure script is run as root
+# --- Root check ---
 if [ "$EUID" -ne 0 ]; then
     echo "Please run as root (use: sudo $0)"
     exit 1
 fi
 
-TAILSCALE_ENABLE=$(jq -r '.TAILSCALE_ENABLE' "$CONFIG_FILE")
-PIHOLE_ENABLE=$(jq -r '.PIHOLE_ENABLE' "$CONFIG_FILE")
+# --- Check config file existence ---
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "Config file not found: $CONFIG_FILE"
+    exit 1
+fi
 
-# Tailscale service management
-if [ "$TAILSCALE_ENABLE" = "true" ]; then
+# --- Check jq existence ---
+if ! command -v jq >/dev/null 2>&1; then
+    echo "jq is required. Please install jq."
+    exit 1
+fi
+
+# --- Service command wrappers for dev/debug mode ---
+if [[ "$MODE" != "prod" ]]; then
+    SYSTEMCTL() { echo "[DEBUG] Would run: systemctl $*"; }
+    SUDO() { echo "[DEBUG] Would run: sudo $*"; }
+else
+    SYSTEMCTL() { systemctl "$@"; }
+    SUDO() { sudo "$@"; }
+fi
+
+# --- Read config values, treat null as false ---
+get_bool() {
+    local val
+    val=$(jq -r ".$1 // false" "$CONFIG_FILE")
+    [[ "$val" == "true" ]]
+}
+
+TAILSCALE_ENABLE=false
+PIHOLE_ENABLE=false
+SYNCTHING_ENABLE=false
+get_bool TAILSCALE_ENABLE && TAILSCALE_ENABLE=true
+get_bool PIHOLE_ENABLE && PIHOLE_ENABLE=true
+get_bool SYNCTHING_ENABLE && SYNCTHING_ENABLE=true
+
+# --- Tailscale service management ---
+if $TAILSCALE_ENABLE; then
     echo "Enabling and starting tailscaled.service..."
-    systemctl enable --now tailscaled.service
-    if sudo tailscale status &>/dev/null; then
-        sudo tailscale up
+    SYSTEMCTL enable --now tailscaled.service
+    if [[ "$MODE" == "prod" ]]; then
+        if SUDO tailscale status &>/dev/null; then
+            SUDO tailscale up
+            TAILSCALE_UP_OUTPUT=""
+        else
+            TAILSCALE_UP_OUTPUT="Tailscale is not logged in. Please run 'sudo tailscale up' manually to authenticate."
+        fi
     else
-        TAILSCALE_UP_OUTPUT="Tailscale is not logged in. Please run 'sudo tailscale up' manually to authenticate."
+        echo "[DEBUG] Would run: sudo tailscale up"
+        TAILSCALE_UP_OUTPUT="[DEBUG] Would check Tailscale login status"
     fi
 else
     echo "Disabling and stopping tailscaled.service..."
-    systemctl disable --now tailscaled.service
-    sudo tailscale down
+    SYSTEMCTL disable --now tailscaled.service
+    SUDO tailscale down || true
+    TAILSCALE_UP_OUTPUT=""
 fi
 
-# Pi-hole FTL service management
-if [ "$PIHOLE_ENABLE" = "true" ]; then
+# --- Pi-hole FTL service management ---
+if $PIHOLE_ENABLE; then
     echo "Enabling and starting pihole-FTL.service..."
-    systemctl enable --now pihole-FTL.service
-    systemctl disable --now dnsmasq
+    SYSTEMCTL enable --now pihole-FTL.service
+    SYSTEMCTL disable --now dnsmasq || true
 else
     echo "Disabling and stopping pihole-FTL.service..."
-    systemctl disable --now pihole-FTL.service
+    SYSTEMCTL disable --now pihole-FTL.service
 fi
 
-# Syncthing service management
-if [ "$SYNCTHING_ENABLE" = "true" ]; then
-    echo "Enabling and starting syncthingservice..."
-    systemctl enable --now syncthing@ccalv2.service
-    systemctl start syncthing@ccalv2.service
+# --- Syncthing service management ---
+if $SYNCTHING_ENABLE; then
+    echo "Enabling and starting syncthing@ccalv2.service..."
+    SYSTEMCTL enable --now syncthing@ccalv2.service
+    SYSTEMCTL start syncthing@ccalv2.service
 else
-    echo "Disabling and stopping syncthing service..."
-    systemctl disable --now syncthing@ccalv2.service
+    echo "Disabling and stopping syncthing@ccalv2.service..."
+    SYSTEMCTL disable --now syncthing@ccalv2.service
 fi
 
+# --- Restart ccalpy.service ---
 echo "Restarting ccalpy.service to apply changes..."
-sudo systemctl stop ccalpy.service
-sudo systemctl start ccalpy.service
+SUDO systemctl stop ccalpy.service
+SUDO systemctl start ccalpy.service
 
-
-BASHRC="/home/ccalv2/.bashrc"
+# --- .bashrc block update ---
+if [ ! -f "$BASHRC" ]; then
+    echo "# .bashrc created by setup_addons.sh" > "$BASHRC"
+fi
 
 # Remove any previous CCal_V2 Service Info block
 sed -i '/# === CCal_V2 Service Info ===/,$d' "$BASHRC"
@@ -69,9 +117,9 @@ INFO_BLOCK+="\necho -e \"  \033[1;36m🚦 CCal_V2 Service Status:\033[0m\""
 INFO_BLOCK+="\necho -e \"\033[1;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\""
 
 ANY_ENABLED=false
-if [ "$TAILSCALE_ENABLE" = "true" ]; then
+if $TAILSCALE_ENABLE; then
     INFO_BLOCK+="\necho -e \"  \033[1;36mTailscale:\033[0m \033[1;32mENABLED\033[0m\""
-    if [ -n "$TAILSCALE_UP_OUTPUT" ]; then
+    if [ -n "${TAILSCALE_UP_OUTPUT:-}" ]; then
         INFO_BLOCK+="\necho -e \"    \033[1;33m$(echo "$TAILSCALE_UP_OUTPUT" | sed 's/"/\\"/g')\033[0m\""
     else
         INFO_BLOCK+="\necho -e \"    \033[1;33mManage Tailscale: sudo tailscale web\033[0m\""
@@ -79,14 +127,13 @@ if [ "$TAILSCALE_ENABLE" = "true" ]; then
     ANY_ENABLED=true
 fi
 
-if [ "$PIHOLE_ENABLE" = "true" ]; then
+if $PIHOLE_ENABLE; then
     INFO_BLOCK+="\necho -e \"  \033[1;36mPi-hole:\033[0m   \033[1;32mENABLED\033[0m\""
     INFO_BLOCK+="\necho -e \"    \033[1;33mWeb UI: http://<ip>/admin\033[0m\""
     ANY_ENABLED=true
 fi
 
-SYNCTHING_ENABLE=$(jq -r '.SYNCTHING_ENABLE' "$CONFIG_FILE")
-if [ "$SYNCTHING_ENABLE" = "true" ]; then
+if $SYNCTHING_ENABLE; then
     INFO_BLOCK+="\necho -e \"  \033[1;36mSyncthing:\033[0m \033[1;32mENABLED\033[0m\""
     INFO_BLOCK+="\necho -e \"    \033[1;33mWeb UI: http://localhost:8384\033[0m\""
     INFO_BLOCK+="\necho -e \"    \033[1;33mRemote: ssh -L 8385:localhost:8384 ccalv2@<ip> (then visit http://localhost:8385)\033[0m\""
@@ -98,10 +145,9 @@ INFO_BLOCK+="\necho -e \"  \033[1;90mTo remove these messages, delete the CCal_V
 INFO_BLOCK+="\necho -e \"\033[1;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n\""
 
 # Only append if any service is enabled
-if [ "$ANY_ENABLED" = true ]; then
+if $ANY_ENABLED; then
     echo -e "$INFO_BLOCK" >> "$BASHRC"
 fi
 
 echo "Service info in .bashrc updated."
-
-echo "Service management complete."
+echo

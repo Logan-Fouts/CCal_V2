@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
 
 app.post('/submit', (req, res, next) => {
     const configPath = path.join(__dirname, '../config.json');
-    
+
     let existingConfig = {};
     try {
         existingConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
@@ -41,22 +41,40 @@ app.post('/submit', (req, res, next) => {
     }
 
     const newConfig = Object.assign({}, existingConfig);
-    
+
+    // Github setup
     if (req.body.GITHUB_USERNAME && req.body.GITHUB_USERNAME.trim() !== '') {
         newConfig.GITHUB_USERNAME = req.body.GITHUB_USERNAME.trim();
     }
-    
+
     if (req.body.GITHUB_TOKEN && req.body.GITHUB_TOKEN.trim() !== '') {
         newConfig.GITHUB_TOKEN = req.body.GITHUB_TOKEN.trim();
     }
-    
-    if (req.body.STARTUP_ANIMATION !== undefined && 
-        req.body.STARTUP_ANIMATION !== null && 
-        req.body.STARTUP_ANIMATION !== '' && 
+
+    // Startup animation
+    if (req.body.STARTUP_ANIMATION !== undefined &&
+        req.body.STARTUP_ANIMATION !== null &&
+        req.body.STARTUP_ANIMATION !== '' &&
         !isNaN(Number(req.body.STARTUP_ANIMATION))) {
         newConfig.STARTUP_ANIMATION = Number(req.body.STARTUP_ANIMATION);
     }
 
+    // Weather Lat and Long
+    if (req.body.WEATHER_LAT !== undefined &&
+        req.body.WEATHER_LAT !== null &&
+        req.body.WEATHER_LAT !== '' &&
+        !isNaN(Number(req.body.WEATHER_LAT))) {
+        newConfig.WEATHER_LAT = Number(req.body.WEATHER_LAT);
+    }
+
+    if (req.body.WEATHER_LON !== undefined &&
+        req.body.WEATHER_LON !== null &&
+        req.body.WEATHER_LON !== '' &&
+        !isNaN(Number(req.body.WEATHER_LON))) {
+        newConfig.WEATHER_LON = Number(req.body.WEATHER_LON);
+    }
+
+    // Addons
     newConfig.TAILSCALE_ENABLE = req.body.TAILSCALE_ENABLE === 'on';
     newConfig.TAILSCALE_AUTHKEY = req.body.TAILSCALE_AUTHKEY || '';
     newConfig.PIHOLE_ENABLE = req.body.PIHOLE_ENABLE === 'on';
@@ -67,8 +85,8 @@ app.post('/submit', (req, res, next) => {
             console.error(err);
             return res.status(500).send('Error saving config.');
         }
-        
-        exec('sudo bash /home/ccalv2/CCal_V2/WebGUI/setup_addons.sh', 
+
+        exec('sudo bash /home/ccalv2/CCal_V2/WebGUI/setup_addons.sh',
             { timeout: 30000 },
             (error, stdout, stderr) => {
                 if (error) {

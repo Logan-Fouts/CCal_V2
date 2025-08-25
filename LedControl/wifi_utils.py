@@ -7,7 +7,6 @@ import time
 from config_manager import CONFIG_MANAGER
 
 def unquote(string):
-    """MicroPython-compatible URL unquote function"""
     import binascii
     parts = string.split('%')
     result = [parts[0]]
