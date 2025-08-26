@@ -73,10 +73,14 @@ app.post('/submit', (req, res, next) => {
         !isNaN(Number(req.body.WEATHER_LON))) {
         newConfig.WEATHER_LON = Number(req.body.WEATHER_LON);
     }
+    
+    // Open weather api key
+    if (req.body.OPENWEATHERMAP_API_KEY && req.body.OPENWEATHERMAP_API_KEY.trim() !== '') {
+        newConfig.OPENWEATHERMAP_API_KEY = req.body.OPENWEATHERMAP_API_KEY.trim();
+    }
 
     // Addons
     newConfig.TAILSCALE_ENABLE = req.body.TAILSCALE_ENABLE === 'on';
-    newConfig.TAILSCALE_AUTHKEY = req.body.TAILSCALE_AUTHKEY || '';
     newConfig.PIHOLE_ENABLE = req.body.PIHOLE_ENABLE === 'on';
     newConfig.SYNCTHING_ENABLE = req.body.SYNCTHING_ENABLE === 'on';
 
@@ -86,7 +90,7 @@ app.post('/submit', (req, res, next) => {
             return res.status(500).send('Error saving config.');
         }
 
-        exec('sudo bash /home/ccalv2/CCal_V2/WebGUI/setup_addons.sh',
+        exec('sudo bash ./setup_addons.sh',
             { timeout: 30000 },
             (error, stdout, stderr) => {
                 if (error) {

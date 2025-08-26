@@ -3,8 +3,8 @@
 # Exit on error and undefined variables
 set -eu
 
-CONFIG_FILE="/home/ccalv2/CCal_V2/config.json"
-BASHRC="/home/ccalv2/.bashrc"
+CONFIG_FILE="../config.json"
+BASHRC="$HOME/.bashrc"
 
 echo "Starting setup_addons.sh script..."
 

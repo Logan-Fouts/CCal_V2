@@ -41,50 +41,12 @@ Want your own PCBs made? PCBWay offers high-quality PCB fabrication and 3D print
 
 ---
 
-## ⚡ Quick Start
-
-Want to build your own?  
-1. Flash a Pi Zero W with Raspbian.
-2. Download the `setup.sh` script.
-3. Make it executable:  
-   `sudo chmod +x setup.sh`
-4. Run the script:  
-   `sudo ./setup.sh`
-
-**Example `config.json`:**
-```json
-{
-   "GITHUB_USERNAME": "Logan-Fouts",
-   "GITHUB_TOKEN": "*",
-   "STARTUP_ANIMATION": 3,
-   "TAILSCALE_ENABLE": true,
-   "TAILSCALE_AUTHKEY": "*",
-   "PIHOLE_ENABLE": true,
-   "SYNCTHING_ENABLE": true,
-   "LAST_EVENT_ID": "*",
-   "OPENWEATHERMAP_API_KEY": "*",
-   "WEATHER_LAT": 0.000,
-   "WEATHER_LON": 0.000,
-   "BRIGHTNESS": 80
-}
-```
-
-### Default Usernames and passwords
-username: ccalv2
-password: raspberry
-
-**This needs to be changed when actually being used**
-
----
-
 ## 🛠️ Build Guide
 
 **You’ll Need:**
 - Raspberry Pi Zero W
-- WS2812B NeoPixels (28+ recommended)
-- Optional: Custom PCB for easy assembly
+- SMD 5050 NeoPixels (28+ recommended)
 - 3D-printed case
-- Micro-USB cable
 - Soldering tools
 
 ---
@@ -103,5 +65,4 @@ Contrib Cal v2 makes your coding contributions visible and interactive.
 
 
 ## Feature to come
-- Ambient Weather Mode
 - API
