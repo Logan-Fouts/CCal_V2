@@ -43,6 +43,7 @@ Want to build your own?
    "BRIGHTNESS": 80
 }
 ```
+3. Now just run through the quick start steps above
 
 
 **This needs to be changed when actually being used**
