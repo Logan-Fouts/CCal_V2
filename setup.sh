@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e 
 
-DEBUG=true
+DEBUG=false
 
 # Color codes
 GREEN='\033[1;32m'
