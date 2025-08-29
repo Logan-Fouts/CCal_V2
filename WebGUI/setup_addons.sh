@@ -1,10 +1,12 @@
 #!/bin/bash
 
-# Exit on error and undefined variables
-set -eu
+USERNAME="ccal"
+echo USERNAME: $USERNAME
 
-CONFIG_FILE="../config.json"
-BASHRC="$HOME/.bashrc"
+CONFIG_FILE="/home/$USERNAME/CCal_V2/config.json"
+BASHRC="/home/$USERNAME/.bashrc"
+
+
 
 echo "Starting setup_addons.sh script..."
 
@@ -90,18 +92,17 @@ fi
 
 # --- Syncthing service management ---
 if $SYNCTHING_ENABLE; then
-    echo "Enabling and starting syncthing@ccalv2.service..."
-    SYSTEMCTL enable --now syncthing@ccalv2.service
-    SYSTEMCTL start syncthing@ccalv2.service
+    echo "Enabling and starting syncthing@$USERNAME.service..."
+    SYSTEMCTL enable --now syncthing@$USERNAME.service
+    SYSTEMCTL start syncthing@$USERNAME.service
 else
-    echo "Disabling and stopping syncthing@ccalv2.service..."
-    SYSTEMCTL disable --now syncthing@ccalv2.service
+    echo "Disabling and stopping syncthing@$USERNAME.service..."
+    SYSTEMCTL disable --now syncthing@$USERNAME.service
 fi
 
 # --- Restart ccalpy.service ---
 echo "Restarting ccalpy.service to apply changes..."
-SUDO systemctl stop ccalpy.service
-SUDO systemctl start ccalpy.service
+SUDO systemctl restart ccalpy.service
 
 # --- .bashrc block update ---
 if [ ! -f "$BASHRC" ]; then
@@ -136,7 +137,7 @@ fi
 if $SYNCTHING_ENABLE; then
     INFO_BLOCK+="\necho -e \"  \033[1;36mSyncthing:\033[0m \033[1;32mENABLED\033[0m\""
     INFO_BLOCK+="\necho -e \"    \033[1;33mWeb UI: http://localhost:8384\033[0m\""
-    INFO_BLOCK+="\necho -e \"    \033[1;33mRemote: ssh -L 8385:localhost:8384 ccalv2@<ip> (then visit http://localhost:8385)\033[0m\""
+    INFO_BLOCK+="\necho -e \"    \033[1;33mRemote: ssh -L 8385:localhost:8384 $USERNAME@<ip> (then visit http://localhost:8385)\033[0m\""
     ANY_ENABLED=true
 fi
 
@@ -150,4 +151,5 @@ if $ANY_ENABLED; then
 fi
 
 echo "Service info in .bashrc updated."
-echo
+echo "SETUP_ADDONS_SUCCESS"
+exit 0

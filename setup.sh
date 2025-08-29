@@ -3,6 +3,9 @@ set -e
 
 DEBUG=false
 
+USERNAME=$(logname)
+echo USERNAME: $USERNAME
+
 # Color codes
 GREEN='\033[1;32m'
 YELLOW='\033[1;33m'
@@ -62,6 +65,8 @@ echo "                                                                          
 echo -e "${NC}"
 echo -e "${BLUE}        CCal_V2 Automated Setup${NC}\n"
 
+
+print_status "Systemd service files copied and customized."
 print_section "System Update & Dependency Installation"
 echo "Updating system and installing dependencies..."
 run_cmd "sudo apt update"
@@ -70,8 +75,8 @@ run_cmd "sudo apt install -y git nodejs npm portaudio19-dev python3-pip jq synct
 print_status "System packages installed."
 
 print_section "Syncthing Service Setup"
-run_cmd "sudo systemctl enable --now syncthing@ccalv2.service"
-run_cmd "sudo systemctl disable --now syncthing@ccalv2.service"
+run_cmd "sudo systemctl enable --now syncthing@$USERNAME.service"
+run_cmd "sudo systemctl disable --now syncthing@$USERNAME.service"
 print_status "Syncthing service toggled."
 
 print_section "Installing Tailscale"
@@ -104,13 +109,30 @@ run_cmd "cd CCal_V2/WebGUI && npm install express@4.17.1 body-parser@1.19.0 ejs@
 print_status "WebGUI dependencies installed."
 
 print_section "Installing Python Dependencies"
-run_cmd "cd CCal_V2/LedControl && sudo pip install --upgrade pip && sudo pip install -r requirements.txt && cd -"
+run_cmd "cd CCal_V2/LedControl && sudo pip install --upgrade pip --break-system-packages && sudo pip install -r requirements.txt --break-system-packages && cd -"
 print_status "Python dependencies installed."
 
 print_section "Configuring System Services"
 run_cmd "sudo cp CCal_V2/SystemdServices/ccalpy.service /etc/systemd/system/"
 run_cmd "sudo cp CCal_V2/SystemdServices/ccalpy_gui.service /etc/systemd/system/"
 print_status "Systemd service files copied."
+
+# Modify systemd files with username
+USERNAME=$(logname)
+run_cmd "sed 's|__USERNAME__|$USERNAME|g' CCal_V2/SystemdServices/ccalpy.service > /tmp/ccalpy.service"
+run_cmd "sudo mv /tmp/ccalpy.service /etc/systemd/system/ccalpy.service"
+run_cmd "sed 's|__USERNAME__|$USERNAME|g' CCal_V2/SystemdServices/ccalpy_gui.service > /tmp/ccalpy_gui.service"
+run_cmd "sudo mv /tmp/ccalpy_gui.service /etc/systemd/system/ccalpy_gui.service"
+print_status "Systemd service files copied and customized."
+
+# Patch setup_addons.sh
+run_cmd "sed -i 's|USERNAME=\"username\"|USERNAME=\"$USERNAME\"|g' CCal_V2/WebGUI/setup_addons.sh"
+print_status "setup_addons.sh username patched."
+
+# Patch server.js
+run_cmd "sed -i 's|USERNAME=\"username\"|USERNAME=\"$USERNAME\"|g' CCal_V2/WebGUI/server.js"
+print_status "server.js username patched."
+
 
 print_section "Enabling and Starting Services"
 run_cmd "sudo systemctl daemon-reload"

@@ -90,7 +90,8 @@ app.post('/submit', (req, res, next) => {
             return res.status(500).send('Error saving config.');
         }
 
-        exec('sudo bash ./setup_addons.sh',
+        USERNAME="ccal"
+        exec(`sudo bash /home/${USERNAME}/CCal_V2/WebGUI/setup_addons.sh`,
             { timeout: 30000 },
             (error, stdout, stderr) => {
                 if (error) {
