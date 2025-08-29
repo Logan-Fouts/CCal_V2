@@ -61,7 +61,7 @@ If you want to build CCal v2 yourself:
     ```
 
 3. **Configure Your Device**
-    - Follow the Quick Start steps above.
+    - Follow the Quick Start steps above starting at step 3.
 
 ---
 
