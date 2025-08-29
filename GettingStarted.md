@@ -75,6 +75,12 @@ Use [Raspberry Pi Imager](https://www.raspberrypi.com/software/) for the easiest
     ```
     - **Note:** This command will take quite a while to run, as it installs all dependencies and sets up the system.
 
+4. **Source the updated bashrc**
+    - Either exit the ssh session then rejoin or run:
+    ```sh
+    source ~/.bashrc
+    ```
+
 4. **Configure Your Device**
     - Follow the Quick Start steps above starting at step 3.
     - If you enable Pi-hole during setup, the only thing you need to do is click through the Pi-hole options when prompted.
