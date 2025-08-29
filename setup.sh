@@ -89,7 +89,7 @@ print_status "Pi-hole installed."
 
 print_section "Node.js Verification"
 if ! command -v node &> /dev/null; then
-    print_warning "Node.js not found, installing nodejs-legacy..."
+    print_warning "Node.js not found, installing nodejs..."
     run_cmd "sudo apt install -y nodejs-legacy"
     print_status "nodejs-legacy installed."
 else
