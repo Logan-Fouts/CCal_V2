@@ -1,3 +1,6 @@
+# This is not being used right not. As of now users must configure their wifi first
+# since its running on a full pi zero w and not a pico.
+
 import network
 import struct
 import socket

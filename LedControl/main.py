@@ -6,6 +6,9 @@ from github_tracker import GITHUB_TRACKER
 from config_manager import CONFIG_MANAGER
 from weather_tracker import WEATHER_TRACKER
 
+# TODO: Remove hardcoded username
+USERNAME="ccal"
+
 def safe_get(config, key, default=None, required=False):
     value = config.get(key, default)
     if required and value is None:
@@ -16,7 +19,7 @@ def safe_get(config, key, default=None, required=False):
 def main():
     try:
         # Load configuration
-        config_file = "/home/ccalv2/CCal_V2/config.json"
+        config_file = f"/home/{USERNAME}/CCal_V2/config.json"
         try:
             config_manager = CONFIG_MANAGER(config_file)
             config = config_manager.load_config()

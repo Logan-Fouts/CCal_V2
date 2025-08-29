@@ -4,7 +4,7 @@ import sys
 import traceback
 
 class CONFIG_MANAGER:
-    def __init__(self, config_file="/home/ccalv2/CCal_V2/config.json"):
+    def __init__(self, config_file="/home/ccal/CCal_V2/config.json"):
         self.CONFIG_FILE = config_file
 
     def load_config(self):
