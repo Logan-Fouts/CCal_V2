@@ -28,7 +28,13 @@
             <a href="https://github.com/settings/tokens" target="_blank" rel="noopener noreferrer">Get a GitHub Token</a>
             <br><br>
             <label for="startup_animation">Startup Animation:</label>
-            <input type="number" id="startup_animation" name="STARTUP_ANIMATION" min="0" value="<%= config.STARTUP_ANIMATION != null ? config.STARTUP_ANIMATION : '' %>"><br><br>
+            <select id="startup_animation" name="STARTUP_ANIMATION">
+                <option value="1" <%= config.STARTUP_ANIMATION == 1 ? 'selected' : '' %>>Color Wipe &mdash; Red, Green, Blue wipe</option>
+                <option value="2" <%= config.STARTUP_ANIMATION == 2 ? 'selected' : '' %>>Theater Chase &mdash; White chase effect</option>
+                <option value="3" <%= config.STARTUP_ANIMATION == 3 ? 'selected' : '' %>>Rainbow Cycle &mdash; Animated rainbow</option>
+                <option value="0" <%= !config.STARTUP_ANIMATION || config.STARTUP_ANIMATION == 0 ? 'selected' : '' %>>Solid Color Cycle &mdash; Red, Green, Blue</option>
+            </select>
+            <br><br>
             
             <!-- Weather Section -->
             <h3>Weather Location</h3>
@@ -72,6 +78,8 @@
         </section>
         <input type="submit" value="Save All Settings">
     </form>
+    <!-- Stupid shit html cant get a nice space after the form without this -->
+    <div class="after-form-spacer"></div>
     <script src="main.js"></script>
 </body>
 
