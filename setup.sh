@@ -151,8 +151,6 @@ run_cmd "touch /home/$USERNAME/CCal_V2/config.json"
 # Run the setup_addons.sh script
 run_cmd "sudo bash /home/$USERNAME/CCal_V2/WebGUI/setup_addons.sh"
 
-run_cmd "source /home/$USERNAME/.bashrc"
-
 print_section "Setup Completed Successfully"
 echo -e "${GREEN}All done!${NC}"
 echo "Services status:"
