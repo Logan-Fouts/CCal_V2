@@ -1,33 +1,74 @@
-## ⚡ Quick Start
-If you have the prebuilt version all you need to do is the following:
+# Getting Started with CCal v2
 
-1. Plug the micro sd into your computer
-2. Open the boot part of the drive and update the:
-    - **country**
-    - **ssid**
-    - **psk**
-    variables with your country code, ssid, and wifi password.
-3. Safely remove the micro sd and insert it into the pi
-4. Power it on and wait for it to show up on your network!
-*Tip you can use the ping command to know when it is ready to be used*
-5. Naviagate in a browser to (http://itsIP:3000)
-6. Go through the settings and configure it.
+This guide will help you set up your Contribution Calendar v2.  
+Follow the steps below to get everything working.
 
-### Default Usernames and passwords
-username: ccalv2
-password: raspberry
+---
 
+## Quick Start (Prebuilt Image)
 
+1. **Prepare Your SD Card**
+    - Insert the micro SD card into your computer.
+    - Open the **boot** partition and find the WiFi config file. <!--TODO: Make this more clear as to where the file is exactly-->
+    - Update these fields:
+        - `country` — your country code (like US, GB, DE)
+        - `ssid` — your WiFi network name
+        - `psk` — your WiFi password
 
-### Build your own
-Heres some information so you can build your own Contrib Cal v2!
+2. **Insert & Power On**
+    - Safely eject the SD card and put it in your Pi Zero.
+    - Power on the Pi and wait for it to connect to your network.
+    - *(Tip: You can use the `ping` command to check when the device is online.)*
 
-Want to build your own?  
-1. Flash a Pi Zero W with Raspbian.
-2. Download and run the setup script.
-    `sudo curl https://raw.githubusercontent.com/Logan-Fouts/CCal_V2/refs/heads/main/setup.sh | sh`
+3. **Access the Web Interface**
+    - Open a browser and go to:  
+      `http://<device-ip>:8080`
+    - Replace `<device-ip>` with your Pi's IP address.
 
-**Example `config.json`:**
+4. **Configure Settings**
+    - Log in with the default credentials below.
+    - Use the web interface to finish setup.
+
+---
+
+### Default WebGUI Credentials
+
+- **Username:** `ccal`
+- **Password:** `raspberry`
+
+---
+
+### Set Your Own WebGUI Login
+
+To set your own username and password for the WebGUI, run this command (replace `yourusername` and `yourpassword`):
+
+```sh
+echo -e "CCAL_WEBGUI_USER=yourusername\nCCAL_WEBGUI_PASS=yourpassword" > ~/CCal_V2/WebGUI/.env
+```
+
+---
+
+## Build Your Own
+
+If you want to build CCal v2 yourself:
+
+1. **Flash Raspbian**
+    - Install the latest Raspbian OS on a Pi Zero W.
+
+2. **Download & Run the Setup Script**
+    ```sh
+    sudo curl https://raw.githubusercontent.com/Logan-Fouts/CCal_V2/refs/heads/main/setup.sh | sh
+    ```
+
+3. **Configure Your Device**
+    - Follow the Quick Start steps above.
+
+---
+
+### Example `config.json`
+
+Here’s an example configuration file you can use or edit:
+
 ```json
 {
    "GITHUB_USERNAME": "Logan-Fouts",
@@ -43,7 +84,15 @@ Want to build your own?
    "BRIGHTNESS": 80
 }
 ```
-3. Now just run through the quick start steps above
 
+---
 
-**This needs to be changed when actually being used**
+## Tips
+
+- **Change your WebGUI password** after your first login.
+- Make sure your Pi and your computer are on the same network.
+- If you need help, open an issue on the [GitHub repository](https://github.com/Logan-Fouts/CCal_V2).
+
+---
+
+Thanks for trying out CCal v2! Enjoy your new Contribution Calendar.

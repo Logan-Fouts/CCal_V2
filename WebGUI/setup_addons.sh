@@ -3,6 +3,8 @@
 USERNAME="ccal"
 echo USERNAME: $USERNAME
 
+IP_ADDR=$(hostname -I | awk '{print $1}')
+
 CONFIG_FILE="/home/$USERNAME/CCal_V2/config.json"
 BASHRC="/home/$USERNAME/.bashrc"
 
@@ -115,6 +117,7 @@ sed -i '/# === CCal_V2 Service Info ===/,$d' "$BASHRC"
 INFO_BLOCK="# === CCal_V2 Service Info ===\n"
 INFO_BLOCK+="echo -e \"\n\033[1;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\""
 INFO_BLOCK+="\necho -e \"  \033[1;36m🚦 CCal_V2 Service Status:\033[0m\""
+INFO_BLOCK+="\necho -e \"    \033[1;33mManagement GUI: http://$IP_ADDR:8080\033[0m\""
 INFO_BLOCK+="\necho -e \"\033[1;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\""
 
 ANY_ENABLED=false
@@ -130,19 +133,17 @@ fi
 
 if $PIHOLE_ENABLE; then
     INFO_BLOCK+="\necho -e \"  \033[1;36mPi-hole:\033[0m   \033[1;32mENABLED\033[0m\""
-    INFO_BLOCK+="\necho -e \"    \033[1;33mWeb UI: http://<ip>/admin\033[0m\""
+    INFO_BLOCK+="\necho -e \"    \033[1;33mWeb UI: http://$IP_ADDR/admin\033[0m\""
     ANY_ENABLED=true
 fi
 
 if $SYNCTHING_ENABLE; then
     INFO_BLOCK+="\necho -e \"  \033[1;36mSyncthing:\033[0m \033[1;32mENABLED\033[0m\""
     INFO_BLOCK+="\necho -e \"    \033[1;33mWeb UI: http://localhost:8384\033[0m\""
-    INFO_BLOCK+="\necho -e \"    \033[1;33mRemote: ssh -L 8385:localhost:8384 $USERNAME@<ip> (then visit http://localhost:8385)\033[0m\""
+    INFO_BLOCK+="\necho -e \"    \033[1;33mRemote: ssh -L 8385:localhost:8384 $USERNAME@$IP_ADDR (then visit http://localhost:8385)\033[0m\""
     ANY_ENABLED=true
 fi
 
-INFO_BLOCK+="\necho -e \"\033[1;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\""
-INFO_BLOCK+="\necho -e \"  \033[1;90mTo remove these messages, delete the CCal_V2 Service Info block from your .bashrc\033[0m\""
 INFO_BLOCK+="\necho -e \"\033[1;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n\""
 
 # Only append if any service is enabled

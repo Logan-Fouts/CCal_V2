@@ -5,7 +5,8 @@ const path = require('path');
 const { exec } = require('child_process');
 
 const app = express();
-const PORT = 3000;
+const PORT = 8080;
+USERNAME="ccal"
 
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
@@ -17,6 +18,30 @@ app.use(express.static(__dirname));
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send('Something broke!');
+});
+
+require('dotenv').config({ path: `/home/${USERNAME}/CCal_V2/WebGUI/.env` });
+const BASIC_AUTH_USER = process.env.CCAL_WEBGUI_USER || 'ccal';
+const BASIC_AUTH_PASS = process.env.CCAL_WEBGUI_PASS || 'raspberry';
+
+// Basic Auth middleware
+app.use((req, res, next) => {
+    const auth = req.headers.authorization;
+    if (!auth) {
+        res.set('WWW-Authenticate', 'Basic realm="CCal WebGUI"');
+        return res.status(401).send('Authentication required.');
+    }
+    const [scheme, encoded] = auth.split(' ');
+    if (scheme !== 'Basic') {
+        return res.status(400).send('Bad auth scheme.');
+    }
+    const decoded = Buffer.from(encoded, 'base64').toString();
+    const [user, pass] = decoded.split(':');
+    if (user === BASIC_AUTH_USER && pass === BASIC_AUTH_PASS) {
+        return next();
+    }
+    res.set('WWW-Authenticate', 'Basic realm="CCal WebGUI"');
+    return res.status(401).send('Authentication failed.');
 });
 
 app.get('/', (req, res) => {
@@ -90,9 +115,9 @@ app.post('/submit', (req, res, next) => {
             return res.status(500).send('Error saving config.');
         }
 
-        USERNAME="ccal"
+
         exec(`sudo bash /home/${USERNAME}/CCal_V2/WebGUI/setup_addons.sh`,
-            { timeout: 30000 },
+            { timeout: 120000 },
             (error, stdout, stderr) => {
                 if (error) {
                     console.error(`Setup error: ${error.message}`);
