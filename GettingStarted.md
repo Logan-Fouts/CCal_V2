@@ -9,7 +9,7 @@ Follow the steps below to get everything working.
 
 1. **Prepare Your SD Card**
     - Insert the micro SD card into your computer.
-    - Open the **boot** partition and find the WiFi config file. <!--TODO: Make this more clear as to where the file is exactly-->
+    - Open the **boot** partition on the SD card and locate the `wpa_supplicant.conf` file (if it does not exist, create it in the root of the boot partition).
     - Update these fields:
         - `country` — your country code (like US, GB, DE)
         - `ssid` — your WiFi network name
