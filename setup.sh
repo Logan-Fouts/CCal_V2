@@ -87,6 +87,9 @@ print_section "Installing Pi-hole"
 run_cmd "curl -sSL https://install.pi-hole.net | bash"
 print_status "Pi-hole installed."
 
+# Just a temp password that needs to be changed by the user
+run_cmd "pihole setpassword raspberry"
+
 print_section "Node.js Verification"
 if ! command -v node &> /dev/null; then
     print_warning "Node.js not found, installing nodejs..."
