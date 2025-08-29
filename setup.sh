@@ -146,6 +146,9 @@ run_cmd "sudo systemctl enable --now ccalpy.service"
 run_cmd "sudo systemctl enable --now ccalpy_gui.service"
 print_status "Services enabled and started."
 
+# Run the setup_addons.sh script
+sudo bash /home/$USERNAME/CCal_V2/WebGUI/setup_addons.sh
+
 print_section "Setup Completed Successfully"
 echo -e "${GREEN}All done!${NC}"
 echo "Services status:"
