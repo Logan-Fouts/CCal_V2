@@ -18,6 +18,7 @@ Follow the steps below to get everything working.
 2. **Insert & Power On**
     - Safely eject the SD card and put it in your Pi Zero.
     - Power on the Pi and wait for it to connect to your network.
+    - **Note:** The first boot can take a while as the Pi sets itself up and connects to WiFi. Be patient—it may take several minutes.
     - *(Tip: You can use the `ping` command to check when the device is online.)*
 
 3. **Access the Web Interface**
@@ -53,15 +54,30 @@ echo -e "CCAL_WEBGUI_USER=yourusername\nCCAL_WEBGUI_PASS=yourpassword" > ~/CCal_
 If you want to build CCal v2 yourself:
 
 1. **Flash Raspbian**
-    - Install the latest Raspbian OS on a Pi Zero W.
+    - Install the latest Raspbian OS on a Pi Zero W (using Pi Imager is recommended).
 
-2. **Download & Run the Setup Script**
+**Recommended:**  
+Use [Raspberry Pi Imager](https://www.raspberrypi.com/software/) for the easiest setup.  
+- Open Raspberry Pi Imager and select the OS (choose "Raspberry Pi OS Lite (32-bit)" or similar).
+- Click the gear icon (⚙️) to set your username, password, WiFi info, and enable SSH.
+- Write the image to your micro SD card.
+- *(If you’re not using Pi Imager, you can manually edit or create the `wpa_supplicant.conf` file in the boot partition for WiFi setup.)* Take a look at step one from teh quick start above for more help.
+
+2. **SSH into the pi**
+    - Wait for it to connect to your wifi then ssh into the pi using the command below *(replace usrename and ip)*:
+    ```sh
+    ssh username@ip
+    ```
+
+3. **Download & Run the Setup Script**
     ```sh
     sudo curl https://raw.githubusercontent.com/Logan-Fouts/CCal_V2/refs/heads/main/setup.sh | sh
     ```
+    - **Note:** This command will take quite a while to run, as it installs all dependencies and sets up the system.
 
-3. **Configure Your Device**
+4. **Configure Your Device**
     - Follow the Quick Start steps above starting at step 3.
+    - If you enable Pi-hole during setup, the only thing you need to do is click through the Pi-hole options when prompted.
 
 ---
 
@@ -92,6 +108,7 @@ Here’s an example configuration file you can use or edit:
 - **Change your WebGUI password** after your first login.
 - Make sure your Pi and your computer are on the same network.
 - If you need help, open an issue on the [GitHub repository](https://github.com/Logan-Fouts/CCal_V2).
+- Be patient during the first boot and setup—some steps can take several minutes.
 
 ---
 
