@@ -146,10 +146,8 @@ fi
 
 INFO_BLOCK+="\necho -e \"\033[1;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n\""
 
-# Only append if any service is enabled
-if $ANY_ENABLED; then
-    echo -e "$INFO_BLOCK" >> "$BASHRC"
-fi
+echo -e "$INFO_BLOCK" >> "$BASHRC"
+
 
 echo "Service info in .bashrc updated."
 echo "SETUP_ADDONS_SUCCESS"
