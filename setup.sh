@@ -112,7 +112,15 @@ run_cmd "cd CCal_V2/WebGUI && npm install express@4.17.1 body-parser@1.19.0 ejs@
 print_status "WebGUI dependencies installed."
 
 print_section "Installing Python Dependencies"
-run_cmd "cd CCal_V2/LedControl && sudo pip install --upgrade pip --break-system-packages && sudo pip install -r requirements.txt --break-system-packages && cd -"
+run_cmd "cd CCal_V2/LedControl"
+if pip install --help | grep -q -- '--break-system-packages'; then
+    run_cmd "sudo pip install --upgrade pip --break-system-packages"
+    run_cmd "sudo pip install -r requirements.txt --break-system-packages"
+else
+    run_cmd "sudo pip install --upgrade pip"
+    run_cmd "sudo pip install -r requirements.txt"
+fi
+run_cmd "cd -"
 print_status "Python dependencies installed."
 
 print_section "Configuring System Services"
