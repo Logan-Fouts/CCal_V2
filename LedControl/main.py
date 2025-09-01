@@ -32,7 +32,7 @@ def main():
         pin_num = safe_get(config, 'PIN_NUM', 18)
         num_days = safe_get(config, 'NUM_DAYS', 28)
         none_color = tuple(safe_get(config, 'NONE_COLOR', [255, 255, 255]))
-        event_color = tuple(safe_get(config, 'EVENT_COLOR', [255, 0, 0]))
+        event_color = tuple(safe_get(config, 'EVENT_COLOR', [0, 255, 0]))
         brightness = safe_get(config, 'BRIGHTNESS', 100)
 
         # Required for weather

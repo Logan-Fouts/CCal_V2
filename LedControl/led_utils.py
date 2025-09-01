@@ -178,7 +178,7 @@ class LED_UTILS:
                 temp_int = int(round(temperature))
                 if temp_int < 0:
                     color = (0, 200, 255)
-                elif temp_int < 18:
+                elif temp_int < 19:
                     color = (255, 255, 255) 
                 else:
                     color = (0, 255, 0)
