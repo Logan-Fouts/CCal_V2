@@ -71,8 +71,11 @@ print_section "System Update & Dependency Installation"
 echo "Updating system and installing dependencies..."
 run_cmd "sudo apt update"
 run_cmd "sudo apt upgrade -y"
-run_cmd "sudo apt install -y git nodejs npm portaudio19-dev python3-pip jq syncthing"
+run_cmd "sudo apt install -y git nodejs npm portaudio19-dev python3-pip jq syncthing unattended-upgrades"
 print_status "System packages installed."
+
+# Enable unattended upgrades
+run_cmd "sudo dpkg-reconfigure -plow unattended-upgrades"
 
 print_section "Syncthing Service Setup"
 run_cmd "sudo systemctl enable --now syncthing@$USERNAME.service"

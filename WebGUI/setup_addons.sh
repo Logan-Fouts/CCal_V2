@@ -139,8 +139,10 @@ fi
 
 if $SYNCTHING_ENABLE; then
     INFO_BLOCK+="\necho -e \"  \033[1;36mSyncthing:\033[0m \033[1;32mENABLED\033[0m\""
-    INFO_BLOCK+="\necho -e \"    \033[1;33mWeb UI: http://localhost:8384\033[0m\""
-    INFO_BLOCK+="\necho -e \"    \033[1;33mRemote: ssh -L 8385:localhost:8384 $USERNAME@$IP_ADDR (then visit http://localhost:8385)\033[0m\""
+    INFO_BLOCK+="\necho -e \"    \033[1;33mWeb UI: http://$IP_ADDR:8384\033[0m\""
+    INFO_BLOCK+="\necho -e \"    \033[1;33mNote: Syncthing only allows local IP connections by default.\""
+    INFO_BLOCK+="\necho -e \"    \033[1;33mTo access remotely, use: ssh -L 8385:localhost:8384 $USERNAME@$IP_ADDR (then visit http://localhost:8385 on your computer)\""
+    INFO_BLOCK+="\necho -e \"    \033[1;33mTo allow access via IP, change the Syncthing settings from '127.0.0.1' to '0.0.0.0' under GUI Listen Address.\""
     ANY_ENABLED=true
 fi
 
