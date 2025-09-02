@@ -5,16 +5,14 @@ import time
 
 class AnimationRunner:
     def __init__(self, led_utils):
-        self.led = led_utils  # Reference to LED_UTILS instance
+        self.led = led_utils
         self.num_leds = led_utils.num_leds
         self.brightness = led_utils.brightness
 
     def turn_all_off(self):
         self.led.turn_all_off()
 
-    def sun_animation_loop(self, end_time, brightness=None):
-        if brightness is None:
-            brightness = self.brightness
+    def sun_animation_loop(self, end_time):
         colors = [
             (255, 255, 0),
             (255, 255, 50),
@@ -24,14 +22,14 @@ class AnimationRunner:
         while time.time() < end_time:
             cycle_time = time.time()
             cycle_progress = (cycle_time % 2) / 2
-            core_brightness = int(brightness * (0.3 + 0.7 * (0.5 + 0.5 * math.sin(cycle_progress * math.pi))))
+            core_brightness = 0.3 + 0.7 * (0.5 + 0.5 * math.sin(cycle_progress * math.pi))
             wave_pos = int(cycle_progress * 3) % 3
             for i in range(self.num_leds):
                 dist_from_center = abs(i - self.num_leds//2)
                 color_idx = ray_pattern[i]
-                wave_effect = int(brightness * (3 - (dist_from_center + wave_pos) % 3) * 0.3)
-                led_brightness = min(brightness, core_brightness + wave_effect)
-                self.led.set_led(i, colors[color_idx], led_brightness)
+                wave_effect = (3 - (dist_from_center + wave_pos) % 3) * 0.3
+                led_brightness = min(1.0, core_brightness + wave_effect)
+                self.led.set_led(i, colors[color_idx], self.brightness * led_brightness)
             time.sleep(0.05)
 
     def cloud_animation_loop(self, end_time, brightness=None):
@@ -212,7 +210,7 @@ class AnimationRunner:
             for i in range(self.num_leds):
                 pixel_index = (i * 256 // self.num_leds) + j
                 color = self.wheel(pixel_index & 255)
-                self.led.set_led(i, color, int(self.brightness * brightness))
+                self.led.set_led(i, color, self.brightness * brightness)
             time.sleep(wait)
         self.turn_all_off()
 

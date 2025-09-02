@@ -33,7 +33,7 @@ def main():
         num_days = safe_get(config, 'NUM_DAYS', 28)
         none_color = tuple(safe_get(config, 'NONE_COLOR', [255, 255, 255]))
         event_color = tuple(safe_get(config, 'EVENT_COLOR', [0, 255, 0]))
-        brightness = safe_get(config, 'BRIGHTNESS', 100)
+        brightness = safe_get(config, 'BRIGHTNESS', 0.8)
 
         # Required for weather
         weather_api_key = safe_get(config, 'OPENWEATHERMAP_API_KEY', required=True)

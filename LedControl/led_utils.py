@@ -4,12 +4,13 @@ import time
 from animation_runner import AnimationRunner
 
 class LED_UTILS:
-    def __init__(self, num_days=7, animation=3, none_color=(255, 0, 0), event_color=(0, 255, 0), pin_num=18, brightness=100):
+    def __init__(self, num_days=7, animation=3, none_color=(255, 0, 0), event_color=(0, 255, 0), pin_num=18, brightness=1.0):
         self.num_leds = num_days
         self.animation = animation
         self.none_color = none_color
         self.event_color = event_color
-        self.brightness = max(0, min(100, brightness))  # Ensure brightness is within 0-100 range
+        self.pin_num = pin_num
+        self.brightness = max(0.0, min(1.0, float(brightness)))
 
         if pin_num == 18:
             gpio_pin = board.D18
@@ -29,22 +30,19 @@ class LED_UTILS:
         self.turn_all_off()
 
     def _apply_brightness(self, color, brightness=None):
-        """Apply brightness scaling to a color tuple."""
         if brightness is None:
             brightness = self.brightness
-        brightness = max(0, min(100, brightness)) / 100.0
+        brightness = max(0.0, min(1.0, float(brightness)))
         return tuple(int(c * brightness) for c in color)
 
-    def set_led(self, led_index, color, brightness=None):
-        """Set individual LED with brightness control."""
-        adjusted_color = self._apply_brightness(color, brightness)
-        self.strip[led_index] = adjusted_color
+    def set_led(self, idx, color, brightness=None):
+        color = self._apply_brightness(color, brightness)
+        self.strip[idx] = color
         self.strip.show()
 
     def fill(self, color, brightness=None):
-        """Fill all LEDs with specified color and brightness."""
-        adjusted_color = self._apply_brightness(color, brightness)
-        self.strip.fill(adjusted_color)
+        color = self._apply_brightness(color, brightness)
+        self.strip.fill(color)
         self.strip.show()
 
     def turn_all_off(self):
@@ -92,27 +90,37 @@ class LED_UTILS:
         max_count = max(event_counts)
         if max_count == 0:
             for day in range(min(self.num_leds, len(event_counts))):
-                self.set_led(day, self.none_color, int(self.brightness * 0.05))
+                self.set_led(day, self.none_color, self.brightness * 0.05)
             return
         
         # Adjust brightness based on time of day
         # TODO: Maybe use a light sensor instead of time?
         current_hour = time.localtime().tm_hour
         is_night = current_hour >= 22 or current_hour <= 8
-        max_brightness = int(self.brightness * (0.1 if is_night else 1.0))
+        max_brightness = self.brightness * (0.1 if is_night else self.brightness)
         
         updates = []
         for day in range(min(self.num_leds, len(event_counts))):
             count = event_counts[day]
             if count > 0:
-                brightness = int(1 + max_brightness * (count / max_count))
+                brightness = 0.1 + max_brightness * (count / max_count)
                 updates.append((day, self.event_color, brightness))
             else:
-                updates.append((day, self.none_color, int(self.brightness * 0.05)))
-        
+                updates.append((day, self.none_color, max((max_brightness * 0.05), 0.05)))
+
         # Apply all updates
         for day, color, brightness in updates:
             self.set_led(day, color, brightness)
+
+    def update_leds_for_events(self, event_counts):
+        max_events = max(event_counts) if event_counts else 1
+        for i, count in enumerate(event_counts):
+            # Scale brightness: 0 events = 0.2, max events = self.brightness
+            if max_events > 0:
+                scaled_brightness = 0.2 + 0.8 * (count / max_events) * self.brightness
+            else:
+                scaled_brightness = 0.2 * self.brightness
+            self.set_led(i, self.event_color, scaled_brightness)
 
     def _dim(self, color, factor=0.2):
         """Return a color tuple dimmed by the given factor (0.0 - 1.0)."""
@@ -128,6 +136,7 @@ class LED_UTILS:
         elif self.animation == 2:
             self.anim.theater_chase(dim((127, 127, 127)), 0.05)
         elif self.animation == 3:
+            print("Running rainbow")
             self.anim.rainbow_cycle(0.01, brightness=0.2)
         else:
             for color in [(255,0,0), (0,255,0), (0,0,255)]:

@@ -84,6 +84,11 @@ app.post('/submit', (req, res, next) => {
         newConfig.STARTUP_ANIMATION = Number(req.body.STARTUP_ANIMATION);
     }
 
+    if (req.body.BRIGHTNESS !== undefined && req.body.BRIGHTNESS !== null && req.body.BRIGHTNESS !== '' && !isNaN(Number(req.body.BRIGHTNESS))) {
+        console.log(`Updating brightness to ${req.body.BRIGHTNESS}`);
+        newConfig.BRIGHTNESS = Number(req.body.BRIGHTNESS);
+    }
+
     // Weather Lat and Long
     if (req.body.WEATHER_LAT !== undefined &&
         req.body.WEATHER_LAT !== null &&
