@@ -35,16 +35,6 @@ PCBWay provided the PCBs for this project. They offer PCB fabrication and 3D pri
 
 ---
 
-## Hardware Used
-
-- **LEDs:** 28x SMD5050 RGB addressable LEDs (SK6812 or similar)
-- **Microcontroller:** 1x Raspberry Pi Zero W (Pi Zero 2 W may work, but not tested)
-- **Power Adapter:** 5V PD Decoy USB TYPE-C QC PD 2.0 3.0 3.1 Voltage Triggers Adapter (Fast Charge Power Supply, PD to DC Charging)
-
-You can substitute
-
----
-
 ## Web Interface
 
 You can manage most settings and add-ons through a simple web page hosted on the Pi.
@@ -53,12 +43,14 @@ You can manage most settings and add-ons through a simple web page hosted on the
 
 ## Build Guide
 
-### What You’ll Need
+- **LEDs:** 28x SMD5050 RGB addressable LEDs (SK6812 or similar)
+- **Microcontroller:** 1x Raspberry Pi Zero W (Pi Zero 2 W may work, but not tested)
+- **Power Adapter:** 5V PD Decoy USB TYPE-C QC PD 2.0 3.0 3.1 Voltage Triggers Adapter (Fast Charge Power Supply, PD to DC Charging)
 
-- Raspberry Pi Zero W
-- SMD 5050 NeoPixels (28 or more recommended)
-- 3D-printed case (optional)
-- Soldering tools
+You can substitute
+
+
+
 
 ---
 
