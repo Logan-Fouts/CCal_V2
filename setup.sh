@@ -159,6 +159,12 @@ print_status "Services enabled and started."
 
 run_cmd "touch /home/$USERNAME/CCal_V2/config.json"
 
+# Speed up boot time
+run_cmd "sudo systemctl disable NetworkManager-wait-online.service"
+run_cmd "sudo systemctl disable ModemManager.service"
+run_cmd "sudo systemctl disable avahi-daemon.service"
+run_cmd "sudo systemctl disable bluetooth.service"
+
 # Run the setup_addons.sh script
 run_cmd "sudo bash /home/$USERNAME/CCal_V2/WebGUI/setup_addons.sh"
 
