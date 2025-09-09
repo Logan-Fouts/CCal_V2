@@ -1,0 +1,17 @@
+{
+  "GITHUB_USERNAME": "Logan-Fouts",
+  "GITHUB_TOKEN": "",
+  "STARTUP_ANIMATION": 3,
+  "WEATHER_LAT": 0,
+  "WEATHER_LON": 0,
+  "OPENWEATHERMAP_API_KEY": "",
+  "TAILSCALE_ENABLE": true,
+  "PIHOLE_ENABLE": true,
+  "SYNCTHING_ENABLE": true,
+  "POLL_TIME": 90,
+  "PIN_NUM": 18,
+  "NUM_DAYS": 28,
+  "BRIGHTNESS": 0.95,
+  "ON_TIME": 10,
+  "OFF_TIME": 23
+}
