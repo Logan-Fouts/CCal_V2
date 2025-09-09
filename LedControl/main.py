@@ -9,6 +9,8 @@ from weather_tracker import WEATHER_TRACKER
 # TODO: Remove hardcoded username
 USERNAME="ccal"
 
+ON_TIME, OFF_TIME = 9, 23
+
 def safe_get(config, key, default=None, required=False):
     value = config.get(key, default)
     if required and value is None:
@@ -82,8 +84,7 @@ def main():
                 elapsed = 0
                 while elapsed < poll_time:
                     time.sleep(60)
-                    # If brightness is 0, skip LED updates in the inner loop too
-                    if brightness == 0:
+                    if brightness == 0 or not (ON_TIME <= time.localtime().tm_hour < OFF_TIME):
                         elapsed = time.time() - start_time
                         continue
                     try:
