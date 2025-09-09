@@ -109,6 +109,21 @@ app.post('/submit', (req, res, next) => {
         newConfig.OPENWEATHERMAP_API_KEY = req.body.OPENWEATHERMAP_API_KEY.trim();
     }
 
+    // ON_TIME and OFF_TIME
+    if (req.body.ON_TIME !== undefined &&
+        req.body.ON_TIME !== null &&
+        req.body.ON_TIME !== '' &&
+        !isNaN(Number(req.body.ON_TIME))) {
+        newConfig.ON_TIME = Number(req.body.ON_TIME);
+    }
+
+    if (req.body.OFF_TIME !== undefined &&
+        req.body.OFF_TIME !== null &&
+        req.body.OFF_TIME !== '' &&
+        !isNaN(Number(req.body.OFF_TIME))) {
+        newConfig.OFF_TIME = Number(req.body.OFF_TIME);
+    }
+
     // Addons
     newConfig.TAILSCALE_ENABLE = req.body.TAILSCALE_ENABLE === 'on';
     newConfig.PIHOLE_ENABLE = req.body.PIHOLE_ENABLE === 'on';

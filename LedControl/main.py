@@ -9,8 +9,6 @@ from weather_tracker import WEATHER_TRACKER
 # TODO: Remove hardcoded username
 USERNAME="ccal"
 
-ON_TIME, OFF_TIME = 9, 23
-
 def safe_get(config, key, default=None, required=False):
     value = config.get(key, default)
     if required and value is None:
@@ -36,6 +34,8 @@ def main():
         none_color = tuple(safe_get(config, 'NONE_COLOR', [255, 255, 255]))
         event_color = tuple(safe_get(config, 'EVENT_COLOR', [0, 255, 0]))
         brightness = safe_get(config, 'BRIGHTNESS', 0.8)
+        on_time = safe_get(config, 'ON_TIME', 9)
+        off_time = safe_get(config, 'OFF_TIME', 23)
 
         # Required for weather
         weather_api_key = safe_get(config, 'OPENWEATHERMAP_API_KEY', required=True)
@@ -84,7 +84,7 @@ def main():
                 elapsed = 0
                 while elapsed < poll_time:
                     time.sleep(60)
-                    if brightness == 0 or not (ON_TIME <= time.localtime().tm_hour < OFF_TIME):
+                    if brightness == 0 or not (on_time <= time.localtime().tm_hour < off_time):
                         elapsed = time.time() - start_time
                         continue
                     try:

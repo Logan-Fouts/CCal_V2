@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        const generalFields = ['GITHUB_USERNAME', 'GITHUB_TOKEN', 'STARTUP_ANIMATION', 'WEATHER_LAT', 'WEATHER_LON', 'OPENWEATHERMAP_API_KEY', 'BRIGHTNESS'];
+        const generalFields = ['GITHUB_USERNAME', 'GITHUB_TOKEN', 'STARTUP_ANIMATION', 'WEATHER_LAT', 'WEATHER_LON', 'OPENWEATHERMAP_API_KEY', 'BRIGHTNESS', 'ON_TIME', 'OFF_TIME'];
         let generalHasValue = false;
         for (const field of generalFields) {
             if (formData.get(field) && formData.get(field).trim() !== '') {
