@@ -33,12 +33,10 @@ class AnimationRunner:
             time.sleep(0.05)
 
     def cloud_animation_loop(self, end_time, brightness=None):
-        if brightness is None:
-            brightness = self.brightness
         cloud_colors = [
-            (180, 180, 200),
-            (150, 150, 180),
-            (120, 120, 150)
+            (180, 180, 180),
+            (220, 220, 220),
+            (255, 255, 255)
         ]
         cloud = [12, 11, 20, 19, 18, 17]
 
@@ -53,10 +51,10 @@ class AnimationRunner:
     def rain_animation_loop(self, end_time, speed=1.0, drop_chance=0.4, brightness=None):
         if brightness is None:
             brightness = self.brightness
+
         rain_colors = [
-            (100, 0, 50),
-            (150, 0, 80),
-            (200, 0, 120)
+            (0, 128, 255),
+            (0, 0, 255)
         ]
         rows = 4
         cols = self.num_leds // rows
@@ -67,12 +65,13 @@ class AnimationRunner:
             self.turn_all_off()
             if random.random() < drop_chance:
                 new_col = random.randint(0, cols-1)
+                drop_brightness = random.uniform(brightness * 0.6, brightness * 0.9)
                 drops.append({
                     'row': 0,
                     'col': new_col,
                     'speed': speed,
                     'color': random.choice(rain_colors),
-                    'brightness': random.randint(int(brightness*0.6), int(brightness*0.9))
+                    'brightness': drop_brightness
                 })
             for drop in drops[:]:
                 led_index = drop['col'] + (int(drop['row']) * cols)
@@ -87,9 +86,9 @@ class AnimationRunner:
         if brightness is None:
             brightness = self.brightness
         snow_colors = [
-            (180, 50, 150),
-            (220, 80, 200),
-            (255, 120, 230)
+            (255, 255, 255),
+            (200, 220, 255),
+            (220, 240, 255)
         ]
         rows = 4
         cols = self.num_leds // rows
@@ -119,7 +118,11 @@ class AnimationRunner:
     def thunderstorm_animation_loop(self, end_time, brightness=None):
         if brightness is None:
             brightness = self.brightness
-        rain_colors = [(100, 0, 50), (150, 0, 80), (200, 0, 120)]
+        rain_colors = [
+            (0, 128, 255),
+            (0, 0, 255),
+            (0, 128, 255)
+        ]
         rows = 4
         cols = self.num_leds // rows
         drops = []
@@ -155,7 +158,7 @@ class AnimationRunner:
     def fog_animation_loop(self, end_time, brightness=None):
         if brightness is None:
             brightness = self.brightness
-        fog_color = (150, 150, 180)
+        fog_color = (180, 180, 180)
         brightness_map = [random.randint(int(brightness*0.1), int(brightness*0.3)) for _ in range(self.num_leds)]
         last_shift = time.time()
         while time.time() < end_time:
@@ -171,7 +174,11 @@ class AnimationRunner:
     def default_animation_loop(self, end_time, brightness=None):
         if brightness is None:
             brightness = self.brightness
-        colors = [(100, 100, 100), (150, 150, 150), (200, 200, 200)]
+        colors = [
+            (255, 255, 255),
+            (200, 200, 200),
+            (180, 180, 180)
+        ]
         color_index = 0
         last_change = time.time()
         while time.time() < end_time:
@@ -216,13 +223,13 @@ class AnimationRunner:
 
     def flash(self):
         for _ in range(2):
-            self.led.fill((180, 180, 180), self.brightness)
+            self.led.fill((255, 255, 255), self.brightness)
             time.sleep(0.10)
             self.turn_all_off()
             time.sleep(0.07)
         pastel_colors = [
-            (120, 180, 255), (180, 255, 200), (255, 180, 220),
-            (200, 120, 255), (255, 240, 180), (180, 255, 255)
+            (255, 200, 200), (200, 255, 200), (200, 200, 255),
+            (255, 255, 200), (200, 255, 255), (255, 200, 255)
         ]
         num_rows = 4
         num_cols = 7

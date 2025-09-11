@@ -137,7 +137,7 @@ class LED_UTILS:
             self.anim.theater_chase(dim((127, 127, 127)), 0.05)
         elif self.animation == 3:
             print("Running rainbow")
-            self.anim.rainbow_cycle(0.01, brightness=0.2)
+            self.anim.rainbow_cycle(0.00001, brightness=0.2)
         else:
             for color in [(255,0,0), (0,255,0), (0,0,255)]:
                 self.anim.fill(dim(color), int(self.brightness * 0.3))
