@@ -61,7 +61,7 @@ def main():
             print(f"[ERROR] Failed to initialize LED_UTILS: {exc}")
             sys.exit(1)
         try:
-            gh_tracker = GithubTracker(num_days)
+            gh_tracker = GithubTracker(num_days, config_file)
         except Exception as exc:
             print(f"[ERROR] Failed to initialize GithubTracker: {exc}")
             sys.exit(1)
