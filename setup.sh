@@ -75,7 +75,7 @@ run_cmd "sudo apt install -y git nodejs npm portaudio19-dev python3-pip jq synct
 print_status "System packages installed."
 
 # Enable unattended upgrades
-run_cmd "sudo dpkg-reconfigure -plow unattended-upgrades"
+run_cmd "sudo dpkg-reconfigure --priority=low unattended-upgrades"
 
 print_section "Syncthing Service Setup"
 run_cmd "sudo systemctl enable --now syncthing@$USERNAME.service"
