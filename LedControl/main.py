@@ -1,61 +1,74 @@
+"""Main entry point for CCal_V2 LED control."""
+
 import time
 import sys
 import traceback
-from led_utils import LED_UTILS
-from github_tracker import GITHUB_TRACKER
-from config_manager import CONFIG_MANAGER
-from weather_tracker import WEATHER_TRACKER
+from led_utils import LedUtils
+from github_tracker import GithubTracker
+from config_manager import ConfigManager
+from weather_tracker import WeatherTracker
 
-USERNAME="username"
+USERNAME = "username"
+
 
 def safe_get(config, key, default=None, required=False):
+    """Safely get a value from the config dictionary."""
     value = config.get(key, default)
     if required and value is None:
         print(f"[ERROR] Required config '{key}' is missing.")
         sys.exit(1)
     return value
 
+
 def main():
+    """Main loop for running the LED control logic."""
     try:
         # Load configuration
         config_file = f"/home/{USERNAME}/CCal_V2/config.json"
         try:
-            config_manager = CONFIG_MANAGER(config_file)
+            config_manager = ConfigManager(config_file)
             config = config_manager.load_config()
-        except Exception as e:
-            print(f"[ERROR] Failed to load config: {e}")
+        except Exception as exc:
+            print(f"[ERROR] Failed to load config: {exc}")
             sys.exit(1)
 
         # Extract configuration values with defaults
-        poll_time = safe_get(config, 'POLL_TIME', 90)
-        pin_num = safe_get(config, 'PIN_NUM', 18)
-        num_days = safe_get(config, 'NUM_DAYS', 28)
-        none_color = tuple(safe_get(config, 'NONE_COLOR', [255, 255, 255]))
-        event_color = tuple(safe_get(config, 'EVENT_COLOR', [0, 255, 0]))
-        brightness = safe_get(config, 'BRIGHTNESS', 0.8)
-        on_time = safe_get(config, 'ON_TIME', 9)
-        off_time = safe_get(config, 'OFF_TIME', 23)
+        poll_time = safe_get(config, "POLL_TIME", 90)
+        pin_num = safe_get(config, "PIN_NUM", 18)
+        num_days = safe_get(config, "NUM_DAYS", 28)
+        none_color = tuple(safe_get(config, "NONE_COLOR", [255, 255, 255]))
+        event_color = tuple(safe_get(config, "EVENT_COLOR", [0, 255, 0]))
+        brightness = safe_get(config, "BRIGHTNESS", 0.8)
+        on_time = safe_get(config, "ON_TIME", 9)
+        off_time = safe_get(config, "OFF_TIME", 23)
 
         # Required for weather
-        weather_api_key = safe_get(config, 'OPENWEATHERMAP_API_KEY', required=True)
-        weather_lat = safe_get(config, 'WEATHER_LAT', required=True)
-        weather_lon = safe_get(config, 'WEATHER_LON', required=True)
+        weather_api_key = safe_get(config, "OPENWEATHERMAP_API_KEY", required=True)
+        weather_lat = safe_get(config, "WEATHER_LAT", required=True)
+        weather_lon = safe_get(config, "WEATHER_LON", required=True)
 
         # Initialize components
         try:
-            leds = LED_UTILS(num_days, config.get('STARTUP_ANIMATION', True), none_color, event_color, pin_num, brightness)
-        except Exception as e:
-            print(f"[ERROR] Failed to initialize LED_UTILS: {e}")
+            leds = LedUtils(
+                num_days,
+                config.get("STARTUP_ANIMATION", True),
+                none_color,
+                event_color,
+                pin_num,
+                brightness,
+            )
+        except Exception as exc:
+            print(f"[ERROR] Failed to initialize LED_UTILS: {exc}")
             sys.exit(1)
         try:
-            gh_tracker = GITHUB_TRACKER(num_days)
-        except Exception as e:
-            print(f"[ERROR] Failed to initialize GITHUB_TRACKER: {e}")
+            gh_tracker = GithubTracker(num_days)
+        except Exception as exc:
+            print(f"[ERROR] Failed to initialize GithubTracker: {exc}")
             sys.exit(1)
         try:
-            weather_tracker = WEATHER_TRACKER(weather_api_key, weather_lat, weather_lon)
-        except Exception as e:
-            print(f"[ERROR] Failed to initialize WEATHER_TRACKER: {e}")
+            weather_tracker = WeatherTracker(weather_api_key, weather_lat, weather_lon)
+        except Exception as exc:
+            print(f"[ERROR] Failed to initialize WEATHER_TRACKER: {exc}")
             sys.exit(1)
 
         while True:
@@ -67,47 +80,52 @@ def main():
                     continue
                 try:
                     event_counts = gh_tracker.fetch_github_events()
-                except Exception as e:
-                    print(f"[ERROR] Failed to fetch GitHub events: {e}")
+                except Exception as exc:
+                    print(f"[ERROR] Failed to fetch GitHub events: {exc}")
                     event_counts = []
                 try:
                     leds.update_leds(event_counts)
-                except Exception as e:
-                    print(f"[ERROR] Failed to update LEDs: {e}")
+                except Exception as exc:
+                    print(f"[ERROR] Failed to update LEDs: {exc}")
                 try:
                     weather_status = weather_tracker.get_weather()
-                except Exception as e:
-                    print(f"[ERROR] Failed to fetch weather: {e}")
+                except Exception as exc:
+                    print(f"[ERROR] Failed to fetch weather: {exc}")
                     weather_status = None
 
                 elapsed = 0
                 while elapsed < poll_time:
                     time.sleep(60)
-                    if brightness == 0 or not (on_time <= time.localtime().tm_hour < off_time):
+                    if brightness == 0 or not (
+                        on_time <= time.localtime().tm_hour < off_time
+                    ):
                         elapsed = time.time() - start_time
                         continue
                     try:
                         if weather_status is not None:
-                            leds.show_weather(weather_status, brightness, duration_sec=5)
-                    except Exception as e:
-                        print(f"[ERROR] Failed to show weather on LEDs: {e}")
+                            leds.show_weather(
+                                weather_status, brightness, duration_sec=5
+                            )
+                    except Exception as exc:
+                        print(f"[ERROR] Failed to show weather on LEDs: {exc}")
                     try:
                         leds.update_leds(event_counts)
-                    except Exception as e:
-                        print(f"[ERROR] Failed to update LEDs: {e}")
+                    except Exception as exc:
+                        print(f"[ERROR] Failed to update LEDs: {exc}")
                     elapsed = time.time() - start_time
             except KeyboardInterrupt:
                 print("Exiting gracefully.")
                 break
-            except Exception as e:
-                print(f"[ERROR] Unexpected error in main loop: {e}")
+            except Exception as exc:
+                print(f"[ERROR] Unexpected error in main loop: {exc}")
                 traceback.print_exc()
                 time.sleep(10)  # Prevent rapid crash loop
 
-    except Exception as e:
-        print(f"[FATAL] Unhandled exception: {e}")
+    except Exception as exc:
+        print(f"[FATAL] Unhandled exception: {exc}")
         traceback.print_exc()
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

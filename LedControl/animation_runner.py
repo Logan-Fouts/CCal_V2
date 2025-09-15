@@ -1,31 +1,36 @@
-from collections import deque
+"""Animation runner for LED effects in CCal_V2."""
+
 import math
 import random
 import time
 
+
 class AnimationRunner:
+    """Class to run various LED animations."""
+
     def __init__(self, led_utils):
+        """Initialize AnimationRunner with LED utilities."""
         self.led = led_utils
         self.num_leds = led_utils.num_leds
         self.brightness = led_utils.brightness
 
     def turn_all_off(self):
+        """Turn off all LEDs."""
         self.led.turn_all_off()
 
     def sun_animation_loop(self, end_time):
-        colors = [
-            (255, 255, 0),
-            (255, 255, 50),
-            (255, 255, 20)
-        ]
+        """Run sun animation until end_time."""
+        colors = [(255, 255, 0), (255, 255, 50), (255, 255, 20)]
         ray_pattern = [0, 1, 2] * ((self.num_leds // 3) + 1)
         while time.time() < end_time:
             cycle_time = time.time()
             cycle_progress = (cycle_time % 2) / 2
-            core_brightness = 0.3 + 0.7 * (0.5 + 0.5 * math.sin(cycle_progress * math.pi))
+            core_brightness = 0.3 + 0.7 * (
+                0.5 + 0.5 * math.sin(cycle_progress * math.pi)
+            )
             wave_pos = int(cycle_progress * 3) % 3
             for i in range(self.num_leds):
-                dist_from_center = abs(i - self.num_leds//2)
+                dist_from_center = abs(i - self.num_leds // 2)
                 color_idx = ray_pattern[i]
                 wave_effect = (3 - (dist_from_center + wave_pos) % 3) * 0.3
                 led_brightness = min(1.0, core_brightness + wave_effect)
@@ -33,11 +38,8 @@ class AnimationRunner:
             time.sleep(0.05)
 
     def cloud_animation_loop(self, end_time, brightness=None):
-        cloud_colors = [
-            (180, 180, 180),
-            (220, 220, 220),
-            (255, 255, 255)
-        ]
+        """Run cloud animation until end_time."""
+        cloud_colors = [(180, 180, 180), (220, 220, 220), (255, 255, 255)]
         cloud = [12, 11, 20, 19, 18, 17]
 
         self.turn_all_off()
@@ -48,14 +50,14 @@ class AnimationRunner:
                 time.sleep(0.5)
                 self.turn_all_off()
 
-    def rain_animation_loop(self, end_time, speed=1.0, drop_chance=0.4, brightness=None):
+    def rain_animation_loop(
+        self, end_time, speed=1.0, drop_chance=0.4, brightness=None
+    ):
+        """Run rain animation until end_time."""
         if brightness is None:
             brightness = self.brightness
 
-        rain_colors = [
-            (0, 128, 255),
-            (0, 0, 255)
-        ]
+        rain_colors = [(0, 128, 255), (0, 0, 255)]
         rows = 4
         cols = self.num_leds // rows
         if self.num_leds % rows != 0:
@@ -64,32 +66,33 @@ class AnimationRunner:
         while time.time() < end_time:
             self.turn_all_off()
             if random.random() < drop_chance:
-                new_col = random.randint(0, cols-1)
+                new_col = random.randint(0, cols - 1)
                 drop_brightness = random.uniform(brightness * 0.6, brightness * 0.9)
-                drops.append({
-                    'row': 0,
-                    'col': new_col,
-                    'speed': speed,
-                    'color': random.choice(rain_colors),
-                    'brightness': drop_brightness
-                })
+                drops.append(
+                    {
+                        "row": 0,
+                        "col": new_col,
+                        "speed": speed,
+                        "color": random.choice(rain_colors),
+                        "brightness": drop_brightness,
+                    }
+                )
             for drop in drops[:]:
-                led_index = drop['col'] + (int(drop['row']) * cols)
+                led_index = drop["col"] + (int(drop["row"]) * cols)
                 if 0 <= led_index < self.num_leds:
-                    self.led.set_led(led_index, drop['color'], drop['brightness'])
-                drop['row'] += drop['speed']
-                if drop['row'] >= rows:
+                    self.led.set_led(led_index, drop["color"], drop["brightness"])
+                drop["row"] += drop["speed"]
+                if drop["row"] >= rows:
                     drops.remove(drop)
             time.sleep(0.1)
 
-    def snow_animation_loop(self, end_time, speed=0.5, drop_chance=0.3, brightness=None):
+    def snow_animation_loop(
+        self, end_time, speed=0.5, drop_chance=0.3, brightness=None
+    ):
+        """Run snow animation until end_time."""
         if brightness is None:
             brightness = self.brightness
-        snow_colors = [
-            (255, 255, 255),
-            (200, 220, 255),
-            (220, 240, 255)
-        ]
+        snow_colors = [(255, 255, 255), (200, 220, 255), (220, 240, 255)]
         rows = 4
         cols = self.num_leds // rows
         if self.num_leds % rows != 0:
@@ -98,31 +101,36 @@ class AnimationRunner:
         while time.time() < end_time:
             self.turn_all_off()
             if random.random() < drop_chance:
-                new_col = random.randint(0, cols-1)
-                drops.append({
-                    'row': 0,
-                    'col': new_col,
-                    'speed': speed,
-                    'color': random.choice(snow_colors),
-                    'brightness': random.randint(int(brightness*0.6), int(brightness*0.9))
-                })
+                new_col = random.randint(0, cols - 1)
+                drops.append(
+                    {
+                        "row": 0,
+                        "col": new_col,
+                        "speed": speed,
+                        "color": random.choice(snow_colors),
+                        "brightness": random.randint(
+                            int(brightness * 0.6), int(brightness * 0.9)
+                        ),
+                    }
+                )
             for drop in drops[:]:
-                led_index = drop['col'] + (int(drop['row']) * cols)
+                led_index = drop["col"] + (int(drop["row"]) * cols)
                 if 0 <= led_index < self.num_leds - 1:
-                    self.led.set_led(led_index + random.randint(0, 1), drop['color'], drop['brightness'])
-                drop['row'] += drop['speed']
-                if drop['row'] >= rows:
+                    self.led.set_led(
+                        led_index + random.randint(0, 1),
+                        drop["color"],
+                        drop["brightness"],
+                    )
+                drop["row"] += drop["speed"]
+                if drop["row"] >= rows:
                     drops.remove(drop)
             time.sleep(0.1)
 
     def thunderstorm_animation_loop(self, end_time, brightness=None):
+        """Run thunderstorm animation until end_time."""
         if brightness is None:
             brightness = self.brightness
-        rain_colors = [
-            (0, 128, 255),
-            (0, 0, 255),
-            (0, 128, 255)
-        ]
+        rain_colors = [(0, 128, 255), (0, 0, 255), (0, 128, 255)]
         rows = 4
         cols = self.num_leds // rows
         drops = []
@@ -130,20 +138,24 @@ class AnimationRunner:
         while time.time() < end_time:
             self.turn_all_off()
             if random.random() < 0.7:
-                new_col = random.randint(0, cols-1)
-                drops.append({
-                    'row': 0,
-                    'col': new_col,
-                    'speed': 1.0,
-                    'color': random.choice(rain_colors),
-                    'brightness': random.randint(int(brightness*0.6), int(brightness*0.9))
-                })
+                new_col = random.randint(0, cols - 1)
+                drops.append(
+                    {
+                        "row": 0,
+                        "col": new_col,
+                        "speed": 1.0,
+                        "color": random.choice(rain_colors),
+                        "brightness": random.randint(
+                            int(brightness * 0.6), int(brightness * 0.9)
+                        ),
+                    }
+                )
             for drop in drops[:]:
-                led_index = drop['col'] + (int(drop['row']) * cols)
+                led_index = drop["col"] + (int(drop["row"]) * cols)
                 if 0 <= led_index < self.num_leds:
-                    self.led.set_led(led_index, drop['color'], drop['brightness'])
-                drop['row'] += drop['speed']
-                if drop['row'] >= rows:
+                    self.led.set_led(led_index, drop["color"], drop["brightness"])
+                drop["row"] += drop["speed"]
+                if drop["row"] >= rows:
                     drops.remove(drop)
             if time.time() - last_lightning > random.uniform(3.0, 8.0):
                 last_lightning = time.time()
@@ -156,10 +168,14 @@ class AnimationRunner:
             time.sleep(0.1)
 
     def fog_animation_loop(self, end_time, brightness=None):
+        """Run fog animation until end_time."""
         if brightness is None:
             brightness = self.brightness
         fog_color = (180, 180, 180)
-        brightness_map = [random.randint(int(brightness*0.1), int(brightness*0.3)) for _ in range(self.num_leds)]
+        brightness_map = [
+            random.randint(int(brightness * 0.1), int(brightness * 0.3))
+            for _ in range(self.num_leds)
+        ]
         last_shift = time.time()
         while time.time() < end_time:
             if time.time() - last_shift > 0.15:
@@ -167,18 +183,18 @@ class AnimationRunner:
                 last_shift = time.time()
             for i in range(self.num_leds):
                 current_brightness = brightness_map[i] + random.randint(-5, 5)
-                current_brightness = max(int(brightness*0.05), min(int(brightness*0.4), current_brightness))
+                current_brightness = max(
+                    int(brightness * 0.05),
+                    min(int(brightness * 0.4), current_brightness),
+                )
                 self.led.set_led(i, fog_color, current_brightness)
             time.sleep(0.05)
 
     def default_animation_loop(self, end_time, brightness=None):
+        """Run default animation until end_time."""
         if brightness is None:
             brightness = self.brightness
-        colors = [
-            (255, 255, 255),
-            (200, 200, 200),
-            (180, 180, 180)
-        ]
+        colors = [(255, 255, 255), (200, 200, 200), (180, 180, 180)]
         color_index = 0
         last_change = time.time()
         while time.time() < end_time:
@@ -189,13 +205,15 @@ class AnimationRunner:
             time.sleep(0.05)
 
     def color_wipe(self, color, wait):
+        """Wipe color across display one LED at a time."""
         for i in range(self.num_leds):
             self.led.set_led(i, color, self.brightness)
             time.sleep(wait)
         self.turn_all_off()
 
     def theater_chase(self, color, wait):
-        for q in range(10):
+        """Create a theater chase light style animation."""
+        for _ in range(10):
             for i in range(0, self.num_leds, 3):
                 self.led.set_led(i, color, self.brightness)
             time.sleep(wait)
@@ -203,16 +221,17 @@ class AnimationRunner:
                 self.led.set_led(i, (0, 0, 0), self.brightness)
 
     def wheel(self, pos):
+        """Generate rainbow colors across 0-255 positions."""
         if pos < 85:
             return (int(pos * 3), int(255 - pos * 3), 0)
-        elif pos < 170:
+        if pos < 170:
             pos -= 85
             return (int(255 - pos * 3), 0, int(pos * 3))
-        else:
-            pos -= 170
-            return (0, int(pos * 3), int(255 - pos * 3))
+        pos -= 170
+        return (0, int(pos * 3), int(255 - pos * 3))
 
     def rainbow_cycle(self, wait, brightness=1.0):
+        """Draw rainbow that uniformly distributes itself across all pixels."""
         for j in range(256):
             for i in range(self.num_leds):
                 pixel_index = (i * 256 // self.num_leds) + j
@@ -222,14 +241,19 @@ class AnimationRunner:
         self.turn_all_off()
 
     def flash(self):
+        """Flash all LEDs with white and pastel colors."""
         for _ in range(2):
             self.led.fill((255, 255, 255), self.brightness)
             time.sleep(0.10)
             self.turn_all_off()
             time.sleep(0.07)
         pastel_colors = [
-            (255, 200, 200), (200, 255, 200), (200, 200, 255),
-            (255, 255, 200), (200, 255, 255), (255, 200, 255)
+            (255, 200, 200),
+            (200, 255, 200),
+            (200, 200, 255),
+            (255, 255, 200),
+            (200, 255, 255),
+            (255, 200, 255),
         ]
         num_rows = 4
         num_cols = 7
@@ -239,7 +263,9 @@ class AnimationRunner:
                 if row % 2 == 0:
                     indices = list(range(num_cols * row, num_cols * (row + 1)))
                 else:
-                    indices = list(range(num_cols * (row + 1) - 1, num_cols * row - 1, -1))
+                    indices = list(
+                        range(num_cols * (row + 1) - 1, num_cols * row - 1, -1)
+                    )
                 for idx, i in enumerate(indices):
                     if i < self.num_leds:
                         for tail in range(fade_steps):
