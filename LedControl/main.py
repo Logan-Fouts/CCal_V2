@@ -8,7 +8,7 @@ from github_tracker import GithubTracker
 from config_manager import ConfigManager
 from weather_tracker import WeatherTracker
 
-USERNAME = "username"
+USERNAME="username"
 
 
 def safe_get(config, key, default=None, required=False):
