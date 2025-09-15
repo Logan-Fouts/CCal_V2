@@ -1,6 +1,6 @@
 #!/bin/bash
 
-USERNAME="ccal"
+USERNAME="username"
 echo USERNAME: $USERNAME
 
 IP_ADDR=$(hostname -I | awk '{print $1}')

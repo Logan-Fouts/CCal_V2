@@ -6,8 +6,7 @@ from github_tracker import GITHUB_TRACKER
 from config_manager import CONFIG_MANAGER
 from weather_tracker import WEATHER_TRACKER
 
-# TODO: Remove hardcoded username
-USERNAME="ccal"
+USERNAME="username"
 
 def safe_get(config, key, default=None, required=False):
     value = config.get(key, default)

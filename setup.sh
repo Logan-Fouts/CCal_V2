@@ -147,6 +147,10 @@ print_status "setup_addons.sh username patched."
 run_cmd "sed -i 's|USERNAME=\"username\"|USERNAME=\"$USERNAME\"|g' CCal_V2/WebGUI/server.js"
 print_status "server.js username patched."
 
+# Patch main.py
+run_cmd "sed -i 's|USERNAME=\"username\"|USERNAME=\"$USERNAME\"|g' CCal_V2/LedControl/main.py"
+print_status "main.py username patched."
+
 run_cmd "touch /home/$USERNAME/CCal_V2/WebGUI/.env"
 run_cmd "echo \"CCAL_WEBGUI_USER=$USERNAME\" >> /home/$USERNAME/CCal_V2/WebGUI/.env"
 run_cmd "echo \"CCAL_WEBGUI_PASS=raspberry\" >> /home/$USERNAME/CCal_V2/WebGUI/.env"
