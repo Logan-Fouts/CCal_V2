@@ -75,7 +75,7 @@ run_cmd "sudo apt install -y git nodejs npm portaudio19-dev python3-pip jq synct
 print_status "System packages installed."
 
 # Enable unattended upgrades
-run_cmd "sudo dpkg-reconfigure -plow unattended-upgrades"
+run_cmd "sudo dpkg-reconfigure --priority=low unattended-upgrades"
 
 print_section "Syncthing Service Setup"
 run_cmd "sudo systemctl enable --now syncthing@$USERNAME.service"
@@ -146,6 +146,10 @@ print_status "setup_addons.sh username patched."
 # Patch server.js
 run_cmd "sed -i 's|USERNAME=\"username\"|USERNAME=\"$USERNAME\"|g' CCal_V2/WebGUI/server.js"
 print_status "server.js username patched."
+
+# Patch main.py
+run_cmd "sed -i 's|USERNAME=\"username\"|USERNAME=\"$USERNAME\"|g' CCal_V2/LedControl/main.py"
+print_status "main.py username patched."
 
 run_cmd "touch /home/$USERNAME/CCal_V2/WebGUI/.env"
 run_cmd "echo \"CCAL_WEBGUI_USER=$USERNAME\" >> /home/$USERNAME/CCal_V2/WebGUI/.env"

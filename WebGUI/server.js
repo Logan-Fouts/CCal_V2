@@ -6,7 +6,7 @@ const { exec } = require('child_process');
 
 const app = express();
 const PORT = 8080;
-USERNAME="ccal"
+USERNAME="username"
 
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
