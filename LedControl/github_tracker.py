@@ -8,12 +8,12 @@ from config_manager import ConfigManager
 class GithubTracker:
     """Tracks GitHub events for a user."""
 
-    def __init__(self, num_days):
+    def __init__(self, num_days, config_file):
         """Initialize the tracker."""
         self.num_days = num_days
-        self.config_manager = ConfigManager()
+        self.config_manager = ConfigManager(config_file)
 
-    def fetch_github_events(self, max_events=100):
+    def fetch_github_events(self, max_events=200):
         """
         Fetch recent GitHub events for the configured user.
 
