@@ -188,7 +188,7 @@ class LedUtils:
 
         # Use AnimationRunner for all animations
         if condition == "clear":
-            self.anim.sun_animation_loop(end_time, brightness)
+            self.anim.sun_animation_loop(end_time)
         elif condition == "clouds":
             self.anim.cloud_animation_loop(end_time, brightness)
         elif condition == "rain":

@@ -1,6 +1,6 @@
-# Getting Started with CCal v2
+# Getting Started with CCal
 
-This guide will help you set up your Contribution Calendar v2.  
+This guide will help you set up your Contribution Calendar.  
 Follow the steps below to get everything working.
 
 ---
@@ -23,7 +23,7 @@ Follow the steps below to get everything working.
 
 3. **Access the Web Interface**
     - Open a browser and go to:  
-      `http://<device-ip>:8080`
+      `http://<device-ip>`
     - Replace `<device-ip>` with your Pi's IP address.
 
 4. **Configure Settings**
@@ -42,9 +42,13 @@ Follow the steps below to get everything working.
 ### Set Your Own WebGUI Login
 
 To set your own username and password for the WebGUI, run this command (replace `yourusername` and `yourpassword`):
-
 ```sh
 echo -e "CCAL_WEBGUI_USER=yourusername\nCCAL_WEBGUI_PASS=yourpassword" > ~/CCal_V2/WebGUI/.env
+```
+*Or just edit the file with whatever text editor you want*
+You'll need to use sudo since the files are owned by the root user. You of course can modify the permisions so you dont need to use sudo.
+```sh
+sudo vim ~/CCal_V2/WebGUI/.env
 ```
 
 ---

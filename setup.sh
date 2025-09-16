@@ -151,9 +151,16 @@ print_status "server.js username patched."
 run_cmd "sed -i 's|USERNAME=\"username\"|USERNAME=\"$USERNAME\"|g' CCal_V2/LedControl/main.py"
 print_status "main.py username patched."
 
+# Prompt for WebGUI username and password
+read -p "Enter WebGUI username [default: $USERNAME]: " WEBGUI_USER
+WEBGUI_USER=${WEBGUI_USER:-$USERNAME}
+read -s -p "Enter WebGUI password [default: raspberry]: " WEBGUI_PASS
+echo
+WEBGUI_PASS=${WEBGUI_PASS:-raspberry}
+
 run_cmd "touch /home/$USERNAME/CCal_V2/WebGUI/.env"
-run_cmd "echo \"CCAL_WEBGUI_USER=$USERNAME\" >> /home/$USERNAME/CCal_V2/WebGUI/.env"
-run_cmd "echo \"CCAL_WEBGUI_PASS=raspberry\" >> /home/$USERNAME/CCal_V2/WebGUI/.env"
+run_cmd "echo \"CCAL_WEBGUI_USER=$WEBGUI_USER\" > /home/$USERNAME/CCal_V2/WebGUI/.env"
+run_cmd "echo \"CCAL_WEBGUI_PASS=$WEBGUI_PASS\" >> /home/$USERNAME/CCal_V2/WebGUI/.env"
 
 print_section "Enabling and Starting Services"
 run_cmd "sudo systemctl daemon-reload"
