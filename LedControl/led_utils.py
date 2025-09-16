@@ -158,13 +158,13 @@ class LedUtils:
             self.anim.color_wipe(dim((0, 255, 0)), 0.05)
             self.anim.color_wipe(dim((0, 0, 255)), 0.05)
         elif self.animation == 2:
-            self.anim.theater_chase(dim((127, 127, 127)), 0.05)
+            self.anim.theater_chase(dim((127, 127, 127)), 0.001)
         elif self.animation == 3:
             print("Running rainbow")
             self.anim.rainbow_cycle(0.00001, brightness=0.2)
         else:
             for color in [(255, 0, 0), (0, 255, 0), (0, 0, 255)]:
-                self.anim.fill(dim(color), int(self.brightness * 0.3))
+                self.anim.fill(dim(color), self.brightness)
                 time.sleep(0.5)
         self.turn_all_off()
 

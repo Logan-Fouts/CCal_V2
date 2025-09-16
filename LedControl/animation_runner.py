@@ -249,13 +249,17 @@ class AnimationRunner:
         self.turn_all_off()
 
     def theater_chase(self, color, wait):
-        """Create a theater chase light style animation."""
-        for _ in range(10):
-            for i in range(0, self.num_leds, 3):
-                self.led.set_led(i, color, self.brightness)
-            time.sleep(wait)
-            for i in range(0, self.num_leds, 3):
-                self.led.set_led(i, (0, 0, 0), self.brightness)
+        """Improved theater chase: moving dots with configurable spacing and smooth phase transitions."""
+        spacing = 3
+        cycles = 15
+        for phase in range(spacing):
+            for _ in range(cycles):
+                for i in range(self.num_leds):
+                    if (i + phase) % spacing == 0:
+                        self.led.set_led(i, color, self.brightness)
+                    else:
+                        self.led.set_led(i, (0, 0, 0), self.brightness)
+                time.sleep(wait)
 
     def wheel(self, pos):
         """Generate rainbow colors across 0-255 positions."""
