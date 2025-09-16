@@ -8,6 +8,7 @@ from github_tracker import GithubTracker
 from config_manager import ConfigManager
 from weather_tracker import WeatherTracker
 
+# Needs to stay like this for sed to patch it in the setup script
 USERNAME="username"
 
 

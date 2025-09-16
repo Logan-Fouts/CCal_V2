@@ -23,7 +23,7 @@ Follow the steps below to get everything working.
 
 3. **Access the Web Interface**
     - Open a browser and go to:  
-      `http://<device-ip>`
+      `http://<device-ip>:8080`
     - Replace `<device-ip>` with your Pi's IP address.
 
 4. **Configure Settings**
