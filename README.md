@@ -1,4 +1,7 @@
-# Contrib Cal v2
+# Contrib Cal
+
+
+![Logo](/Images/logo.png)  
 
 Contrib Cal v2 is a contribution tracker built around a Raspberry Pi Zero W. It shows your GitHub activity using LEDs and includes a web interface for easy setup and control. The project is open, hackable, and designed for anyone interested in building their own contribution calendar.
 
@@ -49,8 +52,7 @@ You can manage most settings and add-ons through a simple web page hosted on the
 
 You can substitute
 
-
-
+![Contrib Cal in Action](/Images/animation.gif)  
 
 ---
 
@@ -67,10 +69,4 @@ If you run into issues or have ideas, feel free to open an issue on GitHub.
 
 ---
 
-## Coming Soon
-
-- API for controlling the LED matrix over the network
-
----
-
-Thanks for checking out Contrib Cal
+Thanks for checking out Contrib Cal, Feel free to open up PRs!
