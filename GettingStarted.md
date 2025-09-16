@@ -73,9 +73,19 @@ Use [Raspberry Pi Imager](https://www.raspberrypi.com/software/) for the easiest
     ```sh
     sudo curl https://raw.githubusercontent.com/Logan-Fouts/CCal_V2/refs/heads/main/setup.sh | sh
     ```
+    Or if you are having issues with the interactive shell then use the steps here:
+    1. ```sh
+       sudo wget https://raw.githubusercontent.com/Logan-Fouts/CCal_V2/refs/heads/main/setup.sh
+       ```
+    2. ```sh
+       sudo chmod +x setup.sh
+       ```
+    3. ```sh
+       sudo ./setup.sh
+       ```
     - **Note:** This command will take quite a while to run, as it installs all dependencies and sets up the system.
 
-4. **Source the updated bashrc**
+5. **Source the updated bashrc**
     - Either exit the ssh session then rejoin or run:
     ```sh
     source ~/.bashrc
