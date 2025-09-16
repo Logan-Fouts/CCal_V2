@@ -92,7 +92,12 @@ class AnimationRunner:
         """Run snow animation until end_time."""
         if brightness is None:
             brightness = self.brightness
-        snow_colors = [(255, 255, 255), (200, 220, 255), (220, 240, 255)]
+        # Use GRB color order to match rain/cloud animations
+        snow_colors = [
+            (255, 255, 255),  # white (G,R,B)
+            (220, 200, 255),  # light blueish (G,R,B)
+            (240, 220, 255),  # lighter blueish (G,R,B)
+        ]
         rows = 4
         cols = self.num_leds // rows
         if self.num_leds % rows != 0:
@@ -102,25 +107,20 @@ class AnimationRunner:
             self.turn_all_off()
             if random.random() < drop_chance:
                 new_col = random.randint(0, cols - 1)
+                drop_brightness = random.uniform(brightness * 0.6, brightness * 0.9)
                 drops.append(
                     {
                         "row": 0,
                         "col": new_col,
                         "speed": speed,
                         "color": random.choice(snow_colors),
-                        "brightness": random.randint(
-                            int(brightness * 0.6), int(brightness * 0.9)
-                        ),
+                        "brightness": drop_brightness,
                     }
                 )
             for drop in drops[:]:
                 led_index = drop["col"] + (int(drop["row"]) * cols)
-                if 0 <= led_index < self.num_leds - 1:
-                    self.led.set_led(
-                        led_index + random.randint(0, 1),
-                        drop["color"],
-                        drop["brightness"],
-                    )
+                if 0 <= led_index < self.num_leds:
+                    self.led.set_led(led_index, drop["color"], drop["brightness"])
                 drop["row"] += drop["speed"]
                 if drop["row"] >= rows:
                     drops.remove(drop)
@@ -145,8 +145,8 @@ class AnimationRunner:
                         "col": new_col,
                         "speed": 1.0,
                         "color": random.choice(rain_colors),
-                        "brightness": random.randint(
-                            int(brightness * 0.6), int(brightness * 0.9)
+                        "brightness": random.uniform(
+                            brightness * 0.6, brightness * 0.9
                         ),
                     }
                 )
@@ -168,27 +168,64 @@ class AnimationRunner:
             time.sleep(0.1)
 
     def fog_animation_loop(self, end_time, brightness=None):
-        """Run fog animation until end_time."""
+        """Drifting, gradient fog: multiple moving patches with white/grey gradients, like clouds."""
         if brightness is None:
             brightness = self.brightness
-        fog_color = (180, 180, 180)
-        brightness_map = [
-            random.randint(int(brightness * 0.1), int(brightness * 0.3))
-            for _ in range(self.num_leds)
+        rows = 4
+        cols = self.num_leds // rows
+        if self.num_leds % rows != 0:
+            cols += 1
+        # Define several fog patches, each with its own position, width, color, and speed
+        num_patches = 3
+        patches = []
+        fog_colors = [
+            (200, 200, 200),  # light grey
+            (180, 180, 180),  # medium grey
+            (255, 255, 255),  # white
+            (220, 220, 220),  # soft white
         ]
-        last_shift = time.time()
+        for _ in range(num_patches):
+            patches.append(
+                {
+                    "row": random.randint(0, rows - 1),
+                    "pos": random.uniform(0, cols - 1),
+                    "width": random.uniform(cols * 0.4, cols * 0.7),
+                    "color": random.choice(fog_colors),
+                    "speed": random.uniform(0.02, 0.25) * random.choice([-1, 1]),
+                }
+            )
+        min_brightness = brightness * 0.07
+        max_brightness = brightness * 0.18
         while time.time() < end_time:
-            if time.time() - last_shift > 0.15:
-                brightness_map.insert(0, brightness_map.pop())
-                last_shift = time.time()
+            # Start with all LEDs at minimum fog
+            led_map = [min_brightness for _ in range(self.num_leds)]
+            color_map = [fog_colors[1] for _ in range(self.num_leds)]
+            for patch in patches:
+                patch["pos"] = (patch["pos"] + patch["speed"]) % cols
+                for col in range(cols):
+                    # Distance from patch center
+                    dist = min(abs(col - patch["pos"]), cols - abs(col - patch["pos"]))
+                    if dist < patch["width"] / 2:
+                        t = dist / (patch["width"] / 2)
+                        # Soft gradient edge
+                        smooth = 1 - (3 * t * t - 2 * t * t * t)  # smoothstep reversed
+                        patch_brightness = (
+                            min_brightness + (max_brightness - min_brightness) * smooth
+                        )
+                        # Map (patch["row"], col) to LED index (serpentine)
+                        row = patch["row"]
+                        if row % 2 == 0:
+                            led_idx = row * cols + (cols - 1 - col)
+                        else:
+                            led_idx = row * cols + col
+                        if led_idx < self.num_leds:
+                            # If multiple patches overlap, take the brighter one
+                            if patch_brightness > led_map[led_idx]:
+                                led_map[led_idx] = patch_brightness
+                                color_map[led_idx] = patch["color"]
             for i in range(self.num_leds):
-                current_brightness = brightness_map[i] + random.randint(-5, 5)
-                current_brightness = max(
-                    int(brightness * 0.05),
-                    min(int(brightness * 0.4), current_brightness),
-                )
-                self.led.set_led(i, fog_color, current_brightness)
-            time.sleep(0.05)
+                self.led.set_led(i, color_map[i], led_map[i])
+            time.sleep(0.01)
 
     def default_animation_loop(self, end_time, brightness=None):
         """Run default animation until end_time."""

@@ -9,6 +9,7 @@ import time
 from unittest.mock import patch, MagicMock
 import pytest
 
+config_file = "test_config.json"
 
 @pytest.fixture
 def mock_config():
@@ -47,7 +48,7 @@ def test_fetch_github_events_basic(mock_get, mock_config_manager, mock_config):
         MagicMock(status_code=200, json=lambda: events_page2),
         MagicMock(status_code=200, json=lambda: events_page3),
     ]
-    tracker = GithubTracker(num_days=3)
+    tracker = GithubTracker(3, config_file)
     counts = tracker.fetch_github_events(max_events=70)
     # Should count events for 3 days
     assert sum(counts) == 70
@@ -58,7 +59,7 @@ def test_fetch_github_events_basic(mock_get, mock_config_manager, mock_config):
 
 def test_get_event_counts_handles_dates():
     """Test get_event_counts correctly counts events by date and ignores invalid dates."""
-    tracker = GithubTracker(num_days=5)
+    tracker = GithubTracker(5, config_file)
     now = time.time()
     events = [
         {"created_at": time.strftime("%Y-%m-%dT00:00:00Z", time.gmtime(now))},  # today
@@ -111,7 +112,7 @@ def test_print_new_events_prints_and_updates(
         },
     ]
     mock_get.return_value = MagicMock(status_code=200, json=lambda: events)
-    tracker = GithubTracker(num_days=3)
+    tracker = GithubTracker(3, config_file)
     result = tracker.print_new_events()
     assert result is True
     # LAST_EVENT_ID should be updated
@@ -136,7 +137,7 @@ def test_print_new_events_no_new(mock_get, mock_config_manager, mock_config):
         },
     ]
     mock_get.return_value = MagicMock(status_code=200, json=lambda: events)
-    tracker = GithubTracker(num_days=3)
+    tracker = GithubTracker(3, config_file)
     result = tracker.print_new_events()
     assert result is False
     mock_config_manager.return_value.save_config.assert_not_called()
