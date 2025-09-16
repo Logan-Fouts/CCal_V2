@@ -101,6 +101,7 @@ def main():
                         on_time <= time.localtime().tm_hour < off_time
                     ):
                         elapsed = time.time() - start_time
+                        leds.turn_all_off()
                         continue
                     try:
                         if weather_status is not None:
