@@ -76,9 +76,12 @@ def main():
             try:
                 start_time = time.time()
                 # If brightness is 0, skip all LED updates and just sleep
-                if brightness == 0:
-                    time.sleep(poll_time)
-                    continue
+                if on_time != off_time:
+                    if brightness == 0 or not (
+                        on_time <= time.localtime().tm_hour < off_time
+                    ):
+                        time.sleep(poll_time)
+                        continue
                 try:
                     event_counts = gh_tracker.fetch_github_events()
                 except Exception as exc:
@@ -97,12 +100,13 @@ def main():
                 elapsed = 0
                 while elapsed < poll_time:
                     time.sleep(60)
-                    if brightness == 0 or not (
-                        on_time <= time.localtime().tm_hour < off_time
-                    ):
-                        elapsed = time.time() - start_time
-                        leds.turn_all_off()
-                        continue
+                    if on_time != off_time:
+                        if brightness == 0 or not (
+                            on_time <= time.localtime().tm_hour < off_time
+                        ):
+                            elapsed = time.time() - start_time
+                            leds.turn_all_off()
+                            continue
                     try:
                         if weather_status is not None:
                             leds.show_weather(
