@@ -14,7 +14,7 @@ from led_utils import LedUtils
 
 @pytest.fixture
 def mock_strip_fixture():
-    """Fixture for mocking a NeoPixel strip."""
+    """Fixture for mocking a NeoPixel strip.""" 
     mock = MagicMock()
     return mock
 

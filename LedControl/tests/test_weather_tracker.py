@@ -57,7 +57,7 @@ def test_get_weather_api(monkeypatch, tracker):
     assert result["temperature"] == 22
 
 def test_get_weather_stale_cache(tracker):
-    # Simulate stale cache by setting last_update_time far in the past
+    # Simulate stale cache by setting last_update_time far in the past 
     tracker.last_update_time = time.time() - 99999
     tracker.cached_weather = "clouds"
     tracker.weather_data["current"] = {"main": {"temp": 10}}

@@ -44,7 +44,6 @@ def demo_animations(leds):
         (anim.default_animation_loop, 2),
         (lambda et: anim.color_wipe((0,255,0), 0.05), 1),
         (lambda et: anim.theater_chase((255,0,255), 0.07), 1),
-        (lambda et: anim.rainbow_cycle(0.01, brightness=0.2), 1),
         (lambda et: anim.flash(), 1),
     ]
     for func, duration in anims:
@@ -56,7 +55,7 @@ def demo_animations(leds):
 
 
 def main():
-    leds = LedUtils(num_days=28, brightness=0.2)
+    leds = LedUtils(num_days=28, brightness=0.9)
     demo_numbers(leds)
     demo_color_fills(leds)
     demo_animations(leds)

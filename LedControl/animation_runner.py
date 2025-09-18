@@ -98,6 +98,7 @@ class AnimationRunner:
             (220, 200, 255),  # light blueish (G,R,B)
             (240, 220, 255),  # lighter blueish (G,R,B)
         ]
+
         rows = 4
         cols = self.num_leds // rows
         if self.num_leds % rows != 0:

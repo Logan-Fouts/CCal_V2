@@ -75,7 +75,7 @@ def main():
         while True:
             try:
                 start_time = time.time()
-                # If brightness is 0, skip all LED updates and just sleep
+                # If brightness is 0, skip all LED updates and just sleep 
                 if on_time != off_time:
                     if brightness == 0 or not (
                         on_time <= time.localtime().tm_hour < off_time

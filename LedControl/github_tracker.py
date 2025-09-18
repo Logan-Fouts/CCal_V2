@@ -15,7 +15,7 @@ class GithubTracker:
 
     def fetch_github_events(self, max_events=200):
         """
-        Fetch recent GitHub events for the configured user.
+        Fetch recent GitHub events for the configured user. 
 
         Args:
             max_events (int): Maximum number of events to fetch.
