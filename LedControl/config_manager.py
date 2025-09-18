@@ -6,7 +6,7 @@ import traceback
 
 
 class ConfigManager:
-    """Handles loading and saving configuration."""
+    """Handles loading and saving configuration.""" 
 
     def __init__(self, config_file="/home/ccal/CCal_V2/config.json"):
         """Initialize ConfigManager with a config file path."""

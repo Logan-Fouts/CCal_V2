@@ -17,7 +17,7 @@ data = {"weather": [{"main": "Rain"}], "main": {"temp": 15}}
 
 @pytest.fixture
 def tracker():
-    """Fixture for a WeatherTracker instance."""
+    """Fixture for a WeatherTracker instance.""" 
     return WeatherTracker("dummy_api_key", lat=10.0, lon=20.0)
 
 

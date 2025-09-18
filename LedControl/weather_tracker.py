@@ -16,7 +16,7 @@ class WeatherTracker:
         self.lon = lon
         self.last_update_time: float = 0
         self.cached_weather: Optional[str] = None
-        self.CACHE_TIMEOUT = 1800  # 30 minutes in seconds
+        self.CACHE_TIMEOUT = 1800  # 30 minutes in seconds 
 
     def _make_weather_request(self, max_retries: int = 3) -> Optional[Dict[str, Any]]:
         """

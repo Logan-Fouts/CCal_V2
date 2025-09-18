@@ -24,7 +24,7 @@ import main
 def test_main_runs_with_minimal_config(
     mock_weather, mock_gh, mock_led, mock_config_mgr
 ):
-    """Test main runs with minimal valid config and all components are initialized."""
+    """Test main runs with minimal valid config and all components are initialized.""" 
     # Setup config
     config = {
         "POLL_TIME": 1,

@@ -13,7 +13,7 @@ class DummyLED:
     """Dummy LED class for testing AnimationRunner."""
 
     def __init__(self, num_leds=10, brightness=1.0):
-        """Initialize DummyLED with number of LEDs and brightness."""
+        """Initialize DummyLED with number of LEDs and brightness.""" 
         self.num_leds = num_leds
         self.brightness = brightness
         self.calls = []
