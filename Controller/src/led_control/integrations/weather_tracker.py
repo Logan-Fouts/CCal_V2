@@ -17,7 +17,8 @@ import requests
 
 class WeatherTracker:
     """
-    Tracks and caches current weather data for a specified location using the OpenWeatherMap API.
+    Tracks and caches current weather data for a specified
+    location using the OpenWeatherMap API.
 
     Usage:
         wt = WeatherTracker(api_key, location)
@@ -25,7 +26,6 @@ class WeatherTracker:
     """
 
     def __init__(self, api_key, location):
-        self._api_key = api_key
         self._location = location
         self._url = "https://api.openweathermap.org/data/3.0/onecall?lat={LOC[0]}&lon={LOC[1]}&appid={KEY}".format(
             LOC=location, KEY=api_key
