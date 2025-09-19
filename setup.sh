@@ -150,7 +150,7 @@ run_cmd "sed -i 's|USERNAME=\"username\"|USERNAME=\"$USERNAME\"|g' CCal_V2/WebGU
 print_status "server.js username patched."
 
 # Patch main.py
-run_cmd "sed -i 's|USERNAME=\"username\"|USERNAME=\"$USERNAME\"|g' CCal_V2/LedControl/main.py"
+run_cmd "sed -i 's|USERNAME = \"username\"|USERNAME = \"$USERNAME\"|g' CCal_V2/LedControl/main.py"
 print_status "main.py username patched."
 
 # Prompt for WebGUI username and password

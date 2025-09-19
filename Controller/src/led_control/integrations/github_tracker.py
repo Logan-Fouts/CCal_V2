@@ -52,7 +52,6 @@ class GitHubTracker:
             retries = 0
             while retries < self._max_retries:
                 try:
-                    print(f"Fetching page {page} (attempt {retries+1})...")
                     response = requests.get(url, headers=self._headers, timeout=10)
                     if response.status_code == 200:
                         events = response.json()
