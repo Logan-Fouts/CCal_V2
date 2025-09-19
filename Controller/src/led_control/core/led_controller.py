@@ -21,6 +21,36 @@ class LEDController:
             pixel_order=neopixel.GRB,
         )
 
+    def display_number(self, number, color=(255, 255, 255)):
+        """Display a number using predefined digit patterns."""
+        digit_patterns = {
+            0: [4, 5, 6, 11, 13, 18, 20, 25, 26, 27],
+            1: [6, 5, 12, 19, 26, 27, 25],
+            2: [4, 5, 6, 11, 19, 25, 26, 27],
+            3: [4, 5, 6, 12, 18, 26, 27],
+            4: [6, 4, 11, 13, 18, 25, 12],
+            5: [6, 13, 5, 4, 18, 25, 26, 27],
+            6: [6, 13, 20, 27, 12, 26, 11, 18, 25],
+            7: [6, 5, 4, 11, 19, 27],
+            8: [4, 5, 6, 11, 13, 18, 20, 25, 26, 27, 19],
+            9: [6, 5, 4, 11, 18, 25, 19, 20, 13],
+        }
+
+        str_num = str(number).zfill(2)[-2:]  # Ensure two digits
+
+        # Display first digit
+        first_digit = int(str_num[0])
+        for idx in digit_patterns.get(first_digit, []):
+            if 0 <= idx < self.num_leds:
+                self.set_pixel(idx, color)
+
+        # Display second digit (offset by -4)
+        second_digit = int(str_num[1])
+        for idx in digit_patterns.get(second_digit, []):
+            idx2 = idx - 4
+            if 0 <= idx2 < self.num_leds:
+                self.set_pixel(idx2, color)
+
     def _apply_brightness(
         self, color: Tuple[int, int, int], brightness: Optional[float] = None
     ) -> Tuple[int, int, int]:

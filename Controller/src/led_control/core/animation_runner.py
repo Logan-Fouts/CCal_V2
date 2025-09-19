@@ -12,6 +12,13 @@ class AnimationRunner:
         self.led = led_controller
         self.num_leds = led_controller.num_leds
 
+    def display_number(
+        self, number: int, color: Tuple[int, int, int] = (255, 255, 255)
+    ):
+        """Display a number using the LED controller."""
+        self.led.display_number(number, color)
+        self.led.show()
+
     def turn_all_off(self):
         """Turn off all LEDs."""
         self.led.turn_all_off()
@@ -419,6 +426,15 @@ class AnimationRunner:
             self.default_animation_loop(end_time, brightness)
 
         self.turn_all_off()
+        temp = weather.get("main", {}).get("temp")
+        if temp is not None:
+            if temp <= 5:
+                color = (0, 128, 255)  # blue for cold
+            elif temp >= 25:
+                color = (255, 0, 0)  # red for hot
+            else:
+                color = (255, 255, 255)  # white for normal
+            self.display_number(int(round(temp)), color)
 
     def run_startup_animation(
         self,

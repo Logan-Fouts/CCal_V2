@@ -31,9 +31,7 @@ class WeatherTracker:
         if location is None:
             raise ValueError("Location must be provided.")
         self._location = location
-        self._url = "https://api.openweathermap.org/data/3.0/onecall?lat={LOC[0]}&lon={LOC[1]}&appid={KEY}".format(
-            LOC=location, KEY=api_key
-        )
+        self._url = f"https://api.openweathermap.org/data/2.5/weather?lat={location[0]}&lon={location[1]}&appid={api_key}&units=metric"
         self._current_weather = None
         self._cache_duration = 5 * 60  # 5 minutes
         self._cache_time = None

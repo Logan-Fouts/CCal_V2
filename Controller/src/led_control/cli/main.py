@@ -52,7 +52,7 @@ def main():
         )
         animation_runner = AnimationRunner(led_controller)
         github_tracker = GitHubTracker(github_username, github_token)
-        weather_tracker = WeatherTracker(weather_api_key, (weather_lat, weather_lon))
+        weather_tracker = WeatherTracker((weather_lat, weather_lon), weather_api_key)
 
         animation_runner.run_startup_animation(startup_animation) # Startup animation
         while True:
@@ -78,7 +78,8 @@ def main():
                 # Weather
                 try:
                     weather = weather_tracker.get_current_weather()
-                    animation_runner.run_weather_animation(weather) # Weather animation
+                    if weather is not None:
+                        animation_runner.run_weather_animation(weather) # Weather animation
                 except Exception as exc:
                     print(f"[ERROR] Failed to fetch weather: {exc}")
                     weather = None
