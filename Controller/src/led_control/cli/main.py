@@ -49,6 +49,17 @@ def main():
 
         temp_sleep_time = 3  # Seconds to display weather animation
 
+        # Convert startup_animation to int if it's a string and matches a known type
+        animation_map = {
+            "none": 0,
+            "color_wipe": 1,
+            "theater_chase": 2,
+            "rainbow": 3,
+            "flash": 4,
+        }
+        if isinstance(startup_animation, str):
+            startup_animation = animation_map.get(startup_animation.lower(), 0)
+
         # Initialize hardware and integrations
         led_controller = LEDController(
             pin_num=pin_num, num_leds=num_leds, brightness=brightness
@@ -57,7 +68,7 @@ def main():
         github_tracker = GitHubTracker(github_username, github_token)
         weather_tracker = WeatherTracker(weather_api_key, (weather_lat, weather_lon))
 
-        animation_runner.run_startup_animation(startup_animation)
+        animation_runner.run_startup_animation(startup_animation, brightness=brightness)
 
         # Main loop: update calendar, show weather, repeat
         while True:
@@ -73,7 +84,7 @@ def main():
                 # GitHub events
                 try:
                     event_counts = github_tracker.get_event_counts()
-                    animation_runner.update_calendar(event_counts)
+                    animation_runner.update_calendar(event_counts, brightness=brightness)
                 except Exception as exc:
                     print(f"[ERROR] Failed to fetch GitHub events: {exc}")
                     event_counts = []
@@ -84,12 +95,12 @@ def main():
                 try:
                     weather = weather_tracker.get_current_weather()
                     if weather is not None:
-                        animation_runner.run_weather_animation(weather)
+                        animation_runner.run_weather_animation(weather, brightness=brightness)
                         time.sleep(temp_sleep_time)
                 except Exception as exc:
                     print(f"[ERROR] Failed to fetch weather: {exc}")
 
-                animation_runner.update_calendar(event_counts)
+                animation_runner.update_calendar(event_counts, brightness=brightness)
 
             except KeyboardInterrupt:
                 print("Exiting gracefully.")
