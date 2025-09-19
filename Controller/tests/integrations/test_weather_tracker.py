@@ -136,12 +136,12 @@ def test_get_weather_cache_expires(mock_get):
     mock_get.return_value = mock_response
 
     wt = WeatherTracker(API_KEY, LOCATION)
-    wt._cache_duration = 1  # Set cache duration to 1 second
+    wt._cache_duration = 1
 
     weather1 = wt.get_current_weather()
     wt._current_weather = "Modified Data"
 
-    time.sleep(2)  # Wait for cache to expire
+    time.sleep(2)
 
     weather2 = wt.get_current_weather()
 
