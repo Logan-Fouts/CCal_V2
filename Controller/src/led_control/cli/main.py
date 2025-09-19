@@ -34,6 +34,7 @@ def main():
         pin_num = safe_get(config, "PIN_NUM", 18)
         num_leds = safe_get(config, "NUM_LEDS", 28)
         brightness = safe_get(config, "BRIGHTNESS", 0.8)
+        startup_animation = safe_get(config, "STARTUP_ANIMATION", "rainbow")
         on_time = safe_get(config, "ON_TIME", 9)
         off_time = safe_get(config, "OFF_TIME", 23)
         github_username = safe_get(config, "GITHUB_USERNAME", required=True)
@@ -48,6 +49,8 @@ def main():
         animation_runner = AnimationRunner(led_controller)
         github_tracker = GitHubTracker(github_username, github_token)
         weather_tracker = WeatherTracker(weather_api_key, (weather_lat, weather_lon))
+
+        animation_runner.run_startup_animation(startup_animation, brightness=brightness)
 
         while True:
             try:

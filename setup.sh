@@ -119,9 +119,11 @@ run_cmd "cd CCal_V2/LedControl"
 if pip install --help | grep -q -- '--break-system-packages'; then
     run_cmd "sudo pip install --upgrade pip --break-system-packages"
     run_cmd "sudo pip install -r requirements.txt --break-system-packages"
+    run_cmd "sudo pip install -e . --break-system-packages"
 else
     run_cmd "sudo pip install --upgrade pip"
     run_cmd "sudo pip install -r requirements.txt"
+    run_cmd "sudo pip install -e ."
 fi
 run_cmd "cd -"
 print_status "Python dependencies installed."
