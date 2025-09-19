@@ -25,7 +25,11 @@ class WeatherTracker:
         weather = wt.get_current_weather()
     """
 
-    def __init__(self, api_key, location):
+    def __init__(self, api_key:str, location:tuple):
+        if api_key is None:
+            raise ValueError("A valid API key must be provided.")
+        if location is None:
+            raise ValueError("Location must be provided.")
         self._location = location
         self._url = "https://api.openweathermap.org/data/3.0/onecall?lat={LOC[0]}&lon={LOC[1]}&appid={KEY}".format(
             LOC=location, KEY=api_key

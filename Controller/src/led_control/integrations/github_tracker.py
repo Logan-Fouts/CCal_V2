@@ -18,18 +18,21 @@ class GitHubTracker:
     Tracks and analyzes recent GitHub events for a user.
     """
 
-    def __init__(self, github_username, api_key, num_days=28):
+    def __init__(self, github_username, api_key):
         if not github_username or not isinstance(github_username, str):
             raise ValueError("github_username must be a non-empty string")
         if not api_key or not isinstance(api_key, str):
             raise ValueError("api_key must be a non-empty string")
         self._auth_info = (github_username, api_key)
-        self._num_days = num_days
+        self._num_days = 28
         self._last_event_id = None
         self.max_events = 200
         self._per_page = 30
         self._max_retries = 3
-        self._headers = {"Authorization": f"Bearer {self._auth_info[1]}", "User-Agent": "PiZero"}
+        self._headers = {
+            "Authorization": f"Bearer {self._auth_info[1]}",
+            "User-Agent": "PiZero",
+        }
 
     def get_username(self):
         """Returns the GitHub username."""
@@ -57,7 +60,7 @@ class GitHubTracker:
                         if len(events) < self._per_page:
                             return all_events[: self.max_events]
                         break
-                    elif (
+                    if (
                         response.status_code == 403
                         and "X-RateLimit-Remaining" in response.headers
                         and response.headers["X-RateLimit-Remaining"] == "0"
@@ -70,7 +73,9 @@ class GitHubTracker:
                         time.sleep(wait_seconds + 1)
                         retries += 1
                     else:
-                        print(f"API Error {response.status_code}: {response.text[:200]}")
+                        print(
+                            f"API Error {response.status_code}: {response.text[:200]}"
+                        )
                         retries += 1
                         time.sleep(2**retries)
                 except requests.RequestException as exc:
