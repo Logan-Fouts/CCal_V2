@@ -506,7 +506,7 @@ class AnimationRunner:
                 updates.append((day, self.event_color, led_brightness))
             else:
                 updates.append(
-                    (day, self.none_color, max((max_brightness * 0.05), 0.05))
+                    (day, self.none_color, max((max_brightness * 0.05), 0.35))
                 )
 
         # Apply all updates
