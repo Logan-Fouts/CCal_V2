@@ -1,8 +1,7 @@
-# src/led_control/core/animation_runner.py
 import math
 import random
 import time
-from typing import List, Tuple, Optional, Dict, Any
+from typing import Tuple, Optional
 from led_control.core.led_controller import LEDController
 
 
@@ -390,11 +389,12 @@ class AnimationRunner:
 
     def run_weather_animation(
         self,
-        condition: str,
+        weather: dict,
         duration_sec: float = 5,
         brightness: Optional[float] = None,
     ):
         """Run appropriate animation based on weather condition."""
+        condition = weather.get("weather", [{}])[0].get("main", "").lower()
         end_time = time.time() + duration_sec
 
         if condition == "clear":
@@ -419,3 +419,79 @@ class AnimationRunner:
             self.default_animation_loop(end_time, brightness)
 
         self.turn_all_off()
+
+    def run_startup_animation(
+        self,
+        animation_type: int = 0,
+        duration_sec: float = 3,
+        brightness: Optional[float] = None,
+    ):
+        """
+        Run a startup animation based on the animation_type argument.
+        Args:
+            animation_type (int): Which animation to run.
+                0 - None
+                1 - Color wipe (white)
+                2 - Theater chase (blue)
+                3 - Rainbow cycle
+                4 - Flash
+            duration_sec (float): How long to run the animation (if applicable).
+            brightness (float, optional): LED brightness.
+        """
+        end_time = time.time() + duration_sec
+
+        if animation_type == 0:
+            pass
+        elif animation_type == 1:
+            self.color_wipe((255, 255, 255), wait=0.03, brightness=brightness)
+        elif animation_type == 2:
+            self.theater_chase((0, 0, 255), wait=0.05, brightness=brightness)
+        elif animation_type == 3:
+            self.rainbow_cycle(wait=0.01, brightness=brightness or 1.0)
+        elif animation_type == 4:
+            self.flash(brightness=brightness)
+        else:
+            self.default_animation_loop(end_time, brightness)
+
+        self.turn_all_off()
+
+    def update_calendar(self, event_counts):
+        """Update LEDs based on event counts with optimized performance."""
+        if not event_counts:
+            return
+
+        # Define colors for event and none if not already present
+        if not hasattr(self, "event_color"):
+            self.event_color = (0, 255, 0)
+        if not hasattr(self, "none_color"):
+            self.none_color = (30, 30, 30)  # Default none color (dim gray)
+
+        max_count = max(event_counts)
+        if max_count == 0:
+            for day in range(min(self.num_leds, len(event_counts))):
+                self.led.set_pixel(day, self.none_color, self.led.brightness * 0.05)
+            self.led.show()
+            return
+
+        # Adjust brightness based on time of day
+        current_hour = time.localtime().tm_hour
+        is_night = current_hour >= 22 or current_hour <= 8
+        max_brightness = self.led.brightness * (
+            0.1 if is_night else self.led.brightness
+        )
+
+        updates = []
+        for day in range(min(self.num_leds, len(event_counts))):
+            count = event_counts[day]
+            if count > 0:
+                brightness = 0.1 + max_brightness * (count / max_count)
+                updates.append((day, self.event_color, brightness))
+            else:
+                updates.append(
+                    (day, self.none_color, max((max_brightness * 0.05), 0.05))
+                )
+
+        # Apply all updates
+        for day, color, brightness in updates:
+            self.led.set_pixel(day, color, brightness)
+        self.led.show()

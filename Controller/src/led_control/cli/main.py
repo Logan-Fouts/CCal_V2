@@ -10,8 +10,9 @@ from led_control.integrations.github_tracker import GitHubTracker
 from led_control.integrations.weather_tracker import WeatherTracker
 
 # Needs to stay like this for sed to patch it in the setup script
-USERNAME="username"
+USERNAME = "username"
 CONFIG_PATH = f"/home/{USERNAME}/CCal_V2/config.json"
+
 
 def safe_get(config, key, default=None, required=False):
     value = config.get(key, default)
@@ -19,6 +20,7 @@ def safe_get(config, key, default=None, required=False):
         print(f"[ERROR] Required config '{key}' is missing.")
         sys.exit(1)
     return value
+
 
 def main():
     try:
@@ -45,17 +47,20 @@ def main():
         poll_time = safe_get(config, "POLL_TIME", 90)
 
         # Initialize hardware and integrations
-        led_controller = LEDController(pin_num=pin_num, num_leds=num_leds, brightness=brightness)
+        led_controller = LEDController(
+            pin_num=pin_num, num_leds=num_leds, brightness=brightness
+        )
         animation_runner = AnimationRunner(led_controller)
         github_tracker = GitHubTracker(github_username, github_token)
         weather_tracker = WeatherTracker(weather_api_key, (weather_lat, weather_lon))
 
-        animation_runner.run_startup_animation(startup_animation, brightness=brightness)
-
+        animation_runner.run_startup_animation(startup_animation) # Startup animation
         while True:
             try:
                 now_hour = time.localtime().tm_hour
-                if on_time != off_time and (brightness == 0 or not (on_time <= now_hour < off_time)):
+                if on_time != off_time and (
+                    brightness == 0 or not (on_time <= now_hour < off_time)
+                ):
                     led_controller.turn_all_off()
                     time.sleep(poll_time)
                     continue
@@ -63,22 +68,20 @@ def main():
                 # GitHub events
                 try:
                     event_counts = github_tracker.get_event_counts()
+                    animation_runner.update_calendar(event_counts) # Calendar update
                 except Exception as exc:
-                    print(f"[ERROR] Failed to fetch GitHub events: {exc}")
+                    print(f"Failed to fetch GitHub events: {exc}")
                     event_counts = []
+                
+                time.sleep(poll_time)
 
                 # Weather
                 try:
                     weather = weather_tracker.get_current_weather()
+                    animation_runner.run_weather_animation(weather) # Weather animation
                 except Exception as exc:
                     print(f"[ERROR] Failed to fetch weather: {exc}")
                     weather = None
-
-                animation_runner.turn_all_off()
-                animation_runner.run_weather_animation(weather, brightness=brightness)
-
-                # Sleep until next poll
-                time.sleep(poll_time)
 
             except KeyboardInterrupt:
                 print("Exiting gracefully.")
@@ -92,6 +95,7 @@ def main():
         print(f"[FATAL] Unhandled exception: {exc}")
         traceback.print_exc()
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()
