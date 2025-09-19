@@ -37,7 +37,7 @@ def main():
         pin_num = safe_get(config, "PIN_NUM", 18)
         num_leds = safe_get(config, "NUM_LEDS", 28)
         brightness = safe_get(config, "BRIGHTNESS", 0.8)
-        startup_animation = safe_get(config, "STARTUP_ANIMATION", "rainbow")
+        startup_animation = safe_get(config, "STARTUP_ANIMATION", 3)
         on_time = safe_get(config, "ON_TIME", 9)
         off_time = safe_get(config, "OFF_TIME", 23)
         github_username = safe_get(config, "GITHUB_USERNAME", required=True)
@@ -48,17 +48,6 @@ def main():
         poll_time = safe_get(config, "POLL_TIME", 90)
 
         temp_sleep_time = 3  # Seconds to display weather animation
-
-        # Convert startup_animation to int if it's a string and matches a known type
-        animation_map = {
-            "none": 0,
-            "color_wipe": 1,
-            "theater_chase": 2,
-            "rainbow": 3,
-            "flash": 4,
-        }
-        if isinstance(startup_animation, str):
-            startup_animation = animation_map.get(startup_animation.lower(), 0)
 
         # Initialize hardware and integrations
         led_controller = LEDController(
@@ -84,7 +73,9 @@ def main():
                 # GitHub events
                 try:
                     event_counts = github_tracker.get_event_counts()
-                    animation_runner.update_calendar(event_counts, brightness=brightness)
+                    animation_runner.update_calendar(
+                        event_counts, brightness=brightness
+                    )
                 except Exception as exc:
                     print(f"[ERROR] Failed to fetch GitHub events: {exc}")
                     event_counts = []
@@ -95,7 +86,9 @@ def main():
                 try:
                     weather = weather_tracker.get_current_weather()
                     if weather is not None:
-                        animation_runner.run_weather_animation(weather, brightness=brightness)
+                        animation_runner.run_weather_animation(
+                            weather, brightness=brightness
+                        )
                         time.sleep(temp_sleep_time)
                 except Exception as exc:
                     print(f"[ERROR] Failed to fetch weather: {exc}")

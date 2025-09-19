@@ -93,7 +93,10 @@ def test_fetch_events_rate_limit(mock_get):
     """Test that _fetch_events handles rate limiting correctly."""
     rate_limit_resp = Mock(
         status_code=403,
-        headers={"X-RateLimit-Remaining": "0", "X-RateLimit-Reset": str(int(time.time()) + 1)},
+        headers={
+            "X-RateLimit-Remaining": "0",
+            "X-RateLimit-Reset": str(int(time.time()) + 1),
+        },
         text="Rate limit exceeded",
     )
     success_resp = Mock(status_code=200, json=Mock(return_value=RESPONSE_JSON))

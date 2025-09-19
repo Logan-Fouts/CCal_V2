@@ -66,7 +66,11 @@ def test_update_weather_retries_on_failure(mock_get):
     mock_response = Mock()
     mock_response.status_code = 200
     mock_response.json.return_value = RESPONSE_JSON
-    mock_get.side_effect = [Exception("Network error"), Exception("Network error"), mock_response]
+    mock_get.side_effect = [
+        Exception("Network error"),
+        Exception("Network error"),
+        mock_response,
+    ]
 
     wt = WeatherTracker(API_KEY, LOCATION)
 

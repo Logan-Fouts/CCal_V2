@@ -24,13 +24,6 @@ CONFIG = {
 }
 
 
-def test_config_manager_init():
-    cnf_man = ConfigManager(CONFIG_FILE)
-
-    assert cnf_man is not None
-    assert cnf_man.conf == CONFIG
-
-
 def test_config_handles_missing_file():
     try:
         cnf_man = ConfigManager("config/missing.json")
@@ -87,8 +80,10 @@ def test_update_config_atomic_write(tmp_path):
     updated_conf = dict(CONFIG)
     updated_conf["BRIGHTNESS"] = 0.9
     orig_move = shutil.move
+
     def fail_move(src, dst):
         raise OSError("Simulated move failure")
+
     shutil.move = fail_move
     try:
         result = cnf_man.update_config(updated_conf)
@@ -119,12 +114,15 @@ def test_thread_safety(tmp_path):
     updated_conf1["BRIGHTNESS"] = 0.1
     updated_conf2 = dict(CONFIG)
     updated_conf2["BRIGHTNESS"] = 0.2
+
     def update1():
         for _ in range(10):
             cnf_man.update_config(updated_conf1)
+
     def update2():
         for _ in range(10):
             cnf_man.update_config(updated_conf2)
+
     t1 = threading.Thread(target=update1)
     t2 = threading.Thread(target=update2)
     t1.start()

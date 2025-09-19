@@ -25,7 +25,7 @@ class WeatherTracker:
         weather = wt.get_current_weather()
     """
 
-    def __init__(self, api_key:str, location:tuple):
+    def __init__(self, api_key: str, location: tuple):
         if api_key is None:
             raise ValueError("A valid API key must be provided.")
         if location is None:

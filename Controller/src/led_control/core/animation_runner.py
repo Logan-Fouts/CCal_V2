@@ -485,14 +485,18 @@ class AnimationRunner:
         max_count = max(event_counts)
         if max_count == 0:
             for day in range(min(self.num_leds, len(event_counts))):
-                self.led.set_pixel(day, self.none_color, (brightness or self.led.brightness) * 0.05)
+                self.led.set_pixel(
+                    day, self.none_color, (brightness or self.led.brightness) * 0.35
+                )
             self.led.show()
             return
 
         # Adjust brightness based on time of day
         current_hour = time.localtime().tm_hour
         is_night = current_hour >= 22 or current_hour <= 8
-        max_brightness = (brightness or self.led.brightness) * (0.1 if is_night else 1.0)
+        max_brightness = (brightness or self.led.brightness) * (
+            0.1 if is_night else 1.0
+        )
 
         updates = []
         for day in range(min(self.num_leds, len(event_counts))):

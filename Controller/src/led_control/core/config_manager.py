@@ -24,7 +24,9 @@ class ConfigManager:
             with open(self._config_file, "r", encoding="utf-8") as f:
                 config = json.load(f)
                 if not isinstance(config, dict):
-                    logging.error(f"Config file '{self._config_file}' is not valid JSON.")
+                    logging.error(
+                        f"Config file '{self._config_file}' is not valid JSON."
+                    )
                     raise ValueError("Config file is not a valid JSON object.")
                 self.conf = config
         except json.JSONDecodeError as exc:
@@ -45,7 +47,9 @@ class ConfigManager:
         try:
             with self._lock:
                 dir_name = os.path.dirname(self._config_file)
-                with tempfile.NamedTemporaryFile('w', dir=dir_name, delete=False, encoding="utf-8") as tf:
+                with tempfile.NamedTemporaryFile(
+                    "w", dir=dir_name, delete=False, encoding="utf-8"
+                ) as tf:
                     json.dump(new_config, tf, indent=4)
                     tempname = tf.name
                 shutil.move(tempname, self._config_file)
@@ -55,5 +59,7 @@ class ConfigManager:
             logging.error(f"Failed to save config file '{self._config_file}': {exc}")
             return False
         except Exception as exc:
-            logging.exception(f"Unexpected error saving config file '{self._config_file}': {exc}")
+            logging.exception(
+                f"Unexpected error saving config file '{self._config_file}': {exc}"
+            )
             return False
