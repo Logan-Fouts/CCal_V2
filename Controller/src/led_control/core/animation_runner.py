@@ -398,7 +398,7 @@ class AnimationRunner:
         self,
         weather: dict,
         duration_sec: float = 5,
-        brightness: Optional[float] = None,
+        brightness: Optional[float] = 0.8,
     ):
         """Run appropriate animation based on weather condition."""
         condition = weather.get("weather", [{}])[0].get("main", "").lower()
@@ -454,6 +454,7 @@ class AnimationRunner:
             duration_sec (float): How long to run the animation (if applicable).
             brightness (float, optional): LED brightness.
         """
+
         end_time = time.time() + duration_sec
 
         if animation_type == 0:
@@ -471,43 +472,30 @@ class AnimationRunner:
 
         self.turn_all_off()
 
-    def update_calendar(self, event_counts, brightness: float = None):
+    def update_calendar(self, event_counts, colors: dict, brightness: float = 0.8):
         """Update LEDs based on event counts with optimized performance."""
         if not event_counts:
             return
 
         # Define colors for event and none if not already present
-        if not hasattr(self, "event_color"):
-            self.event_color = (0, 255, 0)
-        if not hasattr(self, "none_color"):
-            self.none_color = (30, 30, 30)  # Default none color (dim gray)
+        self.event_color = colors.get("event", (0, 255, 0))
+        self.none_color = colors.get("no_events", (30, 30, 30))
 
         max_count = max(event_counts)
         if max_count == 0:
             for day in range(min(self.num_leds, len(event_counts))):
-                self.led.set_pixel(
-                    day, self.none_color, (brightness or self.led.brightness) * 0.35
-                )
+                self.led.set_pixel(day, self.none_color, (brightness) * 0.5)
             self.led.show()
             return
-
-        # Adjust brightness based on time of day
-        current_hour = time.localtime().tm_hour
-        is_night = current_hour >= 22 or current_hour <= 8
-        max_brightness = (brightness or self.led.brightness) * (
-            0.1 if is_night else 1.0
-        )
 
         updates = []
         for day in range(min(self.num_leds, len(event_counts))):
             count = event_counts[day]
             if count > 0:
-                led_brightness = 0.1 + max_brightness * (count / max_count)
+                led_brightness = (count / max_count) + 0.05 # Ensure min brightness
                 updates.append((day, self.event_color, led_brightness))
             else:
-                updates.append(
-                    (day, self.none_color, max((max_brightness * 0.05), 0.35))
-                )
+                updates.append((day, self.none_color, brightness * 0.8))
 
         # Apply all updates
         for day, color, led_brightness in updates:

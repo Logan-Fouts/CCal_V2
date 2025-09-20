@@ -46,6 +46,13 @@ def main():
         weather_lat = safe_get(config, "WEATHER_LAT", required=True)
         weather_lon = safe_get(config, "WEATHER_LON", required=True)
         poll_time = safe_get(config, "POLL_TIME", 90)
+        no_events_color = safe_get(config, "NO_EVENTS_COLOR", [30, 30, 30])
+        event_color = safe_get(config, "EVENT_COLOR", [0, 255, 0])
+
+        colors = {
+            "no_events": no_events_color,
+            "event": event_color,
+        }
 
         temp_sleep_time = 3  # Seconds to display weather animation
 
@@ -74,7 +81,7 @@ def main():
                 try:
                     event_counts = github_tracker.get_event_counts()
                     animation_runner.update_calendar(
-                        event_counts, brightness=brightness
+                        event_counts, brightness=brightness, colors=colors
                     )
                 except Exception as exc:
                     print(f"[ERROR] Failed to fetch GitHub events: {exc}")
@@ -93,7 +100,9 @@ def main():
                 except Exception as exc:
                     print(f"[ERROR] Failed to fetch weather: {exc}")
 
-                animation_runner.update_calendar(event_counts, brightness=brightness)
+                animation_runner.update_calendar(
+                    event_counts, brightness=brightness, colors=colors
+                )
 
             except KeyboardInterrupt:
                 print("Exiting gracefully.")
