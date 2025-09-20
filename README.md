@@ -68,4 +68,10 @@ If you run into issues or have ideas, feel free to open an issue on GitHub.
 
 ---
 
+## Note on GitHub API Real-Time Updates
+
+Contrib Cal v2 displays your GitHub activity as close to real-time as possible using the GitHub API. However, there may be delays in showing the most recent events due to how quickly GitHub updates and provides new event data. This is a limitation of the GitHub API itself and not an issue with this project's implementation.
+
+---
+
 Thanks for checking out Contrib Cal, Feel free to open up PRs!
