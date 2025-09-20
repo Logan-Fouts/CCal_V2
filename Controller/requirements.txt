@@ -5,3 +5,4 @@ adafruit-circuitpython-neopixel
 pyaudio
 pytest
 pylint
+black

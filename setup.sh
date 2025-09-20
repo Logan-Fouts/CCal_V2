@@ -115,13 +115,15 @@ run_cmd "cd CCal_V2/WebGUI && npm install express@4.17.1 body-parser@1.19.0 ejs@
 print_status "WebGUI dependencies installed."
 
 print_section "Installing Python Dependencies"
-run_cmd "cd CCal_V2/LedControl"
+run_cmd "cd CCal_V2/Controller"
 if pip install --help | grep -q -- '--break-system-packages'; then
     run_cmd "sudo pip install --upgrade pip --break-system-packages"
     run_cmd "sudo pip install -r requirements.txt --break-system-packages"
+    run_cmd "sudo pip install -e . --break-system-packages"
 else
     run_cmd "sudo pip install --upgrade pip"
     run_cmd "sudo pip install -r requirements.txt"
+    run_cmd "sudo pip install -e ."
 fi
 run_cmd "cd -"
 print_status "Python dependencies installed."
@@ -148,8 +150,9 @@ run_cmd "sed -i 's|USERNAME=\"username\"|USERNAME=\"$USERNAME\"|g' CCal_V2/WebGU
 print_status "server.js username patched."
 
 # Patch main.py
-run_cmd "sed -i 's|USERNAME=\"username\"|USERNAME=\"$USERNAME\"|g' CCal_V2/LedControl/main.py"
+run_cmd "sed -i 's|USERNAME = \"username\"|USERNAME = \"$USERNAME\"|g' CCal_V2/Controller/src/led_control/cli/main.py"
 print_status "main.py username patched."
+
 
 # Prompt for WebGUI username and password
 read -p "Enter WebGUI username [default: $USERNAME]: " WEBGUI_USER
