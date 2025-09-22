@@ -2,6 +2,8 @@
 
 Contrib Cal v2 is a contribution tracker built around a Raspberry Pi Zero W. It shows your GitHub activity using LEDs and includes a web interface for easy setup and control. The project is open, hackable, and designed for anyone interested in building their own contribution calendar.
 
+Take a look at my [website!](https://www.contrib-cal.com/)
+
 
 ## Availability
 This will soon be available to purchase as a kit from sellers like Elecrow and Tindie!
