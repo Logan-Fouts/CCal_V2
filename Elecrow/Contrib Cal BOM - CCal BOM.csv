@@ -1,0 +1,19 @@
+,,,"Sourcing Note: Elecrow may source components, but all must be verified. The RGB LEDs must be exactly listed for software compatibility. The Pi Zero W, microSD card, and screen paper also require quality verification.",
+,,,,
+Item,Qty,Description,Specifications / Notes,Sourcing Link / Info
+1,1,Custom Main PCB,The core board for the project.,Produced by Elecrow. Gerbers from [GitHub](https://github.com/Logan-Fouts/CCal_V2/blob/main/KiCad/contrib%20cal%202.kicad_pcb.zip).
+2,1,Buck Converter (Step-Down),"WeAct Studio. Input: 5-36V, Output: 3.3V/2A. Chip: TPS563201.",[AliExpress](https://www.aliexpress.com/item/1005009680381342.html)
+3,1,Raspberry Pi Zero W,Must be the Wireless (W) version.,"[Alibaba](https://www.alibaba.com/product-detail/Raspberry-Pi-Zero-W-WH-2W_1600549329324627.html) (Consider reputable sources like Adafruit, SparkFun, or PiShop.us for guaranteed quality)."
+4,30,SMD RGB LED,"WS2812B (or SK6812) 5050 package. IC built-in, 4-pin.",[Alibaba](https://www.alibaba.com/product-detail/Promotion-Wholesale-IC-Buit-in-4pin_60610111946.html)
+5,1,USB-C Breakout Board,Must have through-hole pins for easy soldering.,[Alibaba](https://www.alibaba.com/product-detail/YIXINTAI-USB-TYPE-C-conversion-board_1601234419325.html)
+6,5,Hook-up Wire,"~12cm each. 28 AWG stranded wire is recommended for flexibility. Colors: Recommended (Red: 5V, Black: GND, other colors for data).",Elecrow to source.
+7,1,3D Printed Back Case,"Print Settings: 0.2mm layers, Fuzzy Skin (Point Dist: 0.1mm, Thickness: 0.1mm on all walls).",Produced by Elecrow as part of the PCB/Assembly order.
+8,1,3D Printed Front Face,"Print Settings: 0.2mm layers, Fuzzy Skin, Enable Ironing for a smooth top surface.",Produced by Elecrow as part of the PCB/Assembly order.
+9,4,Screw (M3 x 12mm),"Phillips, flat head. For securing the PCB assembly to the case.",Elecrow to source.
+10,4,Heated Insert (M3),Brass inserts to be melted into the 3D printed case for the M3 screws.,Elecrow to source.
+11,4,Screw (M1.7),"Phillips, flat head. For mounting the Raspberry Pi Zero.",Elecrow to source.
+12,6,Screw (M2.5),"Phillips, flat head. (Likely for the buck converter or other components).",Elecrow to source.
+13,2,Screw (M2),"Phillips, flat head. (Likely for the USB-C breakout).",Elecrow to source.
+14,1,Diffusion Paper / Screen,"A5 size (210 x 148 mm), ~120 GSM weight.",[Alibaba](https://www.alibaba.com/product-detail/Wholesale-120-g-350-g-C1S_1601258869224.html)
+15,1,microSD Card,"16GB+, Class 10. Major Brand Recommended (SanDisk, Samsung, Kingston).",Elecrow source. Do not source from random marketplaces due to high failure rate risk. Buy from a reputable electronics or computer store.
+16,1,3D Printed Stencil Cut out,Print Settings: 0.2mm layers.,Produced by Elecrow as part of the PCB/Assembly order.
