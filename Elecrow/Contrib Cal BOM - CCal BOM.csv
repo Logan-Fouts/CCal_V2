@@ -7,7 +7,7 @@ Item,Qty,Description,Specifications / Notes,Sourcing Link / Info
 4,30,SMD RGB LED,"WS2812B (or SK6812) 5050 package. IC built-in, 4-pin.",[Alibaba](https://www.alibaba.com/product-detail/Promotion-Wholesale-IC-Buit-in-4pin_60610111946.html)
 5,1,USB-C Breakout Board,Must have through-hole pins for easy soldering.,[Alibaba](https://www.alibaba.com/product-detail/YIXINTAI-USB-TYPE-C-conversion-board_1601234419325.html)
 6,5,Hook-up Wire,"~12cm each. 28 AWG stranded wire is recommended for flexibility. Colors: Recommended (Red: 5V, Black: GND, other colors for data).",Elecrow to source.
-7,1,3D Printed Back Case,"Print Settings: 0.2mm layers, Fuzzy Skin (Point Dist: 0.1mm, Thickness: 0.1mm on all walls).",Produced by Elecrow as part of the PCB/Assembly order.
+7,1,3D Printed Back Case,"Print Settings: 0.2mm layers, Fuzzy Skin (Point Dist: 0.1mm, Thickness: 0.1mm on outside walls).",Produced by Elecrow as part of the PCB/Assembly order.
 8,1,3D Printed Front Face,"Print Settings: 0.2mm layers, Fuzzy Skin, Enable Ironing for a smooth top surface.",Produced by Elecrow as part of the PCB/Assembly order.
 9,4,Screw (M3 x 12mm),"Phillips, flat head. For securing the PCB assembly to the case.",Elecrow to source.
 10,4,Heated Insert (M3),Brass inserts to be melted into the 3D printed case for the M3 screws.,Elecrow to source.
