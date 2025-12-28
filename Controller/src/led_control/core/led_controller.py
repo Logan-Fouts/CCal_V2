@@ -35,15 +35,20 @@ class LEDController:
             8: [4, 5, 6, 11, 13, 18, 20, 25, 26, 27, 19],
             9: [6, 5, 4, 11, 18, 25, 19, 20, 13],
         }
-
+    
+        # Handle negative temperature
+        if number < 0:
+            number = abs(number)  # Use absolute value
+            color = (128, 0, 128)  # Dark purple color for negative temps
+    
         str_num = str(number).zfill(2)[-2:]  # Ensure two digits
-
+    
         # Display first digit
         first_digit = int(str_num[0])
         for idx in digit_patterns.get(first_digit, []):
             if 0 <= idx < self.num_leds:
                 self.set_pixel(idx, color)
-
+    
         # Display second digit (offset by -4)
         second_digit = int(str_num[1])
         for idx in digit_patterns.get(second_digit, []):
