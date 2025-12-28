@@ -66,12 +66,11 @@ echo -e "${NC}"
 echo -e "${BLUE}        CCal_V2 Automated Setup${NC}\n"
 
 
-print_status "Systemd service files copied and customized."
 print_section "System Update & Dependency Installation"
 echo "Updating system and installing dependencies..."
 run_cmd "sudo apt update"
 run_cmd "sudo apt upgrade -y"
-run_cmd "sudo apt install -y git nodejs npm portaudio19-dev python3-pip jq syncthing unattended-upgrades"
+run_cmd "sudo apt install -y git nodejs npm portaudio19-dev python3-pip python3-venv jq syncthing unattended-upgrades"
 print_status "System packages installed."
 
 # Enable unattended upgrades
@@ -114,27 +113,65 @@ print_section "Installing WebGUI Dependencies"
 run_cmd "cd CCal_V2/WebGUI && npm install express@4.17.1 body-parser@1.19.0 ejs@3.1.6 && cd -"
 print_status "WebGUI dependencies installed."
 
-print_section "Installing Python Dependencies"
+print_section "Installing Python Dependencies - GLOBALLY"
 run_cmd "cd CCal_V2/Controller"
-if pip install --help | grep -q -- '--break-system-packages'; then
-    run_cmd "sudo pip install --upgrade pip --break-system-packages"
-    run_cmd "sudo pip install -r requirements.txt --break-system-packages"
-    run_cmd "sudo pip install -e . --break-system-packages"
+
+# First ensure we have the latest pip and it's working
+print_status "Checking/upgrading pip globally..."
+run_cmd "sudo apt update && sudo apt install --reinstall -y python3-pip"
+
+# Check Python version and use appropriate installation method
+PYTHON_VERSION=$(python3 --version | cut -d' ' -f2 | cut -d'.' -f1-2)
+
+if [[ "$PYTHON_VERSION" > "3.10" ]] || [[ "$PYTHON_VERSION" == "3.10" ]]; then
+    # Python 3.10+ supports --break-system-packages
+    print_status "Python $PYTHON_VERSION detected, using --break-system-packages flag"
+    
+    # Upgrade pip first using the new flag
+    run_cmd "sudo python3 -m pip install pip --break-system-packages"
+    
+    # Install requirements globally with the flag
+    run_cmd "sudo python3 -m pip install -r requirements.txt --break-system-packages"
+    
+    # Install package in development mode globally
+    run_cmd "sudo python3 -m pip install -e . --break-system-packages"
 else
-    run_cmd "sudo pip install --upgrade pip"
-    run_cmd "sudo pip install -r requirements.txt"
-    run_cmd "sudo pip install -e ."
+    # For older Python versions, use alternate approach
+    print_status "Python $PYTHON_VERSION detected, using global installation without flag"
+    
+    # First remove any problematic pip installation
+    run_cmd "sudo apt remove -y python3-pip 2>/dev/null || true"
+    run_cmd "sudo apt install --reinstall -y python3-pip"
+    
+    # Install using python3 -m pip (more reliable than pip command)
+    run_cmd "sudo python3 -m pip install --upgrade pip"
+    
+    # Try installation with --no-deps first, then individual packages
+    print_status "Installing requirements.txt..."
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        if [[ ! -z "$line" && ! "$line" =~ ^[[:space:]]*# ]]; then
+            echo "Installing: $line"
+            run_cmd "sudo python3 -m pip install $line" || \
+            run_cmd "sudo python3 -m pip install --no-deps $line" || \
+            print_warning "Failed to install $line, continuing..."
+        fi
+    done < requirements.txt
+    
+    # Try to install the package in development mode
+    print_status "Installing package in development mode..."
+    run_cmd "sudo python3 -m pip install -e ." || \
+    print_warning "Development mode installation failed, trying without -e flag..." && \
+    run_cmd "sudo python3 -m pip install ."
 fi
+
 run_cmd "cd -"
-print_status "Python dependencies installed."
+print_status "Python dependencies installed globally."
 
 print_section "Configuring System Services"
 run_cmd "sudo cp CCal_V2/SystemdServices/ccalpy.service /etc/systemd/system/"
 run_cmd "sudo cp CCal_V2/SystemdServices/ccalpy_gui.service /etc/systemd/system/"
-print_status "Systemd service files copied."
 
 # Modify systemd files with username
-USERNAME=$(logname)
 run_cmd "sed 's|__USERNAME__|$USERNAME|g' CCal_V2/SystemdServices/ccalpy.service > /tmp/ccalpy.service"
 run_cmd "sudo mv /tmp/ccalpy.service /etc/systemd/system/ccalpy.service"
 run_cmd "sed 's|__USERNAME__|$USERNAME|g' CCal_V2/SystemdServices/ccalpy_gui.service > /tmp/ccalpy_gui.service"
@@ -152,7 +189,6 @@ print_status "server.js username patched."
 # Patch main.py
 run_cmd "sed -i 's|USERNAME = \"username\"|USERNAME = \"$USERNAME\"|g' CCal_V2/Controller/src/led_control/cli/main.py"
 print_status "main.py username patched."
-
 
 # Prompt for WebGUI username and password
 read -p "Enter WebGUI username [default: $USERNAME]: " WEBGUI_USER
