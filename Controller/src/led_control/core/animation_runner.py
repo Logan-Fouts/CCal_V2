@@ -501,3 +501,103 @@ class AnimationRunner:
         for day, color, led_brightness in updates:
             self.led.set_pixel(day, color, led_brightness)
         self.led.show()
+
+    def spotify_music_animation_loop(
+        self, end_time: float, brightness: Optional[float] = None
+    ):
+        """
+        Classic music visualization animation with VU meter/equalizer bars.
+        Shows bouncing bars that simulate audio levels with music-like colors.
+        """
+        # Music visualization colors - vibrant and music-themed
+        music_colors = [
+            (255, 0, 100),    # Hot pink
+            (0, 255, 255),    # Cyan
+            (255, 100, 0),    # Orange
+            (100, 255, 0),    # Lime green
+            (255, 255, 0),    # Yellow
+            (255, 0, 255),    # Magenta
+            (0, 100, 255),    # Blue
+        ]
+        
+        # Setup for column-based visualization
+        rows = 4
+        cols = self.num_leds // rows
+        if self.num_leds % rows != 0:
+            cols += 1
+            
+        # Each column represents a frequency band
+        bands = []
+        for col in range(cols):
+            bands.append({
+                'height': random.uniform(0.2, 1.0),  # Current height (0-1)
+                'target': random.uniform(0.2, 1.0),  # Target height
+                'color_idx': col % len(music_colors),
+                'beat_timer': random.uniform(0, 2 * math.pi),  # For beat pulsing
+                'fall_speed': random.uniform(0.08, 0.15),  # How fast bars fall
+                'rise_speed': random.uniform(0.2, 0.4),   # How fast bars rise
+            })
+        
+        base_brightness = brightness if brightness else 0.8
+        
+        while time.time() < end_time:
+            current_time = time.time()
+            
+            # Update each frequency band
+            for i, band in enumerate(bands):
+                # Simulate beat detection - occasionally spike up
+                if random.random() < 0.15:  # 15% chance each frame
+                    band['target'] = random.uniform(0.7, 1.0)
+                elif random.random() < 0.05:  # 5% chance for low energy
+                    band['target'] = random.uniform(0.1, 0.4)
+                else:
+                    # Gradual target changes
+                    band['target'] += random.uniform(-0.1, 0.1)
+                    band['target'] = max(0.1, min(1.0, band['target']))
+                
+                # Smooth movement towards target
+                if band['height'] < band['target']:
+                    band['height'] += band['rise_speed']
+                else:
+                    band['height'] -= band['fall_speed']
+                
+                band['height'] = max(0.1, min(1.0, band['height']))
+                
+                # Update beat timer for pulsing effect
+                band['beat_timer'] += 0.3
+            
+            # Clear all LEDs
+            self.turn_all_off()
+            
+            # Draw each frequency band as a vertical bar
+            for col, band in enumerate(bands):
+                if col >= cols:
+                    break
+                    
+                color = music_colors[band['color_idx']]
+                height_in_leds = int(band['height'] * rows)
+                
+                # Add some pulsing/beating effect
+                beat_pulse = 0.8 + 0.2 * math.sin(band['beat_timer'])
+                
+                # Light up LEDs from bottom to current height
+                for row in range(height_in_leds):
+                    # Map to LED index considering zigzag pattern
+                    if row % 2 == 0:
+                        led_idx = row * cols + (cols - 1 - col)
+                    else:
+                        led_idx = row * cols + col
+                    
+                    if 0 <= led_idx < self.num_leds:
+                        # Fade effect - brighter at the top
+                        row_brightness = (0.3 + 0.7 * (row + 1) / rows) * beat_pulse
+                        final_brightness = base_brightness * row_brightness
+                        
+                        # Color intensity based on height
+                        if row == height_in_leds - 1:  # Top LED brighter
+                            final_brightness *= 1.2
+                        
+                        self.led.set_pixel(led_idx, color, min(1.0, final_brightness))
+            
+            self.led.show()
+            time.sleep(0.08)  # ~12 FPS for smooth animation

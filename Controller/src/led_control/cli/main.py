@@ -8,6 +8,7 @@ from led_control.core.led_controller import LEDController
 from led_control.core.animation_runner import AnimationRunner
 from led_control.integrations.github_tracker import GitHubTracker
 from led_control.integrations.weather_tracker import WeatherTracker
+from led_control.integrations.spotify import SpotifyTracker
 
 USERNAME = "username"
 CONFIG_PATH = f"/home/{USERNAME}/CCal_V2/config.json"
@@ -49,6 +50,9 @@ def main():
         no_events_color = safe_get(config, "NO_EVENTS_COLOR", [30, 30, 30])
         event_color = safe_get(config, "EVENT_COLOR", [0, 255, 0])
 
+        spotify_client_id = safe_get(config, "SPOT_ID", required=False)
+        spotify_client_secret = safe_get(config, "SPOT_SECRET", required=False)
+
         colors = {
             "no_events": no_events_color,
             "event": event_color,
@@ -63,6 +67,9 @@ def main():
         animation_runner = AnimationRunner(led_controller)
         github_tracker = GitHubTracker(github_username, github_token)
         weather_tracker = WeatherTracker(weather_api_key, (weather_lat, weather_lon))
+        spotify_tracker = SpotifyTracker(
+            client_id=spotify_client_id, client_secret=spotify_client_secret
+        )
 
         animation_runner.run_startup_animation(startup_animation, brightness=brightness)
 
@@ -99,6 +106,13 @@ def main():
                         time.sleep(temp_sleep_time)
                 except Exception as exc:
                     print(f"[ERROR] Failed to fetch weather: {exc}")
+
+                try:
+                    is_playing = spotify_tracker.is_playing()
+                    if is_playing:
+                        animation_runner.spotify_music_animation_loop(5, brightness=0.8)
+                except Exception as exc:
+                    print(f"[ERROR] Failed to check Spotify playback: {exc}")
 
                 animation_runner.update_calendar(
                     event_counts, brightness=brightness, colors=colors
