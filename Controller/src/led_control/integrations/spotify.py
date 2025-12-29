@@ -7,12 +7,10 @@ class SpotifyTracker:
     
     def __init__(self, client_id=None, client_secret=None, redirect_uri=None):
         """Initialize the Spotify tracker with credentials."""
-        # Default credentials (consider moving to config)
         self.client_id = client_id
         self.client_secret = client_secret
         self.redirect_uri = redirect_uri or 'http://127.0.0.1:8888/callback'
         
-        # Required scopes for playback info
         self.scope = 'user-read-playback-state user-read-currently-playing'
         
         # Initialize Spotify client
@@ -39,16 +37,5 @@ class SpotifyTracker:
             return current_playback.get('is_playing', False)
         
         except Exception as e:
-            # Handle any API errors gracefully
             print(f"Error checking Spotify playback: {e}")
             return False
-
-
-# Example usage (can be removed in production)
-if __name__ == "__main__":
-    tracker = SpotifyTracker()
-    
-    if tracker.is_playing():
-        print("🎵 Music is currently playing!")
-    else:
-        print("🔇 No music playing.")

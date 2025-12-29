@@ -520,13 +520,11 @@ class AnimationRunner:
             (0, 100, 255),    # Blue
         ]
         
-        # Setup for column-based visualization
         rows = 4
         cols = self.num_leds // rows
         if self.num_leds % rows != 0:
             cols += 1
             
-        # Each column represents a frequency band
         bands = []
         for col in range(cols):
             bands.append({
@@ -543,19 +541,15 @@ class AnimationRunner:
         while time.time() < end_time:
             current_time = time.time()
             
-            # Update each frequency band
             for i, band in enumerate(bands):
-                # Simulate beat detection - occasionally spike up
                 if random.random() < 0.15:  # 15% chance each frame
                     band['target'] = random.uniform(0.7, 1.0)
                 elif random.random() < 0.05:  # 5% chance for low energy
                     band['target'] = random.uniform(0.1, 0.4)
                 else:
-                    # Gradual target changes
                     band['target'] += random.uniform(-0.1, 0.1)
                     band['target'] = max(0.1, min(1.0, band['target']))
                 
-                # Smooth movement towards target
                 if band['height'] < band['target']:
                     band['height'] += band['rise_speed']
                 else:
@@ -563,13 +557,10 @@ class AnimationRunner:
                 
                 band['height'] = max(0.1, min(1.0, band['height']))
                 
-                # Update beat timer for pulsing effect
                 band['beat_timer'] += 0.3
             
-            # Clear all LEDs
             self.turn_all_off()
             
-            # Draw each frequency band as a vertical bar
             for col, band in enumerate(bands):
                 if col >= cols:
                     break
@@ -577,23 +568,18 @@ class AnimationRunner:
                 color = music_colors[band['color_idx']]
                 height_in_leds = int(band['height'] * rows)
                 
-                # Add some pulsing/beating effect
                 beat_pulse = 0.8 + 0.2 * math.sin(band['beat_timer'])
                 
-                # Light up LEDs from bottom to current height
                 for row in range(height_in_leds):
-                    # Map to LED index considering zigzag pattern
                     if row % 2 == 0:
                         led_idx = row * cols + (cols - 1 - col)
                     else:
                         led_idx = row * cols + col
                     
                     if 0 <= led_idx < self.num_leds:
-                        # Fade effect - brighter at the top
                         row_brightness = (0.3 + 0.7 * (row + 1) / rows) * beat_pulse
                         final_brightness = base_brightness * row_brightness
                         
-                        # Color intensity based on height
                         if row == height_in_leds - 1:  # Top LED brighter
                             final_brightness *= 1.2
                         
