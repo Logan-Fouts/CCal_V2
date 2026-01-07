@@ -46,7 +46,7 @@ def main():
         weather_api_key = safe_get(config, "OPENWEATHERMAP_API_KEY", required=True)
         weather_lat = safe_get(config, "WEATHER_LAT", required=True)
         weather_lon = safe_get(config, "WEATHER_LON", required=True)
-        poll_time = safe_get(config, "POLL_TIME", 90)
+        poll_time = safe_get(config, "POLL_TIME", 60)
         no_events_color = safe_get(config, "NO_EVENTS_COLOR", [30, 30, 30])
         event_color = safe_get(config, "EVENT_COLOR", [0, 255, 0])
 
@@ -57,8 +57,6 @@ def main():
             "no_events": no_events_color,
             "event": event_color,
         }
-
-        temp_sleep_time = 3  # Seconds to display weather animation
 
         # Initialize hardware and integrations
         led_controller = LEDController(
@@ -73,7 +71,7 @@ def main():
 
         animation_runner.run_startup_animation(startup_animation, brightness=brightness)
 
-        # Main loop: update calendar, show weather, repeat
+        # Main loop
         while True:
             try:
                 now_hour = time.localtime().tm_hour
@@ -103,20 +101,22 @@ def main():
                         animation_runner.run_weather_animation(
                             weather, brightness=brightness
                         )
-                        time.sleep(temp_sleep_time)
+                        time.sleep(4)
                 except Exception as exc:
                     print(f"[ERROR] Failed to fetch weather: {exc}")
 
-                try:
-                    is_playing = spotify_tracker.is_playing()
-                    if is_playing:
+                # Spotify
+                if spotify_client_id and spotify_client_secret:
+                    try:
+                        is_playing = spotify_tracker.is_playing()
+                        if is_playing:
                         animation_runner.spotify_music_animation_loop(5, brightness=0.8)
-                except Exception as exc:
+                    except Exception as exc:
                     print(f"[ERROR] Failed to check Spotify playback: {exc}")
 
-                animation_runner.update_calendar(
-                    event_counts, brightness=brightness, colors=colors
-                )
+                    animation_runner.update_calendar(
+                        event_counts, brightness=brightness, colors=colors
+                    )
 
             except KeyboardInterrupt:
                 print("Exiting gracefully.")
