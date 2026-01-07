@@ -10,7 +10,7 @@ from led_control.integrations.github_tracker import GitHubTracker
 from led_control.integrations.weather_tracker import WeatherTracker
 from led_control.integrations.spotify import SpotifyTracker
 
-USERNAME = "username"
+USERNAME = "lfouts"
 CONFIG_PATH = f"/home/{USERNAME}/CCal_V2/config.json"
 
 
@@ -110,9 +110,9 @@ def main():
                     try:
                         is_playing = spotify_tracker.is_playing()
                         if is_playing:
-                        animation_runner.spotify_music_animation_loop(5, brightness=0.8)
+                            animation_runner.spotify_music_animation_loop(5, brightness=0.8)
                     except Exception as exc:
-                    print(f"[ERROR] Failed to check Spotify playback: {exc}")
+                        print(f"[ERROR] Failed to check Spotify playback: {exc}")
 
                     animation_runner.update_calendar(
                         event_counts, brightness=brightness, colors=colors
