@@ -17,9 +17,8 @@ class SpotifyTracker:
         self.cache_path = os.path.expanduser("~/.cache/ccal_spotify_token")
         self.sp = None
         
-        # Try to load existing token first
         if self._load_cached_token():
-            print("✓ Using cached Spotify token")
+            print("Using cached Spotify token")
         else:
             print("No valid Spotify token found")
     
@@ -39,7 +38,6 @@ class SpotifyTracker:
                     open_browser=False
                 )
                 
-                # Check if token needs refresh
                 if auth_manager.is_token_expired(token_info):
                     print("Token expired, attempting refresh...")
                     token_info = auth_manager.refresh_access_token(token_info['refresh_token'])
@@ -65,19 +63,17 @@ class SpotifyTracker:
         Returns True if successful, False otherwise.
         """
         if not self.client_id or not self.client_secret:
-            print("❌ Spotify client ID and secret are required")
+            print("Spotify client ID and secret are required")
             return False
             
-        print("\n🎵 SPOTIFY SETUP")
+        print("\nSPOTIFY SETUP")
         print("=" * 40)
         print("Setting up Spotify integration for your CCal device...")
         
         try:
-            # Step 1: Get device code
             device_code_url = "https://accounts.spotify.com/api/token"
             device_auth_url = "https://accounts.spotify.com/authorize"
             
-            # Use a simpler approach - show user a URL and ask for code
             auth_manager = SpotifyOAuth(
                 client_id=self.client_id,
                 client_secret=self.client_secret,
@@ -89,7 +85,7 @@ class SpotifyTracker:
             
             auth_url = auth_manager.get_authorize_url()
             
-            print(f"\n📱 SETUP INSTRUCTIONS:")
+            print(f"\nSETUP INSTRUCTIONS:")
             print(f"1. Open this URL in any web browser (phone, computer, etc.):")
             print(f"   {auth_url}")
             print(f"\n2. Sign in to Spotify and authorize the app")
@@ -97,30 +93,27 @@ class SpotifyTracker:
             print(f"4. Copy the ENTIRE URL from your browser's address bar")
             print(f"5. Paste it below and press Enter")
             
-            # Get the callback URL from user
             callback_url = input("\nPaste the full callback URL here: ").strip()
             
             if "code=" not in callback_url:
-                print("❌ Invalid URL - missing authorization code")
+                print("Invalid URL - missing authorization code")
                 return False
             
-            # Extract the code
             code = callback_url.split("code=")[1].split("&")[0]
             
-            # Exchange code for token
             token_info = auth_manager.get_access_token(code, as_dict=True)
             
             if token_info:
                 self._save_token(token_info)
                 self.sp = spotipy.Spotify(auth=token_info['access_token'])
-                print("✅ Spotify authentication successful!")
+                print("Spotify authentication successful!")
                 return True
             else:
-                print("❌ Failed to get access token")
+                print("Failed to get access token")
                 return False
                 
         except Exception as e:
-            print(f"❌ Authentication failed: {e}")
+            print(f"Authentication failed: {e}")
             return False
     
     def is_playing(self):
@@ -131,7 +124,6 @@ class SpotifyTracker:
             bool: True if music is playing, False otherwise
         """
         if self.sp is None:
-            # Try to set up authentication first
             if not self.setup_authentication():
                 return False
                 
@@ -147,7 +139,6 @@ class SpotifyTracker:
             print(f"Error checking Spotify playback: {e}")
             if "401" in str(e) or "unauthorized" in str(e).lower():
                 print("Authentication expired. Please run setup again.")
-                # Clear cached token
                 if os.path.exists(self.cache_path):
                     os.remove(self.cache_path)
                 self.sp = None

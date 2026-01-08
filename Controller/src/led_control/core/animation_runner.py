@@ -472,32 +472,38 @@ class AnimationRunner:
 
         self.turn_all_off()
 
-    def update_calendar(self, event_counts, colors: dict, brightness: float = 0.8):
-        """Update LEDs based on event counts with optimized performance."""
-        if not event_counts:
+    def update_calendar(self, activityCounts, colors: dict, brightness: float = 0.8):
+        """
+        Updates LEDs to reflect calendar activity with brightness relative to activity count.
+        Args:
+            activityCounts (list): List of integers representing activity counts per day.
+            colors (dict): Dictionary with 'event' and 'no_events' color tuples.
+            brightness (float): Base brightness level for LEDs. Optional.
+
+        This should be used by all activity integrations to display activity.
+        """
+        if not activityCounts:
             return
 
-        # Define colors for event and none if not already present
         self.event_color = colors.get("event", (0, 255, 0))
         self.none_color = colors.get("no_events", (30, 30, 30))
 
-        max_count = max(event_counts)
+        max_count = max(activityCounts)
         if max_count == 0:
-            for day in range(min(self.num_leds, len(event_counts))):
+            for day in range(min(self.num_leds, len(activityCounts))):
                 self.led.set_pixel(day, self.none_color, (brightness) * 0.5)
             self.led.show()
             return
 
         updates = []
-        for day in range(min(self.num_leds, len(event_counts))):
-            count = event_counts[day]
+        for day in range(min(self.num_leds, len(activityCounts))):
+            count = activityCounts[day]
             if count > 0:
                 led_brightness = (count / max_count) + 0.05 # Ensure min brightness
                 updates.append((day, self.event_color, led_brightness))
             else:
-                updates.append((day, self.none_color, brightness * 0.8))
+                updates.append((day, self.none_color, brightness * 1))
 
-        # Apply all updates
         for day, color, led_brightness in updates:
             self.led.set_pixel(day, color, led_brightness)
         self.led.show()
