@@ -16,6 +16,9 @@ from led_control.integrations.strava import StravaTracker
 USERNAME = "username"
 CONFIG_PATH = f"/home/{USERNAME}/CCal_V2/config.json"
 
+# Potential TODO Services:
+# Uptime Kuma, GitLab, Wiki.js, Vault Warden
+
 
 def safe_get(config, key, default=None, required=False):
     """Safely get a value from the config, exit if required and missing."""
