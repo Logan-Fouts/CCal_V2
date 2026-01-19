@@ -10,14 +10,17 @@ from led_control.core.animation_runner import AnimationRunner
 from led_control.core.integration_manager import IntegrationManager
 from led_control.integrations.github_tracker import GitHubTracker
 from led_control.integrations.weather_tracker import WeatherTracker
-from led_control.integrations.spotify import SpotifyTracker
 from led_control.integrations.strava import StravaTracker
+from led_control.integrations.generic_tracker import GenericTracker
 
-USERNAME = "username"
+USERNAME = "lfouts"
 CONFIG_PATH = f"/home/{USERNAME}/CCal_V2/config.json"
 
-# Potential TODO Services:
-# Uptime Kuma, GitLab, Wiki.js, Vault Warden
+# TODO: 
+# - Add polltime to webgui
+# - Add new services (Uptime Kuma, GitLab, Wiki.js, Vault Warden)
+# - More unit tests?
+# - Intro animations for api integrations? (e.g. Github, Strave, etc)
 
 
 def safe_get(config, key, default=None, required=False):
@@ -52,7 +55,8 @@ def extract_config_values(config):
         # Schedule settings
         'on_time': safe_get(config, "ON_TIME", 9),
         'off_time': safe_get(config, "OFF_TIME", 23),
-        'poll_time': safe_get(config, "POLL_TIME", 30),
+        'poll_time': safe_get(config, "POLL_TIME", 60),
+        'weather_display_time': safe_get(config, "WEATHER_DISPLAY_TIME", 4),
         
         # API credentials
         'github_username': safe_get(config, "GITHUB_USERNAME", required=False),
@@ -60,8 +64,6 @@ def extract_config_values(config):
         'weather_api_key': safe_get(config, "OPENWEATHERMAP_API_KEY", required=True),
         'weather_lat': safe_get(config, "WEATHER_LAT", required=True),
         'weather_lon': safe_get(config, "WEATHER_LON", required=True),
-        'spotify_client_id': safe_get(config, "SPOT_ID", required=False),
-        'spotify_client_secret': safe_get(config, "SPOT_SECRET", required=False),
         'strava_client_id': safe_get(config, "STRAVA_ID", required=False),
         'strava_client_secret': safe_get(config, "STRAVA_SECRET", required=False),
         
@@ -83,7 +85,7 @@ def setup_integrations(cfg, animation_runner):
         strava_tracker = StravaTracker(
             client_id=cfg['strava_client_id'], 
             client_secret=cfg['strava_client_secret'],
-            num_days=cfg.get['num_days', 28]
+            num_days=cfg['num_leds']
         )
     
     weather_tracker = WeatherTracker(
@@ -91,12 +93,17 @@ def setup_integrations(cfg, animation_runner):
         (cfg['weather_lat'], cfg['weather_lon'])
     )
     
-    spotify_tracker = None
-    if cfg['spotify_client_id'] and cfg['spotify_client_secret']:
-        spotify_tracker = SpotifyTracker(
-            client_id=cfg['spotify_client_id'], 
-            client_secret=cfg['spotify_client_secret']
-        )
+    # For each file in the CustomTrackers directory, create a GenericTracker integration
+    custom_trackers_dir = f"/home/{USERNAME}/CCal_V2/CustomTrackers"
+    customTrackers = []
+    for filename in os.listdir(custom_trackers_dir):
+        if filename.endswith(".json"):
+            tracker_path = os.path.join(custom_trackers_dir, filename)
+            try:
+                generic_tracker = GenericTracker(tracker_path)
+                customTrackers.append(generic_tracker)
+            except Exception as exc:
+                print(f"[ERROR] Failed to load GenericTracker from {tracker_path}: {exc}")
     
     # Initialize integration manager
     return IntegrationManager(
@@ -104,7 +111,7 @@ def setup_integrations(cfg, animation_runner):
         github_tracker=github_tracker,
         strava_tracker=strava_tracker,
         weather_tracker=weather_tracker,
-        spotify_tracker=spotify_tracker
+        custom_trackers=customTrackers
     )
 
 
@@ -147,7 +154,7 @@ def main():
                 integration_manager.run_integration_cycle(
                     brightness=cfg['brightness'],
                     poll_time=cfg['poll_time'],
-                    weather_display_time=4
+                    weather_display_time=cfg['weather_display_time']
                 )
 
             except KeyboardInterrupt:

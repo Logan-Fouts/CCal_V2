@@ -1,6 +1,6 @@
 #!/bin/bash
 
-USERNAME="username"
+USERNAME="lfouts"
 echo USERNAME: $USERNAME
 
 IP_ADDR=$(hostname -I | awk '{print $1}')

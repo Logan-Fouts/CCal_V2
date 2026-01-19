@@ -2,7 +2,7 @@
 Integration manager for handling all external service integrations.
 
 Centralizes the logic for fetching and displaying data from GitHub, Strava,
-Weather, and Spotify integrations.
+Weather, and other integrations.
 """
 
 import time
@@ -12,13 +12,14 @@ class IntegrationManager:
     """Manages all external service integrations and their display logic."""
     
     def __init__(self, animation_runner, github_tracker=None, strava_tracker=None, 
-                 weather_tracker=None, spotify_tracker=None):
+                 weather_tracker=None, custom_trackers=None):
         self.animation_runner = animation_runner
         self.github_tracker = github_tracker
         self.strava_tracker = strava_tracker
         self.weather_tracker = weather_tracker
-        self.spotify_tracker = spotify_tracker
+        self.custom_trackers = custom_trackers if custom_trackers else []
         
+        # TODO: Should be moved to config
         self.github_colors = {
             "no_events": [30, 30, 30],
             "event": [0, 255, 0]
@@ -33,6 +34,8 @@ class IntegrationManager:
         """
         Update the calendar display with activity data.
         """
+        sleepDuration = poll_time / len(self.custom_trackers) + 2
+
         if colors is None:
             colors = self.github_colors
             
@@ -45,7 +48,7 @@ class IntegrationManager:
             except Exception as exc:
                 print(f"[ERROR] Failed to fetch GitHub events: {exc}")
 
-        time.sleep(poll_time / 2) 
+        time.sleep(sleepDuration) 
 
         if self.strava_tracker:
             try:
@@ -57,6 +60,20 @@ class IntegrationManager:
                         )
             except Exception as exc:
                 print(f"[ERROR] Failed to fetch Strava activities: {exc}")
+
+        time.sleep(sleepDuration)
+
+        for tracker in self.custom_trackers:
+            try:
+                data = tracker.get_data()
+                color = tracker.get_color()
+                if sum(data) > 0:
+                    self.animation_runner.update_calendar(
+                        data, brightness=brightness, colors=color
+                    )
+                time.sleep(sleepDuration)
+            except Exception as exc:
+                print(f"[ERROR] Failed to fetch data from custom tracker {tracker.name}: {exc}")
         
         return True
     
@@ -77,24 +94,6 @@ class IntegrationManager:
         
         return False
     
-    def handle_spotify_animation(self, duration=5, brightness=0.8):
-        """Handle Spotify music animation if playing."""
-        if not self.spotify_tracker:
-            return False
-            
-        try:
-            is_playing = self.spotify_tracker.is_playing()
-            if is_playing:
-                end_time = time.time() + duration
-                self.animation_runner.spotify_music_animation_loop(
-                    end_time, brightness=brightness
-                )
-                return True
-        except Exception as exc:
-            print(f"[ERROR] Failed to check Spotify playback: {exc}")
-        
-        return False
-    
     def run_integration_cycle(self, brightness=0.8, poll_time=10, weather_display_time=4):
         """
         Run a complete cycle of all integrations.
@@ -106,4 +105,3 @@ class IntegrationManager:
         self.handle_weather_animation(brightness=brightness)
         time.sleep(weather_display_time)
 
-        self.handle_spotify_animation(brightness=brightness)
