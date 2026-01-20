@@ -31,7 +31,10 @@ class GenericTracker:
             "no_events": [R, G, B]
         }
         """
-        self.currDay = time.localtime().tm_mday
+        # self.currDay = time.localtime().tm_mday
+        # Temporarily set day to previous day to force shift on first get_data call
+        self.currDay = (time.localtime().tm_mday - 1) % 31
+
         self.configPath = configPath
         self._get_config()
 
@@ -46,6 +49,7 @@ class GenericTracker:
 
         self.name = config.get("name", "Generic Tracker")
         self.data = config.get("data", [0] * 28)
+        self.metric = config.get("metric", "units")
 
         event_color = config.get("event", [0, 255, 0])
         no_event_color = config.get("no_events", [0, 0, 0])
@@ -61,6 +65,7 @@ class GenericTracker:
             "data": self.data,
             "event": self.color["event"],
             "no_events": self.color["no_events"],
+            "metric": self.metric
         }
         try:
             self.config_manager = ConfigManager(self.configPath)
@@ -83,6 +88,7 @@ class GenericTracker:
         Shift the data array to account for a new day.
         """
         self.data = [0] + self.data[:-1]
+        self._save_config()
 
     def get_data(self):
         """
