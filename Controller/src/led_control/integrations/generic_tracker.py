@@ -31,10 +31,7 @@ class GenericTracker:
             "no_events": [R, G, B]
         }
         """
-        # self.currDay = time.localtime().tm_mday
-        # Temporarily set day to previous day to force shift on first get_data call
-        self.currDay = (time.localtime().tm_mday - 1) % 31
-
+        self.currDay = time.localtime().tm_mday
         self.configPath = configPath
         self._get_config()
 

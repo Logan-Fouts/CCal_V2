@@ -1,19 +1,19 @@
 {
-  "name": "LeetCode",
+  "name": "Swedish",
   "data": [
-    1,
+    60,
     0,
     0,
     0,
     0,
     0,
-    1,
-    1,
     0,
     0,
     0,
-    2,
-    1,
+    0,
+    0,
+    0,
+    0,
     0,
     0,
     0,
@@ -31,14 +31,14 @@
     0
   ],
   "event": [
-    149,
-    0,
-    0
+    21,
+    32,
+    224
   ],
   "no_events": [
     30,
     30,
     30
   ],
-  "metric": "problems solved"
+  "metric": "minutes"
 }

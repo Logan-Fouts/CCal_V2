@@ -29,6 +29,8 @@ class GitHubTracker:
         self.max_events = 200
         self._per_page = 30
         self._max_retries = 3
+        self._every_other = True
+        self._stored_events = []
         self._headers = {
             "Authorization": f"Bearer {self._auth_info[1]}",
             "User-Agent": "PiZero",
@@ -47,6 +49,7 @@ class GitHubTracker:
         """
         all_events = []
         page = 1
+        if not self._every_other: return self._stored_events
         while len(all_events) < self.max_events:
             url = f"https://api.github.com/users/{self._auth_info[0]}/events?page={page}&per_page={self._per_page}"
             retries = 0
@@ -86,7 +89,10 @@ class GitHubTracker:
                 break
             page += 1
             time.sleep(1)
-        return all_events[: self.max_events]
+
+        self._stored_events = all_events[: self.max_events]
+
+        return self._stored_events
 
     def get_event_counts(self):
         """

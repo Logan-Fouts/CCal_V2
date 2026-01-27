@@ -81,12 +81,12 @@ def setup_integrations(cfg, animation_runner):
         github_tracker = GitHubTracker(cfg['github_username'], cfg['github_token'])
     
     strava_tracker = None  
-    if cfg['strava_client_id'] and cfg['strava_client_secret']:
-        strava_tracker = StravaTracker(
-            client_id=cfg['strava_client_id'], 
-            client_secret=cfg['strava_client_secret'],
-            num_days=cfg['num_leds']
-        )
+#    if cfg['strava_client_id'] and cfg['strava_client_secret']:
+#        strava_tracker = StravaTracker(
+#            client_id=cfg['strava_client_id'], 
+#            client_secret=cfg['strava_client_secret'],
+#            num_days=cfg['num_leds']
+#        )
     
     weather_tracker = WeatherTracker(
         cfg['weather_api_key'], 

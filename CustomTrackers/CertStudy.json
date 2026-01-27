@@ -1,19 +1,19 @@
 {
-  "name": "LeetCode",
+  "name": "Cert Study",
   "data": [
-    1,
+    90,
     0,
     0,
     0,
     0,
     0,
-    1,
-    1,
     0,
     0,
     0,
-    2,
-    1,
+    0,
+    0,
+    0,
+    0,
     0,
     0,
     0,
@@ -31,8 +31,8 @@
     0
   ],
   "event": [
-    149,
-    0,
+    244,
+    80,
     0
   ],
   "no_events": [
@@ -40,5 +40,5 @@
     30,
     30
   ],
-  "metric": "problems solved"
+  "metric": "minutes"
 }

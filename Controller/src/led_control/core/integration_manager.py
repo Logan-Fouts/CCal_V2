@@ -34,46 +34,48 @@ class IntegrationManager:
         """
         Update the calendar display with activity data.
         """
-        sleepDuration = poll_time / len(self.custom_trackers) + 2
+        sleepDuration = (poll_time / len(self.custom_trackers) + 2) / 2
 
         if colors is None:
             colors = self.github_colors
-            
-        if self.github_tracker:
-            try:
-                event_counts = self.github_tracker.get_event_counts()
-                self.animation_runner.update_calendar(
-                    event_counts, brightness=brightness, colors=colors
-                )
-            except Exception as exc:
-                print(f"[ERROR] Failed to fetch GitHub events: {exc}")
 
-        time.sleep(sleepDuration) 
-
-        if self.strava_tracker:
-            try:
-                if self.strava_tracker.is_authenticated():
-                    activity_counts = self.strava_tracker.get_activity_counts()
-                    if sum(activity_counts) > 0:
-                        self.animation_runner.update_calendar(
-                            activity_counts, brightness=brightness, colors=self.strava_colors
-                        )
-            except Exception as exc:
-                print(f"[ERROR] Failed to fetch Strava activities: {exc}")
-
-        time.sleep(sleepDuration)
-
-        for tracker in self.custom_trackers:
-            try:
-                data = tracker.get_data()
-                color = tracker.get_color()
-                if sum(data) > 0:
+        for _ in range(2):
+                
+            if self.github_tracker:
+                try:
+                    event_counts = self.github_tracker.get_event_counts()
                     self.animation_runner.update_calendar(
-                        data, brightness=brightness, colors=color
+                        event_counts, brightness=brightness, colors=colors
                     )
-                time.sleep(sleepDuration)
-            except Exception as exc:
-                print(f"[ERROR] Failed to fetch data from custom tracker {tracker.name}: {exc}")
+                    time.sleep(sleepDuration) 
+                except Exception as exc:
+                    print(f"[ERROR] Failed to fetch GitHub events: {exc}")
+
+
+            if self.strava_tracker:
+                try:
+                    if self.strava_tracker.is_authenticated():
+                        activity_counts = self.strava_tracker.get_activity_counts()
+                        if sum(activity_counts) > 0:
+                            self.animation_runner.update_calendar(
+                                activity_counts, brightness=brightness, colors=self.strava_colors
+                            )
+                    time.sleep(sleepDuration)
+                except Exception as exc:
+                    print(f"[ERROR] Failed to fetch Strava activities: {exc}")
+
+
+            for tracker in self.custom_trackers:
+                try:
+                    data = tracker.get_data()
+                    color = tracker.get_color()
+                    if sum(data) > 0:
+                        self.animation_runner.update_calendar(
+                            data, brightness=brightness, colors=color
+                        )
+                    time.sleep(sleepDuration)
+                except Exception as exc:
+                    print(f"[ERROR] Failed to fetch data from custom tracker {tracker.name}: {exc}")
         
         return True
     
