@@ -1,6 +1,6 @@
-# Getting Started with CCal
+# Getting Started with Daily Grid
 
-This guide will help you set up your Contribution Calendar.  
+This guide will help you set up your Daily Grid.  
 Follow the steps below to get everything working.
 
 ---
@@ -34,7 +34,7 @@ Follow the steps below to get everything working.
 
 ### Default WebGUI Credentials
 
-- **Username:** `ccal`
+- **Username:** `dailygrid`
 - **Password:** `raspberry`
 
 ---
@@ -43,19 +43,19 @@ Follow the steps below to get everything working.
 
 To set your own username and password for the WebGUI, run this command (replace `yourusername` and `yourpassword`):
 ```sh
-echo -e "CCAL_WEBGUI_USER=yourusername\nCCAL_WEBGUI_PASS=yourpassword" > ~/CCal_V2/WebGUI/.env
+echo -e "DAILYGRID_WEBGUI_USER=yourusername\nDAILYGRID_WEBGUI_PASS=yourpassword" > ~/Daily-Grid/WebGUI/.env
 ```
 *Or just edit the file with whatever text editor you want*
 You'll need to use sudo since the files are owned by the root user. You of course can modify the permisions so you dont need to use sudo.
 ```sh
-sudo vim ~/CCal_V2/WebGUI/.env
+sudo vim ~/Daily-Grid/WebGUI/.env
 ```
 
 ---
 
 ## Build Your Own
 
-If you want to build CCal v2 yourself:
+If you want to build Daily Grid yourself:
 
 1. **Flash Raspbian**
     - Install the latest Raspbian OS on a Pi Zero W (using Pi Imager is recommended).
@@ -75,11 +75,11 @@ Use [Raspberry Pi Imager](https://www.raspberrypi.com/software/) for the easiest
 
 3. **Download & Run the Setup Script**
     ```sh
-    sudo curl https://raw.githubusercontent.com/Logan-Fouts/CCal_V2/refs/heads/main/setup.sh | sh
+    sudo curl https://raw.githubusercontent.com/Logan-Fouts/Daily-Grid/refs/heads/main/setup.sh | sh
     ```
     Or if you are having issues with the interactive shell then use the steps here:
     1. ```sh
-       sudo wget https://raw.githubusercontent.com/Logan-Fouts/CCal_V2/refs/heads/main/setup.sh
+       sudo wget https://raw.githubusercontent.com/Logan-Fouts/Daily-Grid/refs/heads/main/setup.sh
        ```
     2. ```sh
        sudo chmod +x setup.sh
@@ -127,9 +127,9 @@ Here’s an example configuration file you can use or edit:
 
 - **Change your WebGUI password** after your first login.
 - Make sure your Pi and your computer are on the same network.
-- If you need help, open an issue on the [GitHub repository](https://github.com/Logan-Fouts/CCal_V2).
+- If you need help, open an issue on the [GitHub repository](https://github.com/Logan-Fouts/Daily-Grid).
 - Be patient during the first boot and setup—some steps can take several minutes.
 
 ---
 
-Thanks for trying out CCal v2! Enjoy your new Contribution Calendar.
+Thanks for trying out Daily Grid! Enjoy your new Activity Calendar.

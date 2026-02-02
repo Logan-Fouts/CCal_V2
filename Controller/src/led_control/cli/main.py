@@ -15,7 +15,7 @@ from led_control.integrations.generic_tracker import GenericTracker
 from datetime import datetime, timedelta
 
 USERNAME = "lfouts"
-CONFIG_PATH = f"/home/{USERNAME}/CCal_V2/config.json"
+CONFIG_PATH = f"/home/{USERNAME}/Daily-Grid/config.json"
 
 # TODO: 
 # - Add polltime to webgui
@@ -109,7 +109,7 @@ def setup_integrations(cfg, animation_runner):
         )
     
     # For each file in the CustomTrackers directory, create a GenericTracker integration
-    custom_trackers_dir = f"/home/{USERNAME}/CCal_V2/CustomTrackers"
+    custom_trackers_dir = f"/home/{USERNAME}/Daily-Grid/CustomTrackers"
     for filename in os.listdir(custom_trackers_dir):
         if filename.endswith(".json"):
             tracker_path = os.path.join(custom_trackers_dir, filename)

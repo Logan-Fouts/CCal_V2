@@ -40,28 +40,12 @@ print_error() {
 }
 
 echo -e "${GREEN}"
-echo "          _____                    _____                    _____                    _____  "
-echo "         /\    \                  /\    \                  /\    \                  /\    \ "
-echo "        /::\    \                /::\    \                /::\    \                /::\____\\"
-echo "       /::::\    \              /::::\    \              /::::\    \              /:::/    /"
-echo "      /::::::\    \            /::::::\    \            /::::::\    \            /:::/    / "
-echo "     /:::/\:::\    \          /:::/\:::\    \          /:::/\:::\    \          /:::/    /  "
-echo "    /:::/  \:::\    \        /:::/  \:::\    \        /:::/__\:::\    \        /:::/    /   "
-echo "   /:::/    \:::\    \      /:::/    \:::\    \      /::::\   \:::\    \      /:::/    /    "
-echo "  /:::/    / \:::\    \    /:::/    / \:::\    \    /::::::\   \:::\    \    /:::/    /     "
-echo " /:::/    /   \:::\    \  /:::/    /   \:::\    \  /:::/\:::\   \:::\    \  /:::/    /      "
-echo "/:::/____/     \:::\____\/:::/____/     \:::\____\/:::/  \:::\   \:::\____\/:::/____/       "
-echo "\:::\    \      \::/    /\:::\    \      \::/    /\::/    \:::\  /:::/    /\:::\    \       "
-echo " \:::\    \      \/____/  \:::\    \      \/____/  \/____/ \:::\/:::/    /  \:::\    \      "
-echo "  \:::\    \               \:::\    \                       \::::::/    /    \:::\    \     "
-echo "   \:::\    \               \:::\    \                       \::::/    /      \:::\    \    "
-echo "    \:::\    \               \:::\    \                      /:::/    /        \:::\    \   "
-echo "     \:::\    \               \:::\    \                    /:::/    /          \:::\    \  "
-echo "      \:::\    \               \:::\    \                  /:::/    /            \:::\    \ "
-echo "       \:::\____\               \:::\____\                /:::/    /              \:::\____\\"
-echo "        \::/    /                \::/    /                \::/    /                \::/    /"
-echo "         \/____/                  \/____/                  \/____/                  \/____/ "
-echo "                                                                                             "
+echo " ______   _______ "
+echo "(  __  \ (  ____ \\"
+echo "| (  \  )| (    \/"
+echo "| |   ) || | \_  )"
+echo "| (__/  )| (___) |"
+echo "(______/ (_______)"
 echo -e "${NC}"
 echo -e "${BLUE}        Daily-Grid Automated Setup${NC}\n"
 
@@ -110,7 +94,7 @@ else
 fi
 
 print_section "Installing WebGUI Dependencies"
-run_cmd "cd CDaily-GridWebGUI && npm install express@4.17.1 body-parser@1.19.0 ejs@3.1.6 && cd -"
+run_cmd "cd Daily-Grid/WebGUI && sudo npm install express@4.17.1 body-parser@1.19.0 ejs@3.1.6 && cd -"
 print_status "WebGUI dependencies installed."
 
 print_section "Installing Python Dependencies - GLOBALLY"
@@ -179,15 +163,15 @@ run_cmd "sudo mv /tmp/dailygrid_gui.service /etc/systemd/system/dailygrid_gui.se
 print_status "Systemd service files copied and customized."
 
 # Patch setup_addons.sh
-run_cmd "sed -i 's|USERNAME=\"username\"|USERNAME=\"$USERNAME\"|g' Daily-Grid/WebGUI/setup_addons.sh"
+run_cmd "sudo sed -i 's|USERNAME=\"username\"|USERNAME=\"$USERNAME\"|g' Daily-Grid/WebGUI/setup_addons.sh"
 print_status "setup_addons.sh username patched."
 
 # Patch server.js
-run_cmd "sed -i 's|USERNAME=\"username\"|USERNAME=\"$USERNAME\"|g' Daily-Grid/WebGUI/server.js"
+run_cmd "sudo sed -i 's|USERNAME=\"username\"|USERNAME=\"$USERNAME\"|g' Daily-Grid/WebGUI/server.js"
 print_status "server.js username patched."
 
 # Patch main.py
-run_cmd "sed -i 's|USERNAME = \"username\"|USERNAME = \"$USERNAME\"|g' Daily-Grid/Controller/src/led_control/cli/main.py"
+run_cmd "sudo sed -i 's|USERNAME = \"username\"|USERNAME = \"$USERNAME\"|g' Daily-Grid/Controller/src/led_control/cli/main.py"
 print_status "main.py username patched."
 
 # Prompt for WebGUI username and password
