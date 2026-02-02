@@ -49,7 +49,10 @@ class GitHubTracker:
         """
         all_events = []
         page = 1
-        if not self._every_other: return self._stored_events
+        if not self._every_other and len(self._stored_events) > 0: 
+            self._every_other = True
+            return self._stored_events
+        self._every_other = False
         while len(all_events) < self.max_events:
             url = f"https://api.github.com/users/{self._auth_info[0]}/events?page={page}&per_page={self._per_page}"
             retries = 0
@@ -90,9 +93,12 @@ class GitHubTracker:
             page += 1
             time.sleep(1)
 
-        self._stored_events = all_events[: self.max_events]
+        if len(all_events[: self.max_events]) > 0:
+            self._stored_events = all_events[: self.max_events]
+            return all_events[: self.max_events]
 
         return self._stored_events
+
 
     def get_event_counts(self):
         """
