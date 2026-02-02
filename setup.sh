@@ -63,7 +63,7 @@ echo "        \::/    /                \::/    /                \::/    /       
 echo "         \/____/                  \/____/                  \/____/                  \/____/ "
 echo "                                                                                             "
 echo -e "${NC}"
-echo -e "${BLUE}        CCal_V2 Automated Setup${NC}\n"
+echo -e "${BLUE}        Daily-Grid Automated Setup${NC}\n"
 
 
 print_section "System Update & Dependency Installation"
@@ -102,19 +102,19 @@ else
 fi
 
 print_section "Cloning Repository"
-if [ ! -d "CCal_V2" ]; then
-    run_cmd "git clone https://github.com/Logan-Fouts/CCal_V2.git"
+if [ ! -d "Daily-Grid" ]; then
+    run_cmd "git clone https://github.com/Logan-Fouts/Daily-Grid.git"
     print_status "Repository cloned."
 else
-    print_warning "CCal_V2 directory already exists, skipping clone."
+    print_warning "Daily-Grid directory already exists, skipping clone."
 fi
 
 print_section "Installing WebGUI Dependencies"
-run_cmd "cd CCal_V2/WebGUI && npm install express@4.17.1 body-parser@1.19.0 ejs@3.1.6 && cd -"
+run_cmd "cd CDaily-GridWebGUI && npm install express@4.17.1 body-parser@1.19.0 ejs@3.1.6 && cd -"
 print_status "WebGUI dependencies installed."
 
 print_section "Installing Python Dependencies - GLOBALLY"
-run_cmd "cd CCal_V2/Controller"
+run_cmd "cd Daily-Grid/Controller"
 
 # First ensure we have the latest pip and it's working
 print_status "Checking/upgrading pip globally..."
@@ -168,26 +168,26 @@ run_cmd "cd -"
 print_status "Python dependencies installed globally."
 
 print_section "Configuring System Services"
-run_cmd "sudo cp CCal_V2/SystemdServices/ccalpy.service /etc/systemd/system/"
-run_cmd "sudo cp CCal_V2/SystemdServices/ccalpy_gui.service /etc/systemd/system/"
+run_cmd "sudo cp Daily-Grid/SystemdServices/dailygrid.service /etc/systemd/system/"
+run_cmd "sudo cp Daily-Grid/SystemdServices/dailygrid_gui.service /etc/systemd/system/"
 
 # Modify systemd files with username
-run_cmd "sed 's|__USERNAME__|$USERNAME|g' CCal_V2/SystemdServices/ccalpy.service > /tmp/ccalpy.service"
-run_cmd "sudo mv /tmp/ccalpy.service /etc/systemd/system/ccalpy.service"
-run_cmd "sed 's|__USERNAME__|$USERNAME|g' CCal_V2/SystemdServices/ccalpy_gui.service > /tmp/ccalpy_gui.service"
-run_cmd "sudo mv /tmp/ccalpy_gui.service /etc/systemd/system/ccalpy_gui.service"
+run_cmd "sed 's|__USERNAME__|$USERNAME|g' Daily-Grid/SystemdServices/dailygrid.service > /tmp/dailygrid.service"
+run_cmd "sudo mv /tmp/dailygrid.service /etc/systemd/system/dailygrid.service"
+run_cmd "sed 's|__USERNAME__|$USERNAME|g' Daily-Grid/SystemdServices/dailygrid_gui.service > /tmp/dailygrid_gui.service"
+run_cmd "sudo mv /tmp/dailygrid_gui.service /etc/systemd/system/dailygrid_gui.service"
 print_status "Systemd service files copied and customized."
 
 # Patch setup_addons.sh
-run_cmd "sed -i 's|USERNAME=\"username\"|USERNAME=\"$USERNAME\"|g' CCal_V2/WebGUI/setup_addons.sh"
+run_cmd "sed -i 's|USERNAME=\"username\"|USERNAME=\"$USERNAME\"|g' Daily-Grid/WebGUI/setup_addons.sh"
 print_status "setup_addons.sh username patched."
 
 # Patch server.js
-run_cmd "sed -i 's|USERNAME=\"username\"|USERNAME=\"$USERNAME\"|g' CCal_V2/WebGUI/server.js"
+run_cmd "sed -i 's|USERNAME=\"username\"|USERNAME=\"$USERNAME\"|g' Daily-Grid/WebGUI/server.js"
 print_status "server.js username patched."
 
 # Patch main.py
-run_cmd "sed -i 's|USERNAME = \"username\"|USERNAME = \"$USERNAME\"|g' CCal_V2/Controller/src/led_control/cli/main.py"
+run_cmd "sed -i 's|USERNAME = \"username\"|USERNAME = \"$USERNAME\"|g' Daily-Grid/Controller/src/led_control/cli/main.py"
 print_status "main.py username patched."
 
 # Prompt for WebGUI username and password
@@ -197,17 +197,17 @@ read -s -p "Enter WebGUI password [default: raspberry]: " WEBGUI_PASS
 echo
 WEBGUI_PASS=${WEBGUI_PASS:-raspberry}
 
-run_cmd "touch /home/$USERNAME/CCal_V2/WebGUI/.env"
-run_cmd "echo \"CCAL_WEBGUI_USER=$WEBGUI_USER\" > /home/$USERNAME/CCal_V2/WebGUI/.env"
-run_cmd "echo \"CCAL_WEBGUI_PASS=$WEBGUI_PASS\" >> /home/$USERNAME/CCal_V2/WebGUI/.env"
+run_cmd "touch /home/$USERNAME/Daily-Grid/WebGUI/.env"
+run_cmd "echo \"DAILYGRID_WEBGUI_USER=$WEBGUI_USER\" > /home/$USERNAME/Daily-Grid/WebGUI/.env"
+run_cmd "echo \"DAILYGRID_WEBGUI_PASS=$WEBGUI_PASS\" >> /home/$USERNAME/Daily-Grid/WebGUI/.env"
 
 print_section "Enabling and Starting Services"
 run_cmd "sudo systemctl daemon-reload"
-run_cmd "sudo systemctl enable --now ccalpy.service"
-run_cmd "sudo systemctl enable --now ccalpy_gui.service"
+run_cmd "sudo systemctl enable --now dailygrid.service"
+run_cmd "sudo systemctl enable --now dailygrid_gui.service"
 print_status "Services enabled and started."
 
-run_cmd "touch /home/$USERNAME/CCal_V2/config.json"
+run_cmd "touch /home/$USERNAME/Daily-Grid/config.json"
 
 # Speed up boot time
 run_cmd "sudo systemctl disable NetworkManager-wait-online.service"
@@ -216,9 +216,9 @@ run_cmd "sudo systemctl disable avahi-daemon.service"
 run_cmd "sudo systemctl disable bluetooth.service"
 
 # Run the setup_addons.sh script
-run_cmd "sudo bash /home/$USERNAME/CCal_V2/WebGUI/setup_addons.sh"
+run_cmd "sudo bash /home/$USERNAME/Daily-Grid/WebGUI/setup_addons.sh"
 
 print_section "Setup Completed Successfully"
 echo -e "${GREEN}All done!${NC}"
 echo "Services status:"
-run_cmd "sudo systemctl status ccalpy.service ccalpy_gui.service --no-pager"
+run_cmd "sudo systemctl status dailygrid.service dailygrid_gui.service --no-pager"

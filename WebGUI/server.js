@@ -21,9 +21,9 @@ app.use((err, req, res, next) => {
     res.status(500).send('Something broke!');
 });
 
-require('dotenv').config({ path: `/home/${USERNAME}/CCal_V2/WebGUI/.env` });
-// const BASIC_AUTH_USER = process.env.CCAL_WEBGUI_USER || 'ccal';
-// const BASIC_AUTH_PASS = process.env.CCAL_WEBGUI_PASS || 'raspberry';
+require('dotenv').config({ path: `/home/${USERNAME}/Daily-Grid/WebGUI/.env` });
+// const BASIC_AUTH_USER = process.env.DAILYGRID_WEBGUI_USER || 'dailygrid';
+// const BASIC_AUTH_PASS = process.env.DAILYGRID_WEBGUI_PASS || 'raspberry';
 const BASIC_AUTH_USER = 'dev';
 const BASIC_AUTH_PASS = 'dev';
 
@@ -31,7 +31,7 @@ const BASIC_AUTH_PASS = 'dev';
 app.use((req, res, next) => {
     const auth = req.headers.authorization;
     if (!auth) {
-        res.set('WWW-Authenticate', 'Basic realm="CCal WebGUI"');
+        res.set('WWW-Authenticate', 'Basic realm="Daily Grid WebGUI"');
         return res.status(401).send('Authentication required.');
     }
     const [scheme, encoded] = auth.split(' ');
@@ -43,7 +43,7 @@ app.use((req, res, next) => {
     if (user === BASIC_AUTH_USER && pass === BASIC_AUTH_PASS) {
         return next();
     }
-    res.set('WWW-Authenticate', 'Basic realm="CCal WebGUI"');
+    res.set('WWW-Authenticate', 'Basic realm="Daily Grid WebGUI"');
     return res.status(401).send('Authentication failed.');
 });
 
@@ -139,7 +139,7 @@ app.post('/submit', (req, res, next) => {
         }
 
 
-        exec(`sudo bash /home/${USERNAME}/CCal_V2/WebGUI/setup_addons.sh`,
+        exec(`sudo bash /home/${USERNAME}/Daily-Grid/WebGUI/setup_addons.sh`,
             { timeout: 120000 },
             (error, stdout, stderr) => {
                 if (error) {

@@ -2,7 +2,7 @@
 Description=CCal Gui
 
 [Service]
-ExecStart=node /home/__USERNAME__/CCal_V2/WebGUI/server.js
+ExecStart=node /home/__USERNAME__/Daily-Grid/WebGUI/server.js
 User=root
 Restart=on-failure
 

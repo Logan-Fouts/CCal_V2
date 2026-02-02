@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
             generalFields.forEach(field => formData.delete(field));
         }
 
-        showPopup("Updating CCal, This may take a moment...");
+        showPopup("Updating Daily Grid, This may take a moment...");
 
         const data = new URLSearchParams(formData);
         const response = await fetch('/submit', {
