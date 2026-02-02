@@ -5,17 +5,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>CCAL v2 GUI</title>
+    <title>Daily Grid</title>
 </head>
 
 <body>
     <div class="title-banner">
-        <span class="title-main">CCal<span class="title-v2">v2</span></span>
-        <span class="title-sub">Contribution Calendar Control Panel</span>
+        <span class="title-main">Daily Grid</span>
+        <span class="title-sub">Daily Grid Control Panel</span>
     </div>
     <div class="tabs">
-        <button class="tab-btn active" data-tab="general">General</button>
-        <button class="tab-btn" data-tab="addons">Add-ons</button>
+        <button type="button" class="tab-btn active" data-tab="general">General</button>
+        <button type="button" class="tab-btn" data-tab="addons">Add-ons</button>
+        <button type="button" class="tab-btn" data-tab="trackers">Custom Trackers</button>
     </div>
     <form id="settingsForm" action="/submit" method="post">
         <!-- General Tab -->
@@ -90,8 +91,41 @@
                 <input type="checkbox" id="syncthing_enable" name="SYNCTHING_ENABLE" <%= config.SYNCTHING_ENABLE ? 'checked' : '' %>><br><br>
             </div>
         </section>
+        
         <input type="submit" value="Save All Settings">
     </form>
+    
+    <!-- Custom Trackers Tab (outside form to avoid conflicts) -->
+    <div class="settings-form-container" style="display: none;">
+        <section class="settings-section tab-content" id="tab-trackers">
+            <h2>Custom Trackers</h2>
+            
+            <!-- Create New Tracker -->
+            <div class="tracker-section">
+                <h3>Create New Tracker</h3>
+                <div class="create-tracker-form">
+                    <label for="new-tracker-name">Tracker Name:</label>
+                    <input type="text" id="new-tracker-name" placeholder="e.g., Exercise, Reading, etc.">
+                    
+                    <label for="new-tracker-metric">Metric:</label>
+                    <input type="text" id="new-tracker-metric" placeholder="e.g., minutes, pages, reps">
+                    
+                    <label for="new-tracker-color">Color:</label>
+                    <input type="color" id="new-tracker-color" value="#1520e0">
+                    
+                    <button type="button" id="create-tracker-btn" class="action-btn create-btn">Create Tracker</button>
+                </div>
+            </div>
+            
+            <!-- Existing Trackers -->
+            <div class="tracker-section">
+                <h3>Your Trackers</h3>
+                <div id="trackers-list">
+                    <div class="loading-message">Loading trackers...</div>
+                </div>
+            </div>
+        </section>
+    </div>
     <!-- Stupid shit html cant get a nice space after the form without this -->
     <div class="after-form-spacer"></div>
     <script src="main.js"></script>

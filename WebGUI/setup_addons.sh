@@ -1,11 +1,11 @@
 #!/bin/bash
 
-USERNAME="username"
+USERNAME="lfouts"
 echo USERNAME: $USERNAME
 
 IP_ADDR=$(hostname -I | awk '{print $1}')
 
-CONFIG_FILE="/home/$USERNAME/CCal_V2/config.json"
+CONFIG_FILE="/home/$USERNAME/Daily-Grid/config.json"
 BASHRC="/home/$USERNAME/.bashrc"
 
 
@@ -102,21 +102,21 @@ else
     SYSTEMCTL disable --now syncthing@$USERNAME.service
 fi
 
-# --- Restart ccalpy.service ---
-echo "Restarting ccalpy.service to apply changes..."
-SUDO systemctl restart ccalpy.service
+# --- Restart dailygrid.service ---
+echo "Restarting dailygrid.service to apply changes..."
+SUDO systemctl restart dailygrid.service
 
 # --- .bashrc block update ---
 if [ ! -f "$BASHRC" ]; then
     echo "# .bashrc created by setup_addons.sh" > "$BASHRC"
 fi
 
-# Remove any previous CCal_V2 Service Info block
-sed -i '/# === CCal_V2 Service Info ===/,$d' "$BASHRC"
+# Remove any previous Daily Grid Service Info block
+sed -i '/# === Daily Grid Service Info ===/,$d' "$BASHRC"
 
-INFO_BLOCK="# === CCal_V2 Service Info ===\n"
+INFO_BLOCK="# === Daily Grid Service Info ===\n"
 INFO_BLOCK+="echo -e \"\n\033[1;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\""
-INFO_BLOCK+="\necho -e \"  \033[1;36m🚦 CCal_V2 Service Status:\033[0m\""
+INFO_BLOCK+="\necho -e \"  \033[1;36m🚦 Daily Grid Service Status:\033[0m\""
 INFO_BLOCK+="\necho -e \"    \033[1;33mManagement GUI: http://$IP_ADDR:8080\033[0m\""
 INFO_BLOCK+="\necho -e \"\033[1;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\""
 

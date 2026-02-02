@@ -4,6 +4,16 @@ src/led_control.egg-info/PKG-INFO
 src/led_control.egg-info/SOURCES.txt
 src/led_control.egg-info/dependency_links.txt
 src/led_control.egg-info/top_level.txt
+src/led_control/cli/__init__.py
+src/led_control/cli/demo.py
+src/led_control/cli/main.py
+src/led_control/core/__init__.py
+src/led_control/core/animation_runner.py
+src/led_control/core/config_manager.py
+src/led_control/core/led_controller.py
 src/led_control/integrations/__init__.py
 src/led_control/integrations/github_tracker.py
+src/led_control/integrations/spotify.py
 src/led_control/integrations/weather_tracker.py
+src/led_control/utils/__init__.py
+src/led_control/utils/led_utils.py

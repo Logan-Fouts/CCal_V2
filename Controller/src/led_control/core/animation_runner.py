@@ -423,7 +423,7 @@ class AnimationRunner:
         elif condition in ("mist", "fog"):
             self.fog_animation_loop(end_time, brightness)
         else:
-            self.default_animation_loop(end_time, brightness)
+            pass
 
         self.turn_all_off()
         temp = weather.get("main", {}).get("temp")
@@ -472,118 +472,38 @@ class AnimationRunner:
 
         self.turn_all_off()
 
-    def update_calendar(self, event_counts, colors: dict, brightness: float = 0.8):
-        """Update LEDs based on event counts with optimized performance."""
-        if not event_counts:
+    def update_calendar(self, activityCounts, colors: dict, brightness: float = 0.8):
+        """
+        Updates LEDs to reflect calendar activity with brightness relative to activity count.
+        Args:
+            activityCounts (list): List of integers representing activity counts per day.
+            colors (dict): Dictionary with 'event' and 'no_events' color tuples.
+            brightness (float): Base brightness level for LEDs. Optional.
+
+        This should be used by all activity integrations to display activity.
+        """
+        if not activityCounts:
             return
 
-        # Define colors for event and none if not already present
         self.event_color = colors.get("event", (0, 255, 0))
         self.none_color = colors.get("no_events", (30, 30, 30))
 
-        max_count = max(event_counts)
+        max_count = max(activityCounts)
         if max_count == 0:
-            for day in range(min(self.num_leds, len(event_counts))):
+            for day in range(min(self.num_leds, len(activityCounts))):
                 self.led.set_pixel(day, self.none_color, (brightness) * 0.5)
             self.led.show()
             return
 
         updates = []
-        for day in range(min(self.num_leds, len(event_counts))):
-            count = event_counts[day]
+        for day in range(min(self.num_leds, len(activityCounts))):
+            count = activityCounts[day]
             if count > 0:
                 led_brightness = (count / max_count) + 0.05 # Ensure min brightness
                 updates.append((day, self.event_color, led_brightness))
             else:
-                updates.append((day, self.none_color, brightness * 0.8))
+                updates.append((day, self.none_color, brightness * 1))
 
-        # Apply all updates
         for day, color, led_brightness in updates:
             self.led.set_pixel(day, color, led_brightness)
         self.led.show()
-
-    def spotify_music_animation_loop(
-        self, end_time: float, brightness: Optional[float] = None
-    ):
-        """
-        Classic music visualization animation with VU meter/equalizer bars.
-        Shows bouncing bars that simulate audio levels with music-like colors.
-        """
-        # Music visualization colors - vibrant and music-themed
-        music_colors = [
-            (255, 0, 100),    # Hot pink
-            (0, 255, 255),    # Cyan
-            (255, 100, 0),    # Orange
-            (100, 255, 0),    # Lime green
-            (255, 255, 0),    # Yellow
-            (255, 0, 255),    # Magenta
-            (0, 100, 255),    # Blue
-        ]
-        
-        rows = 4
-        cols = self.num_leds // rows
-        if self.num_leds % rows != 0:
-            cols += 1
-            
-        bands = []
-        for col in range(cols):
-            bands.append({
-                'height': random.uniform(0.2, 1.0),  # Current height (0-1)
-                'target': random.uniform(0.2, 1.0),  # Target height
-                'color_idx': col % len(music_colors),
-                'beat_timer': random.uniform(0, 2 * math.pi),  # For beat pulsing
-                'fall_speed': random.uniform(0.08, 0.15),  # How fast bars fall
-                'rise_speed': random.uniform(0.2, 0.4),   # How fast bars rise
-            })
-        
-        base_brightness = brightness if brightness else 0.8
-        
-        while time.time() < end_time:
-            current_time = time.time()
-            
-            for i, band in enumerate(bands):
-                if random.random() < 0.15:  # 15% chance each frame
-                    band['target'] = random.uniform(0.7, 1.0)
-                elif random.random() < 0.05:  # 5% chance for low energy
-                    band['target'] = random.uniform(0.1, 0.4)
-                else:
-                    band['target'] += random.uniform(-0.1, 0.1)
-                    band['target'] = max(0.1, min(1.0, band['target']))
-                
-                if band['height'] < band['target']:
-                    band['height'] += band['rise_speed']
-                else:
-                    band['height'] -= band['fall_speed']
-                
-                band['height'] = max(0.1, min(1.0, band['height']))
-                
-                band['beat_timer'] += 0.3
-            
-            self.turn_all_off()
-            
-            for col, band in enumerate(bands):
-                if col >= cols:
-                    break
-                    
-                color = music_colors[band['color_idx']]
-                height_in_leds = int(band['height'] * rows)
-                
-                beat_pulse = 0.8 + 0.2 * math.sin(band['beat_timer'])
-                
-                for row in range(height_in_leds):
-                    if row % 2 == 0:
-                        led_idx = row * cols + (cols - 1 - col)
-                    else:
-                        led_idx = row * cols + col
-                    
-                    if 0 <= led_idx < self.num_leds:
-                        row_brightness = (0.3 + 0.7 * (row + 1) / rows) * beat_pulse
-                        final_brightness = base_brightness * row_brightness
-                        
-                        if row == height_in_leds - 1:  # Top LED brighter
-                            final_brightness *= 1.2
-                        
-                        self.led.set_pixel(led_idx, color, min(1.0, final_brightness))
-            
-            self.led.show()
-            time.sleep(0.08)  # ~12 FPS for smooth animation
