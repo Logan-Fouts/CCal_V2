@@ -13,16 +13,17 @@ Features:
 
 import time
 import requests
+from led_control.integrations.base_tracker import BaseTracker
 
 
-class WeatherTracker:
+class WeatherTracker(BaseTracker):
     """
     Tracks and caches current weather data for a specified
     location using the OpenWeatherMap API.
 
     Usage:
         wt = WeatherTracker(api_key, location)
-        weather = wt.get_current_weather()
+        weather = wt.get_weather()
     """
 
     def __init__(self, api_key: str, location: tuple):
@@ -47,12 +48,20 @@ class WeatherTracker:
         return (time.time() - self._cache_time) > self._cache_duration
 
     # Really the only method that should be used externally
-    def get_current_weather(self):
+    def get_weather(self):
         """Returns the current weather, updating if necessary."""
         if self._current_weather is None or self._cache_expired():
             weather = self._update_weather()
             return weather
         return self._current_weather
+
+    def run(self, animation_runner, brightness=0.8, colors=None):
+        """Run weather animation on the provided animation runner."""
+        weather = self.get_weather()
+        if weather is None:
+            return False
+        animation_runner.run_weather_animation(weather, brightness=brightness)
+        return True
 
     def _update_weather(self):
         """Fetches the current weather from the API."""

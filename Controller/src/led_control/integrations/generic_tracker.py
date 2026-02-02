@@ -13,14 +13,15 @@ import time
 import sys
 
 from led_control.core.config_manager import ConfigManager
+from led_control.integrations.base_tracker import BaseTracker
 
-class GenericTracker:
+class GenericTracker(BaseTracker):
     """
     Default tracker users can use to track anything.
     The only way this should update the data array is the new day shifting.
     """
 
-    def __init__(self, configPath):
+    def __init__(self, configPath, colors=None):
         """
         All this takes is a path to a config file.
         The config file should be a JSON file with the following structure:
@@ -31,6 +32,7 @@ class GenericTracker:
             "no_events": [R, G, B]
         }
         """
+        super().__init__(colors=colors)
         self.currDay = time.localtime().tm_mday
         self.configPath = configPath
         self._get_config()
@@ -87,7 +89,7 @@ class GenericTracker:
         self.data = [0] + self.data[:-1]
         self._save_config()
 
-    def get_data(self):
+    def get_activity(self):
         """
         Get the frequency array of activity data.
         28 days of data, with the most recent day at index 0.
@@ -97,7 +99,7 @@ class GenericTracker:
         if self._is_new_day(): self._shift_data()
         return self.data
 
-    def get_color(self):
+    def get_colors(self):
         """
         Get the color mapping for events and no events.
         """

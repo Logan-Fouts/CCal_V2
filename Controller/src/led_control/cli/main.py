@@ -12,6 +12,7 @@ from led_control.integrations.github_tracker import GitHubTracker
 from led_control.integrations.weather_tracker import WeatherTracker
 from led_control.integrations.strava import StravaTracker
 from led_control.integrations.generic_tracker import GenericTracker
+from datetime import datetime, timedelta
 
 USERNAME = "lfouts"
 CONFIG_PATH = f"/home/{USERNAME}/CCal_V2/config.json"
@@ -20,7 +21,7 @@ CONFIG_PATH = f"/home/{USERNAME}/CCal_V2/config.json"
 # - Add polltime to webgui
 # - Add new services (Uptime Kuma, GitLab, Wiki.js, Vault Warden)
 # - More unit tests?
-# - Intro animations for api integrations? (e.g. Github, Strave, etc)
+# - Intro animations for api integrations? (e.g. Github, Strava, etc)
 
 
 def safe_get(config, key, default=None, required=False):
@@ -48,14 +49,14 @@ def extract_config_values(config):
     return {
         # Hardware settings
         'pin_num': safe_get(config, "PIN_NUM", 18),
-        'num_leds': safe_get(config, "NUM_LEDS", 28),
+        'num_leds': safe_get(config, "NUM_LEDS", 28), # For future potential expansion
         'brightness': safe_get(config, "BRIGHTNESS", 0.8),
         'startup_animation': safe_get(config, "STARTUP_ANIMATION", 3),
         
         # Schedule settings
         'on_time': safe_get(config, "ON_TIME", 9),
-        'off_time': safe_get(config, "OFF_TIME", 23),
-        'poll_time': safe_get(config, "POLL_TIME", 60),
+        'off_time': safe_get(config, "OFF_TIME", 22),
+        'poll_time': safe_get(config, "POLL_TIME", 90),
         'weather_display_time': safe_get(config, "WEATHER_DISPLAY_TIME", 4),
         
         # API credentials
@@ -68,61 +69,69 @@ def extract_config_values(config):
         'strava_client_secret': safe_get(config, "STRAVA_SECRET", required=False),
         
         # Display colors
-        'no_events_color': safe_get(config, "NO_EVENTS_COLOR", [30, 30, 30]),
-        'event_color': safe_get(config, "EVENT_COLOR", [0, 255, 0]),
+        'github_no_events_color': safe_get(config, "GITHUB_NO_EVENTS_COLOR", [30, 30, 30]),
+        'github_event_color': safe_get(config, "GITHUB_EVENT_COLOR", [0, 255, 0]),
+
+        'strava_events_color': safe_get(config, "STRAVA_EVENTS_COLOR", [255, 165, 0]),
+        'strava_no_events_color': safe_get(config, "STRAVA_NO_EVENTS_COLOR", [30, 30, 30]),
     }
 
 
 def setup_integrations(cfg, animation_runner):
     """Initialize all integration trackers and manager."""
-    # Initialize trackers (only if credentials provided)
-    github_tracker = None
+    trackers = []
+
     if cfg['github_username'] and cfg['github_token']:
-        github_tracker = GitHubTracker(cfg['github_username'], cfg['github_token'])
+        colors = {
+            "event": cfg['github_event_color'],
+            "no_events": cfg['github_no_events_color']
+        }
+        github_tracker = GitHubTracker(cfg['github_username'], cfg['github_token'], colors=colors)
+        trackers.append(github_tracker)
     
-    strava_tracker = None  
-#    if cfg['strava_client_id'] and cfg['strava_client_secret']:
-#        strava_tracker = StravaTracker(
-#            client_id=cfg['strava_client_id'], 
-#            client_secret=cfg['strava_client_secret'],
-#            num_days=cfg['num_leds']
-#        )
-    
-    weather_tracker = WeatherTracker(
-        cfg['weather_api_key'], 
-        (cfg['weather_lat'], cfg['weather_lon'])
-    )
+    if cfg['strava_client_id'] and cfg['strava_client_secret']:
+        colors = {
+            "event": cfg['strava_events_color'],
+            "no_events": cfg['strava_no_events_color']
+        }
+        strava_tracker = StravaTracker(
+            client_id=cfg['strava_client_id'], 
+            client_secret=cfg['strava_client_secret'],
+            num_days=cfg['num_leds'],
+            colors=colors
+        )
+        trackers.append(strava_tracker)
+
+    if cfg['weather_api_key'] and cfg['weather_lat'] and cfg['weather_lon']:
+        weather_tracker = WeatherTracker(
+            cfg['weather_api_key'], 
+            (cfg['weather_lat'], cfg['weather_lon'])
+        )
     
     # For each file in the CustomTrackers directory, create a GenericTracker integration
     custom_trackers_dir = f"/home/{USERNAME}/CCal_V2/CustomTrackers"
-    customTrackers = []
     for filename in os.listdir(custom_trackers_dir):
         if filename.endswith(".json"):
             tracker_path = os.path.join(custom_trackers_dir, filename)
             try:
                 generic_tracker = GenericTracker(tracker_path)
-                customTrackers.append(generic_tracker)
+                trackers.append(generic_tracker)
             except Exception as exc:
                 print(f"[ERROR] Failed to load GenericTracker from {tracker_path}: {exc}")
     
-    # Initialize integration manager
     return IntegrationManager(
         animation_runner=animation_runner,
-        github_tracker=github_tracker,
-        strava_tracker=strava_tracker,
-        weather_tracker=weather_tracker,
-        custom_trackers=customTrackers
+        trackers=trackers,
+        weather_tracker=weather_tracker
     )
 
 
 def main():
     """Main program loop for LED control."""
     try:
-        # Load configuration
         config = load_config()
         cfg = extract_config_values(config)
 
-        # Initialize hardware
         led_controller = LEDController(
             pin_num=cfg['pin_num'], 
             num_leds=cfg['num_leds'], 
@@ -130,10 +139,8 @@ def main():
         )
         animation_runner = AnimationRunner(led_controller)
         
-        # Setup integrations
         integration_manager = setup_integrations(cfg, animation_runner)
 
-        # Run startup animation
         animation_runner.run_startup_animation(
             cfg['startup_animation'], 
             brightness=cfg['brightness']
@@ -142,15 +149,22 @@ def main():
         # Main loop
         while True:
             try:
-                # Check if display should be on
                 now_hour = time.localtime().tm_hour
                 if (cfg['on_time'] != cfg['off_time'] and 
                     (cfg['brightness'] == 0 or not (cfg['on_time'] <= now_hour < cfg['off_time']))):
                     led_controller.turn_all_off()
-                    time.sleep(cfg['poll_time'])
+
+                    # Compute seconds until next on_time and sleep that long
+                    now = datetime.now()
+                    target = now.replace(hour=cfg['on_time'], minute=0, second=0, microsecond=0)
+                    if target <= now:
+                        target += timedelta(days=1)
+                    sleep_seconds = (target - now).total_seconds()
+                    print(f"[INFO] Off-period. Sleeping for {int(sleep_seconds)} seconds until hour {cfg['on_time']}.")
+                    time.sleep(sleep_seconds)
+
                     continue
 
-                # Run integration cycle
                 integration_manager.run_integration_cycle(
                     brightness=cfg['brightness'],
                     poll_time=cfg['poll_time'],

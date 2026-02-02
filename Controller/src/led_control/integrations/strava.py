@@ -10,12 +10,13 @@ import time
 import json
 import requests
 from datetime import datetime, timedelta
+from led_control.integrations.base_tracker import BaseTracker
 
-
-class StravaTracker:
+class StravaTracker(BaseTracker):
     """Tracks and analyzes recent Strava activities for a user."""
     
-    def __init__(self, client_id=None, client_secret=None, num_days=28):
+    def __init__(self, client_id=None, client_secret=None, num_days=28, colors=None):
+        super().__init__(colors=colors)
         self.client_id = client_id
         self.client_secret = client_secret
         self.cache_path = os.path.expanduser("~/.cache/ccal_strava_token")
@@ -77,7 +78,6 @@ class StravaTracker:
             if response.status_code == 200:
                 token_data = response.json()
                 self._save_token(token_data)
-                print("Strava token refreshed successfully")
                 return True
             else:
                 print(f"Failed to refresh token: {response.status_code}")
@@ -212,7 +212,7 @@ class StravaTracker:
         
         return activities[:max_activities]
     
-    def get_activity_counts(self):
+    def get_activity(self):
         """
         Count activities per day for the last num_days.
         Returns list of activity counts per day (0 = today, 1 = yesterday, etc.)
