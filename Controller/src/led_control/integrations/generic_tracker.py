@@ -46,6 +46,10 @@ class GenericTracker(BaseTracker):
             print(f"[ERROR] Failed to load config: {exc}")
             sys.exit(1)
 
+        if not config:
+            print("Config Empty")
+            sys.exit(1)
+
         self.name = config.get("name", "Generic Tracker")
         self.data = config.get("data", [0] * 28)
         self.metric = config.get("metric", "units")

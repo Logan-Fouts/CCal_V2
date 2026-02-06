@@ -10,10 +10,13 @@ src/led_control/cli/main.py
 src/led_control/core/__init__.py
 src/led_control/core/animation_runner.py
 src/led_control/core/config_manager.py
+src/led_control/core/integration_manager.py
 src/led_control/core/led_controller.py
 src/led_control/integrations/__init__.py
+src/led_control/integrations/base_tracker.py
+src/led_control/integrations/generic_tracker.py
 src/led_control/integrations/github_tracker.py
-src/led_control/integrations/spotify.py
+src/led_control/integrations/strava.py
 src/led_control/integrations/weather_tracker.py
 src/led_control/utils/__init__.py
 src/led_control/utils/led_utils.py

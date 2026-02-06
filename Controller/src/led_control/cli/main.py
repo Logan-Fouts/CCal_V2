@@ -14,7 +14,7 @@ from led_control.integrations.strava import StravaTracker
 from led_control.integrations.generic_tracker import GenericTracker
 from datetime import datetime, timedelta
 
-USERNAME = "lfouts"
+USERNAME = "USERNAME"
 CONFIG_PATH = f"/home/{USERNAME}/Daily-Grid/config.json"
 
 # TODO: 
@@ -153,16 +153,7 @@ def main():
                 if (cfg['on_time'] != cfg['off_time'] and 
                     (cfg['brightness'] == 0 or not (cfg['on_time'] <= now_hour < cfg['off_time']))):
                     led_controller.turn_all_off()
-
-                    # Compute seconds until next on_time and sleep that long
-                    now = datetime.now()
-                    target = now.replace(hour=cfg['on_time'], minute=0, second=0, microsecond=0)
-                    if target <= now:
-                        target += timedelta(days=1)
-                    sleep_seconds = (target - now).total_seconds()
-                    print(f"[INFO] Off-period. Sleeping for {int(sleep_seconds)} seconds until hour {cfg['on_time']}.")
-                    time.sleep(sleep_seconds)
-
+                    time.sleep(cfg['poll_time'])
                     continue
 
                 integration_manager.run_integration_cycle(
